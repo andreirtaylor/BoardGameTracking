@@ -1,5 +1,19 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    h1= title
+    p Welcome to #{title}
+    p. 
+        {{ 1 + 1 }}
+    input(type="text", ng-model="name")
+    p {{ name }}
+    div(ng-controller="MT")
+        h1.
+            {{something}}
+        
+        li(ng-repeat="phone in phones")
+            span.
+                {{phone.name}}
+            p.
+                {{phone.snippet}}
+
