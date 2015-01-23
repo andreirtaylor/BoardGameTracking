@@ -1,8 +1,5 @@
-h1= "Money Tracker for " + gameTitle
-p
-    Nothing{{" yet" + "!"}}
-    ul(class="list-group")
-        li(class="list-group-item")="Pictures"
-        li(class="list-group-item")="Documents"
-        li(class="list-group-item")="Music"
-        li(class="list-group-item")="Videos"
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
