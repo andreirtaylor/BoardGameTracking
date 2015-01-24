@@ -4,6 +4,7 @@ block content
     h1= title
     p Welcome to #{title}
     p. 
+    p(id="counter") this 
         {{ 1 + 1 }}
     input(type="text", ng-model="name")
     p {{ name }}
