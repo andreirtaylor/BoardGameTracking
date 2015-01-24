@@ -32,7 +32,7 @@ server.on('listening', onListening);
 
 // socket things
 io.on('connection', function (socket) {
-    socket.emit('initializeGame', { 
+    socket.emit('news', { 
         hello: 'world' 
     });
     
