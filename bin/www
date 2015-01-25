@@ -30,15 +30,49 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+gamesList = {
+                sampleGame:{
+                    playerList:
+                    [
+                        {
+                            player: "Andrei",
+                            money: 123.34
+                        },
+                        {
+                            player: "Jonah",
+                            money: -100000000.0
+                        },
+                        {
+                            player: "Paul",
+                            money: 0937.80
+                        },
+                        {
+                            player: "Jason",
+                            money: 80085.69
+                         },
+                         {
+                            player: "Chris",
+                            money: 0.00
+                         }
+                    ],
+                    gameName: "sampleGame",
+                    numberOfPlayers: 5
+                }
+            }
+
 // socket things
 io.on('connection', function (socket) {
-    socket.emit('news', { 
-        hello: 'world' 
-    });
+    
+
+    socket.emit('gameStart', gamesList["sampleGame"]);
     
     socket.on('my other event', function (data) {
         console.log(data);
     });
+
+    socket.on('updateGameData', function(newGameData){ 
+            
+    })
 });
 
 /**
