@@ -4,16 +4,16 @@ block content
     h1= title
     p Welcome to #{title}
     p. 
-    p(id="counter") 
+    p(id="counter").
         {{ 1 + 1 }}
     input(type="text", ng-model="name")
     p {{ name }}
     div(ng-controller="MT")
         h1.
             {{ something }}
- //       li(ng-repeat="player in playerList")
-//            span.
-//                {{ player.name }}
-//            p.
-//                {{ player.money }}
+        li(ng-repeat="player in playerList")
+            span.
+                {{ player.name }}
+            p.
+                {{ player.money | currency }}
 
