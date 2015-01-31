@@ -10,8 +10,4 @@ router.get('/addScreen', function(req, res, next){
 	res.render('addScreen', {title: 'Test calculator'});
 });
 
-router.get('/addscreen', function(req, res, next) {
-  res.render('addScreen', { title: 'Add Screen' });
-});
-
 module.exports = router;
