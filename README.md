@@ -22,7 +22,7 @@ This project is still under considerable development. It is completely unusuable
 3. Go to the local /bin directory
 4. Type   ```node www```
 
-### Errors
+## Errors
 
 If you are running Ubuntu you may get a pretty criptic error saying that you dont have node installed. If this happens to you, install ```nodejs-legacy```
       ```sudo apt-get install nodejs-legacy```
