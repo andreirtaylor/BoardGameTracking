@@ -1,5 +1,5 @@
 # MoneyTracker
-  ####Easy tracking of board game money.
+  *Easy tracking of board game money.*
 
 This, will be, a web based application that allows players to track their money while playing board games.
 
