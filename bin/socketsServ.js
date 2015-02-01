@@ -71,32 +71,38 @@ module.exports = function(io) {
 
         // can you send multiple things over the socket?
         // generates random ammounts of money and sends them to the client endlessly
-        var testConnection = function(game){
-            var players = gamesList["testConnection"]["playerList"];
-            console.log(players);
-            for (player in players){
-                if(players.hasOwnProperty(player)){
-                    players[player]['money'] = Math.random()*players[player]['imoney'];
-                    console.log(players[player]['money']);
-                }    
-            }             
-            socket.emit('testConnection', game)
-            console.log("Sending Socket");
-        };
-        
-        // use this to test your connection, if you see the game money updating
-        // you are in good shape
-        var repeatTest = setInterval(function(){
-            testConnection(gamesList["testConnection"]);
-            }, 2000);
+        //
+        socket.on("startTest", function(){
+            var testConnection = function(game){
+                var players = gamesList["testConnection"]["playerList"];
+                console.log(players);
+                for (player in players){
+                    if(players.hasOwnProperty(player)){
+                        players[player]['money'] = Math.random()*players[player]['imoney'];
+                        console.log(players[player]['money']);
+                    }    
+                }             
+                socket.emit('testConnection', game)
+                console.log("Sending Socket");
+            };
+            
+            // use this to test your connection, if you see the game money updating
+            // you are in good shape
+            var repeatTest = setInterval(function(){
+                testConnection(gamesList["testConnection"]);
+                }, 2000);
 
-        //turn off the test after a few seconds
-        setTimeout( function(){
-            clearInterval(repeatTest);
-            console.log("Done Sending");
-        }, 8000)
+            //turn off the test after a few seconds
+            setTimeout( function(){
+                clearInterval(repeatTest);
+                console.log("Done Sending");
+            }, 8000)
+        
+        });
+
         socket.on('updateGameData', function(newGameData){ 
             //todo
         })
     });
 }
+                    banker: True

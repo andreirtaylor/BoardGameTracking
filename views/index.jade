@@ -1,13 +1,9 @@
 extends layout
 
 block content
-    h1= title
-    p Welcome to #{title}
-    p. 
-    p(id="counter").
-        {{ 1 + 1 }}
-    input(type="text", ng-model="name")
-    p {{ name }}
+    div(ng-controller="Emit")
+        button(class="btn btn-default", ng-click="testConnection()").
+            TestConnection 
     div(ng-controller="MT")
         h1.
             {{ something }}
