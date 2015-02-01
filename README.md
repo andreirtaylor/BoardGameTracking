@@ -17,13 +17,18 @@ This project is still under considerable development. It is completely unusuable
 4. Type ``` npm start ```
 
 
-#### If you have node installed
+#### If you have do not have npm installed
 
-3. Go to the local /bin directory
-4. Type   ```node www```
+3. Go to the local /bin directory (the one within the MoneyTracker folder)
+   
+   ```cd ./bin```
 
+4. Depending on your system you have to type   ```node www``` or ```nodejs www```
+  *try both, one of them will work*
 ## Errors
 
 If you are running Ubuntu you may get a pretty criptic error saying that you dont have node installed. If this happens to you, install ```nodejs-legacy```
+
       ```sudo apt-get install nodejs-legacy```
-        For more information on why you have to do this see [here](http://stackoverflow.com/questions/21168141/can-not-install-packages-using-node-package-manager-in-ubuntu)
+
+For more information on why you have to do this see [here](http://stackoverflow.com/questions/21168141/can-not-install-packages-using-node-package-manager-in-ubuntu)
