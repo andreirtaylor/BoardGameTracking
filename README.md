@@ -14,8 +14,9 @@ This project is still under considerable development. It is completely unusuable
 #### If you have node and npm installed
 
 3. Go to the direcory using the command line
-4. Type ``` npm start ```
+4. Type 
 
+ ``` npm start ```
 
 #### If you have do not have npm installed
 
@@ -23,8 +24,10 @@ This project is still under considerable development. It is completely unusuable
    
    ```cd ./bin```
 
-4. Depending on your system you have to type   ```node www``` or ```nodejs www```
+4. Depending on your system you have to type   
+   ```node www``` or ```nodejs www```
   *try both, one of them will work*
+
 ## Errors
 
 If you are running Ubuntu you may get a pretty criptic error saying that you dont have node installed. If this happens to you, install ```nodejs-legacy```
