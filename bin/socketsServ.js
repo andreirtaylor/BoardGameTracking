@@ -86,12 +86,17 @@ module.exports = function(io) {
         
         // use this to test your connection, if you see the game money updating
         // you are in good shape
-        setInterval(function(){
+        var repeatTest = setInterval(function(){
             testConnection(gamesList["testConnection"]);
             }, 2000);
-        
+
+        //turn off the test after a few seconds
+        setTimeout( function(){
+            clearInterval(repeatTest);
+            console.log("Done Sending");
+        }, 8000)
         socket.on('updateGameData', function(newGameData){ 
-                    
+            //todo
         })
     });
 }
