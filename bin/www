@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+"use strict"
+
 /**
  * Module dependencies.
  */
@@ -29,98 +31,7 @@ var io = require("socket.io").listen(server);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
-gamesList = {
-                sampleGame:{
-                    playerList:
-                    [
-                        {
-                            name: "Andrei",
-                            money: 123.34
-                        },
-                        {
-                            name: "Jonah",
-                            money: -100000000.0
-                        },
-                        {
-                            name: "Paul",
-                            money: 0937.80
-                        },
-                        {
-                            name: "Jason",
-                            money: 80085.69
-                         },
-                         {
-                            name: "Chris",
-                            money: 0.00
-                         }
-                    ],
-                    gameName: "sampleGame",
-                    numberOfPlayers: 5
-                },
-                testConnection:{
-                    playerList:
-                    [
-                        {
-                            name: "Andrei",
-                            imoney: 100.00,
-                            money: 100
-                        },
-                        {
-                            name: "Jonah",
-                            imoney: -100000000.0,
-                            money: -100000000.0
-                        },
-                        {
-                            name: "Paul",
-                            imoney: 937.80,
-                            money: 937.80
-                        },
-                        {
-                            name: "Jason",
-                            imoney: 80085.69,
-                            money: 80085.69
-                         },
-                         {
-                            name: "Chris",
-                            imoney: 1.00,
-                            money: 1.00
-                         }
-                    ],
-                    gameName: "sampleGame",
-                    numberOfPlayers: 5
-                }
-            }
-
-// socket things
-io.on('connection', function (socket) {
-    socket.emit('gameStart', gamesList["sampleGame"]);
-    
-    socket.on('my other event', function (data) {
-        console.log(data);
-    });
-
-    var testConnection = function(game){
-        players = gamesList["testConnection"]["playerList"];
-        console.log(players)
-        for (player in players){
-            if(players.hasOwnProperty(player)){
-                players[player]['money'] = Math.random()*players[player]['imoney'] 
-                console.log(players[player]['money']);
-            }    
-        }             
-        socket.emit('testConnection', game)
-        console.log("Sending Socket");
-    }
-    
-    setInterval(function(){
-        testConnection(gamesList["testConnection"]);
-        }, 2000);
-    
-    socket.on('updateGameData', function(newGameData){ 
-                
-    })
-});
+(require("./socketsServ.js"))(io);
 
 /**
  * Normalize a port into a number, string, or false.
