@@ -5,7 +5,6 @@ var app = angular.module('App', []);
                 socket.on('gameStart', function (data) {
                     $scope.game = data;
                     scopegame = $scope.game;
-                    game = data;
                     $scope.playerList = data.playerList;
                 });
                 socket.on('testConnection', function(data){
@@ -15,5 +14,10 @@ var app = angular.module('App', []);
                     console.log("Connection is good");
                     $scope.playerList = data.playerList;
                 });
+                $scope.output="0";
+                $scope.appendToOut = function(num){
+              
+                };
         });
+		
 })()
