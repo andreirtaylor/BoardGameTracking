@@ -11,12 +11,13 @@ This project is still under considerable development. It is completely unusuable
 #### If you have node and npm and nodemon installed
 
 3. Go to the direcory using the command line
-4. Type ``` npm start ```
+4. Type 
 
+ ``` npm start ```
 
 #### If you have node installed
 
 3. Go to the local /bin directory
-4. Type   ```node www```
+4. Type 
 
-
+```node www```
