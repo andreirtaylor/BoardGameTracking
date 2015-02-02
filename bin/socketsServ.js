@@ -105,4 +105,3 @@ module.exports = function(io) {
         })
     });
 }
-                    banker: True
