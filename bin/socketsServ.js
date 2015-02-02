@@ -75,11 +75,9 @@ module.exports = function(io) {
         socket.on("startTest", function(){
             var testConnection = function(game){
                 var players = gamesList["testConnection"]["playerList"];
-                console.log(players);
                 for (player in players){
                     if(players.hasOwnProperty(player)){
                         players[player]['money'] = Math.random()*players[player]['imoney'];
-                        console.log(players[player]['money']);
                     }    
                 }             
                 socket.emit('testConnection', game)
