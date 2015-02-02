@@ -1,15 +1,17 @@
 extends layout
 
 block content
+    div(ng-controller="MT")
+        div(class="container-fluid")
+            div(class="row-fluid")
+            div(class="col-sm-3 col-md-4 col-lg-5" )
+            div(class="col-sm-6 col-md-4 col-lg-2" )
+                div(ng-repeat="player in playerList")
+                    p(style"test-align:left")
+                        | {{ player.name }}
+                        span(style="float:right").
+                            {{ player.money | currency }} 
+            div(class="col-sm-3 col-md-4 col-lg-5" )
     div(ng-controller="Emit")
         button(class="btn btn-default", ng-click="testConnection()").
             TestConnection 
-    div(ng-controller="MT")
-        h1.
-            {{ something }}
-        li(ng-repeat="player in playerList")
-            span.
-                {{ player.name }}
-            p.
-                {{ player.money | currency }}
-

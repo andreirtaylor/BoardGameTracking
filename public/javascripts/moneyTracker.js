@@ -4,8 +4,6 @@ var app = angular.module('App', []);
         // the way that this is written it will not be able to be iminified
         // update this later
         app.controller('MT', ['$scope', 'socket', function ($scope , socket) {
-                $scope.something = "Hey Jason, Check out the money below It will update for 8 seconds!";
-
                 // these socket functions are all possible because of the socket factory
                 socket.on('gameStart', function (data) {
                     $scope.game = data;
