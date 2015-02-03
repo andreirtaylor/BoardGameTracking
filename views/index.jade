@@ -4,14 +4,15 @@ block content
     div(ng-controller="MT")
         div(class="container-fluid")
             div(class="row-fluid")
-            div(class="col-sm-3 col-md-4 col-lg-5" )
-            div(class="col-sm-6 col-md-4 col-lg-2" )
-                div(ng-repeat="player in playerList", ng-click='addToPlayer(player.id)')
-                    p(style"test-align:left")
-                        | {{ player.name }}
-                        span(style="float:right").
-                            {{ player.money | currency }} 
-            div(class="col-sm-3 col-md-4 col-lg-5" )
+            div(class="col-sm-3 col-md-4 col-lg-4" )
+            div(class="col-sm-6 col-md-4 col-lg-4" )
+                div(class="list-group-fluid")
+                    a(href="" class="list-group-item", ng-repeat="player in playerList", ng-click='addToPlayer(player.id)')
+                        p(style"text-align:left")
+                            | {{ player.name }}
+                            span(style="float:right").
+                                {{ player.money | currency }} 
+            div(class="col-sm-3 col-md-4 col-lg-4" )
     div(ng-controller="Emit")
-        button(class="btn btn-default", ng-click="testConnection()").
+        button(class="btn btn-default", ng-click="testConnection()", style="text-align:center").
             TestConnection 

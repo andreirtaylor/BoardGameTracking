@@ -22,11 +22,9 @@ var app = angular.module('App', []);
                 
                 $scope.addToPlayer = function(id, ammount){
                     var ammount = 10;
-                    console.log(id);
                     var playerList = $scope.game.playerList;
                     for(var i = 0; i < playerList.length; i++){
                         if (playerList[i].id == id){
-                            console.log(playerList[i].money);
                             playerList[i].money += ammount
                             break;
                         }
