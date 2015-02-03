@@ -6,6 +6,14 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
 });
 
+router.get('/addScreen/:id', function(req, res, next){
+    idNum = req.params.id;
+	res.render('addScreen', {
+        title: 'Test calculator',
+        id: idNum
+    });
+});
+
 router.get('/addScreen', function(req, res, next){
 	res.render('addScreen', {title: 'Test calculator'});
 });

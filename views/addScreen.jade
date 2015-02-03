@@ -1,24 +1,28 @@
 extends layout
 
 block content
-	h1= title
-	p Welcome to #{title} 
-	p(id="counter"). 
-		{{ 1 + 1 }}
-	input(type="text", ng-model="name")
-	p {{ name }}
-	div(class="container-fluid",id="calculator", ng-controller="MT")
-		div(style="text-align:right;height:20px;width:100px;")
-			p(class="output", name="output"){{output}}
-		div
-			button(type="button", value="1", class="btn btn-default", ng-click(appendToOut(1))) 1
-			button(type="button", value="2", class="btn btn-default", ng-click(appendToOut(2))) 2
-			button(type="button", value="3", class="btn btn-default", ng-click(appendToOut(3))) 3
-		div
-			button(type="button", value="4", class="btn btn-default", ng-click(appendToOut(4))) 4
-			button(type="button", value="5", class="btn btn-default", ng-click(appendToOut(5))) 5
-			button(type="button", value="6", class="btn btn-default", ng-click(appendToOut(6))) 6
-		div
-			button(type="button", value="7", class="btn btn-default", ng-click(appendToOut(7))) 7
-			button(type="button", value="8", class="btn btn-default", ng-click(appendToOut(8))) 8
-			button(type="button", value="9", class="btn btn-default", ng-click(appendToOut(9))) 9
+    h1= title
+    p Welcome to #{title} 
+    p(id="counter"). 
+        {{ 1 + 1 }}
+    input(type="text", ng-model="name")
+    p {{ name }}
+    div(class="container-fluid",id="calculator", ng-controller="MT")
+        div(style="text-align:right;height:20px;width:100px;")
+            p(class="output", name="output").
+                {{output}}
+        div
+            button(type="button", value="1", class="btn btn-default", ng-click(appendToOut(1))) 1
+            button(type="button", value="2", class="btn btn-default", ng-click(appendToOut(2))) 2
+            button(type="button", value="3", class="btn btn-default", ng-click(appendToOut(3))) 3
+        div
+            button(type="button", value="4", class="btn btn-default", ng-click(appendToOut(4))) 4
+            button(type="button", value="5", class="btn btn-default", ng-click(appendToOut(5))) 5
+            button(type="button", value="6", class="btn btn-default", ng-click(appendToOut(6))) 6
+        div
+            button(type="button", value="7", class="btn btn-default", ng-click(appendToOut(7))) 7
+            button(type="button", value="8", class="btn btn-default", ng-click(appendToOut(8))) 8
+            button(type="button", value="9", class="btn btn-default", ng-click(appendToOut(9))) 9
+    div(ng-controller="MT")
+        button(class="btn btn-default", ng-click="goToMenu()", style="text-align:center").
+            Go Back

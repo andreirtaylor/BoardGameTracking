@@ -79,6 +79,12 @@ module.exports = function(io) {
             console.log(data);
         });
 
+        socket.on('updateGameData', function(newGameData){ 
+            gamesList.sampleGame = newGameData;
+            console.log(newGameData);
+            socket.emit('newGameData', sampleGame);
+        })
+
         // can you send multiple things over the socket?
         // generates random ammounts of money and sends them to the client endlessly
         //
@@ -105,11 +111,6 @@ module.exports = function(io) {
                 clearInterval(repeatTest);
                 console.log("Done Sending");
             }, 8000)
-        
         });
-
-        socket.on('updateGameData', function(newGameData){ 
-            //todo
-        })
     });
 }

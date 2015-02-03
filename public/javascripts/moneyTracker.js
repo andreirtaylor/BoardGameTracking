@@ -1,3 +1,4 @@
+var addScreenLocation = 'addScreen';
 
 var app = angular.module('App', []);
 // this is the place to store the angular controllers.
@@ -14,12 +15,23 @@ var app = angular.module('App', []);
 
                 socket.on('testConnection', function(data){
                     $scope.game = data;
+                    socket.game = $scope.game;
+                    $scope.playerList = data.playerList;
                     scopegame = $scope.game;
                     game = data;
                     console.log("Connection is good");
-                    $scope.playerList = data.playerList;
                 });
-                
+               
+                // the function that runs when you click on a 
+                // players name
+                $scope.setupAddScreen = function(id){
+                    location.replace("/addScreen/" + id );
+                }
+
+                $scope.goToMenu = function(){
+                    location.replace("/");
+                }
+
                 $scope.addToPlayer = function(id, ammount){
                     var ammount = 10;
                     var playerList = $scope.game.playerList;
@@ -32,15 +44,22 @@ var app = angular.module('App', []);
                     
                 }
 
+
                 $scope.output="0";
                 $scope.appendToOut = function(num){
               
                 };
         }]);
-        
+
         app.controller('Emit', ['$scope', 'socket', function ($scope , socket) {
                 $scope.testConnection = function(){
                     socket.emit('startTest');
+                }
+                $scope.updateGameData = function(){
+                    socket.emit('updateGameData', {
+                        game:socket.game,
+                        id:socket.playerID
+                    });
                 }
         }]);
 })()
