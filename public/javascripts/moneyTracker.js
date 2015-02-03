@@ -1,3 +1,4 @@
+
 var app = angular.module('App', []);
 // this is the place to store the angular controllers.
 (function(){
@@ -19,6 +20,19 @@ var app = angular.module('App', []);
                     $scope.playerList = data.playerList;
                 });
                 
+                $scope.addToPlayer = function(id, ammount){
+                    var ammount = 10;
+                    console.log(id);
+                    var playerList = $scope.game.playerList;
+                    for(var i = 0; i < playerList.length; i++){
+                        if (playerList[i].id == id){
+                            console.log(playerList[i].money);
+                            playerList[i].money += ammount
+                            break;
+                        }
+                    }
+                    
+                }
 
                 $scope.output="0";
                 $scope.appendToOut = function(num){

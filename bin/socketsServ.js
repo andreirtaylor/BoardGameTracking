@@ -4,22 +4,27 @@ module.exports = function(io) {
             playerList:
             [
                 {
+                    id:1,
                     name: "Andrei",
                     money: 123.34
                 },
                 {
+                    id:2,
                     name: "Jonah",
                     money: -100000000.0
                 },
                 {
+                    id:3,
                     name: "Paul",
                     money: 0937.80
                 },
                 {
+                    id:4,
                     name: "Jason",
                     money: 80085.69
                  },
                  {
+                    id:5,
                     name: "Chris",
                     money: 0.00
                  }
@@ -31,26 +36,31 @@ module.exports = function(io) {
             playerList:
             [
                 {
+                    id:1,
                     name: "Andrei",
                     imoney: 100.00,
                     money: 100
                 },
                 {
+                    id:2,
                     name: "Jonah",
                     imoney: -100000000.0,
                     money: -100000000.0
                 },
                 {
+                    id:3,
                     name: "Paul",
                     imoney: 937.80,
                     money: 937.80
                 },
                 {
+                    id:4,
                     name: "Jason",
                     imoney: 80085.69,
                     money: 80085.69
                  },
                  {
+                    id:5,
                     name: "Chris",
                     imoney: 1.00,
                     money: 1.00
