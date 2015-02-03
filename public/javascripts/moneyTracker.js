@@ -19,6 +19,9 @@ var app = angular.module('App', []);
                     $scope.playerList = data.playerList;
                     scopegame = $scope.game;
                     game = data;
+                    console.log("adam added this test");
+                    //var c = db.game1.find(); trying to access the mongod
+                    //console.log(c);
                     console.log("Connection is good");
                 });
                
