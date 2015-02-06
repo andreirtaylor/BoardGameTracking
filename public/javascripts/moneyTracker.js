@@ -32,21 +32,22 @@ var app = angular.module('App', []);
                     location.replace("/");
                 }
 
-                $scope.addToPlayer = function(id, ammount){
-                    var ammount = 10;
-                    var playerList = $scope.game.playerList;
+                $scope.findPlayer = function(id){ 
+                    var player = {};
                     for(var i = 0; i < playerList.length; i++){
                         if (playerList[i].id == id){
-                            playerList[i].money += ammount
                             break;
                         }
                     }
+                    return player;
+                }
+
+                $scope.addToPlayer = function(id, ammount){
+                    var ammount = 10;
+                    var playerList = $scope.game.playerList;
+                     
                     
                 }
-				
-
-
-
         }]);
 
         app.controller('Calculator', ['$scope', function($scope){

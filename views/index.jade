@@ -12,8 +12,8 @@ block content
                             | {{ player.name }}
                             span(style="float:right").
                                 {{ player.money | currency }} 
+                div(ng-controller="Emit")
+                    p
+                    button(class="btn btn-default", ng-click="testConnection()", style="text-align:center").
+                        TestConnection 
             div(class="col-sm-3 col-md-4 col-lg-4" )
-    div(ng-controller="Emit")
-        | 
-        button(class="btn btn-default", ng-click="testConnection()", style="text-align:center").
-            TestConnection 
