@@ -12,17 +12,26 @@ block content
             p(class="output", name="output").
                 {{output}}
         div
-            button(type="button", value="1", class="btn btn-default", ng-click(appendToOut(1))) 1
-            button(type="button", value="2", class="btn btn-default", ng-click(appendToOut(2))) 2
-            button(type="button", value="3", class="btn btn-default", ng-click(appendToOut(3))) 3
+            button(type="button", value="1", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(1)") 1
+            button(type="button", value="2", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(2)") 2
+            button(type="button", value="3", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(3)") 3
+            button(type="button", value="+", class="btn btn-default", style="border-radius: 0;", ng-click="add()") +
         div
-            button(type="button", value="4", class="btn btn-default", ng-click(appendToOut(4))) 4
-            button(type="button", value="5", class="btn btn-default", ng-click(appendToOut(5))) 5
-            button(type="button", value="6", class="btn btn-default", ng-click(appendToOut(6))) 6
+            button(type="button", value="4", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(4)") 4
+            button(type="button", value="5", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(5)") 5
+            button(type="button", value="6", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(6)") 6
+            button(type="button", value="-", class="btn btn-default", style="border-radius: 0;", ng-click="subtract()") -
         div
-            button(type="button", value="7", class="btn btn-default", ng-click(appendToOut(7))) 7
-            button(type="button", value="8", class="btn btn-default", ng-click(appendToOut(8))) 8
-            button(type="button", value="9", class="btn btn-default", ng-click(appendToOut(9))) 9
+            button(type="button", value="7", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(7)") 7
+            button(type="button", value="8", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(8)") 8
+            button(type="button", value="9", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(9)") 9
+            button(type="button", value="/", class="btn btn-default", style="border-radius: 0;", ng-click="divide()") /
+         div
+            button(type="button", value="AC", class="btn btn-default", style="border-radius: 0;", ng-click="clear()") A
+            button(type="button", value="0", class="btn btn-default", style="border-radius: 0;", ng-click="appendToOut(0)") 0
+            button(type="button", value="C", class="btn btn-default", style="border-radius: 0;", ng-click="clear()") C
+            button(type="button", value="*", class="btn btn-default", style="border-radius: 0;", ng-click="multiply()") 3
+            button(type="button", value="=", class="btn btn-default", style="border-radius: 0;", ng-click="solve()") =
     div(ng-controller="MT")
         button(class="btn btn-default", ng-click="goToMenu()", style="text-align:center").
             Go Back

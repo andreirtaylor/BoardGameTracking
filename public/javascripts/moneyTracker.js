@@ -43,12 +43,47 @@ var app = angular.module('App', []);
                     }
                     
                 }
-
-
+				
+				//calculator functions
                 $scope.output="0";
-                $scope.appendToOut = function(num){
-              
-                };
+                $scope.savedVal= 0;
+				$scope.appendToOut = function(num){
+					if($scope.output == "0" || $scope.calctoken){
+						$scope.output=num;
+						$scope.calctoken=false;
+					}else{
+						$scope.output += String(num);
+                	}
+				};
+				$scope.clear = function(){
+					$scope.output = "0";
+					$scope.addtoken = false;
+					$scope.subtracttoken = false;
+					$scope.calctoken = false;
+				};
+
+				$scope.add = function(){
+					$scope.addtoken = true;
+					$scope.calctoken = true;
+					$scope.savedVal = $scope.output;
+				};
+
+				$scope.solve = function(){
+					if ($scope.addtoken == true){
+						$scope.savedVal = parseInt($scope.savedVal) + parseInt($scope.output);
+						$scope.output = $scope.savedVal;
+					}
+					$scope.calctoken = true;
+					$scope.addtoken = false;
+					$scope.subtracttoken = false;
+				};
+					$scope.calctoken = false;
+					$scope.addtoken = false;
+					$scope.subtracttoken = false;
+				//end of calculator functions
+
+
+
         }]);
 
         app.controller('Emit', ['$scope', 'socket', function ($scope , socket) {
