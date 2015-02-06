@@ -1,12 +1,6 @@
 extends layout
 
 block content
-    h1= title
-    p Welcome to #{title} 
-    p(id="counter"). 
-        {{ 1 + 1 }}
-    input(type="text", ng-model="name")
-    p {{ name }}
     div(class="container-fluid",id="calculator", ng-controller="Calculator")
         div(class="col-sm-3 col-md-4 col-lg-4" )
         div(class="col-sm-6 col-md-4 col-lg-4" )
