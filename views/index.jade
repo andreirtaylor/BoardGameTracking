@@ -7,7 +7,7 @@ block content
             div(class="col-sm-3 col-md-4 col-lg-4" )
             div(class="col-sm-6 col-md-4 col-lg-4" )
                 div(class="list-group")
-                    a(href="" class="list-group-item", ng-repeat="player in playerList", ng-click="click()")
+                    a(href="" class="list-group-item", ng-repeat="player in playerList", ng-click="click(player)")
                         p(style"text-align:left")
                             | {{ player.name }}
                             span(style="float:right").
@@ -21,6 +21,12 @@ block content
         div(class="container-fluid",id="calculator", ng-controller="Calculator", ng-show="clicked")
             div(class="col-sm-3 col-md-4 col-lg-4" )
             div(class="col-sm-6 col-md-4 col-lg-4" )
+                a(href="", class="list-group-item")
+                    p(style="text-align:left")
+                        | {{ player.name }}
+                        span(style="float:right")
+                            | {{ player.money | currency }} 
+                p
                 h1(style="text-align:right")
                     {{output}}
                 div(class="btn-group btn-group-justified", role="group", aria-label="...")
@@ -51,9 +57,12 @@ block content
                         button(type="button", value="0", class="btn btn-default btn-xl", ng-click="appendToOut(0)") 0
                     div(class="btn-group",role="group")
                         button(type="button", value="-", class="btn btn-default btn-xl", ng-click="subtract()") -
-                p
+                div
+                    p
                     button(class="btn btn-default btn-xl", ng-click="click()", style="text-align:center") Go Back
                     span(style="float:right")
                         button(type="button", value="=", class="btn btn-default btn-xl", ng-click="solve()") =
                         button(type="button", value="C", class="btn btn-default btn-xl", ng-click="clear()") C
+                    p    
+                    button(type="button", value="update", class="btn btn-success btn-group-justified btn-xl", ng-click="update()") update
             div(class="col-sm-3 col-md-4 col-lg-4" )

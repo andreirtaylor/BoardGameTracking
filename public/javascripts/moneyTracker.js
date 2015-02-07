@@ -13,7 +13,9 @@ var app = angular.module('App', []);
                     scopegame = $scope.game;
                     $scope.playerList = data.playerList;
                 });
-                
+               
+                $scope.player = $scope.player?$scope.player:{};
+
                 socket.on('gameStart', function (data) {
                     $scope.game = data;
                     scopegame = $scope.game;
@@ -31,45 +33,19 @@ var app = angular.module('App', []);
                 
 
                 $scope.clicked = false;
-                $scope.click = function(){
-                    console.log($scope.clicked);
+                $scope.click = function(player){
+                    $scope.player = player;
                     if($scope.clicked == true){
                         $scope.clicked = false;
                     }else{
                         $scope.clicked = true;
                     }
                 };
-                // the function that runs when you click on a 
-                // players name
-                $scope.setupAddScreen = function(id){
-                    location.replace("/addScreen/" + id );
-                }
-
-                $scope.goToMenu = function(){
-                    location.replace("/");
-                }
-
-                $scope.findPlayer = function(id){ 
-                    var player = {};
-                    for(var i = 0; i < playerList.length; i++){
-                        if (playerList[i].id == id){
-                            break;
-                        }
-                    }
-                    return player;
-                }
-
-                $scope.addToPlayer = function(id, ammount){
-                    var ammount = 10;
-                    var playerList = $scope.game.playerList;
-                     
-                    
-                }
         }]);
 
         app.controller('Calculator', ['$scope', function($scope){
             //calculator functions
-            $scope.output="0";
+            $scope.output=0;
             $scope.savedVal= 0;
             $scope.appendToOut = function(num){
                 if($scope.output == "0" || $scope.calctoken){
@@ -112,11 +88,22 @@ var app = angular.module('App', []);
                 $scope.addtoken = false;
                 $scope.subtracttoken = false;
             };
+
+            $scope.update = function(){
+                $scope.player.money += parseInt($scope.output);
+                $scope.output = "0";
+                socket.emit('updateSampleGame', $scope.game);
+                $scope.click();
+
+                console.log($scope.game);
+
+            };
+
                 $scope.calctoken = false;
                 $scope.addtoken = false;
                 $scope.subtracttoken = false;
             //end of calculator functions
-        
+       
         }]);
 
         app.controller('Emit', ['$scope', 'socket', function ($scope , socket) {
