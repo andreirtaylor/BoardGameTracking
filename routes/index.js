@@ -6,6 +6,10 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express' });
 });
 
+router.get('/samplegame', function(req, res, next){
+    res.render('index', {});
+});
+
 router.get('/addScreen/:id', function(req, res, next){
     idNum = req.params.id;
 	res.render('addScreen', {

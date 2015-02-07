@@ -6,29 +6,30 @@ module.exports = function(io) {
                 {
                     id:1,
                     name: "Andrei",
-                    money: 123.34
+                    money: 50
                 },
                 {
                     id:2,
                     name: "Jonah",
-                    money: -100000000.0
+                    money: 50
                 },
                 {
                     id:3,
                     name: "Paul",
-                    money: 0937.80
+                    money: 50
                 },
                 {
                     id:4,
                     name: "Jason",
-                    money: 80085.69
+                    money: 50 
                  },
                  {
                     id:5,
                     name: "Chris",
-                    money: 0.00
+                    money: 50
                  }
             ],
+            startMoney:50,
             gameName: "sampleGame",
             numberOfPlayers: 5
         },
@@ -73,10 +74,16 @@ module.exports = function(io) {
 
     // socket things
     io.on('connection', function (socket) {
-        socket.emit('gameStart', gamesList["sampleGame"]);
+        //socket.emit('gameStart', gamesList["sampleGame"]);
         
         socket.on('my other event', function (data) {
             console.log(data);
+        });
+
+        socket.on('getSampleGame', function(data){
+            console.log(data);
+            game = gamesList[data.gameName];
+            socket.emit('SampleUpdate', game);
         });
 
         socket.on('updateGameData', function(newGameData){ 
