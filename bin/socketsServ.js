@@ -4,33 +4,33 @@ module.exports = function(io) {
             playerList:
             [
                 {
-                    id:1,
+                    id:0,
                     name: "Andrei",
                     money: 50
                 },
                 {
-                    id:2,
+                    id:1,
                     name: "Jonah",
                     money: 50
                 },
                 {
-                    id:3,
+                    id:2,
                     name: "Paul",
                     money: 50
                 },
                 {
-                    id:4,
+                    id:3,
                     name: "Jason",
                     money: 50 
                  },
                  {
-                    id:5,
+                    id:4,
                     name: "Chris",
                     money: 50
                  }
             ],
             startMoney:50,
-            gameName: "sampleGame",
+            gameName: "samplegame",
             numberOfPlayers: 5
         },
         testConnection:{
@@ -89,6 +89,7 @@ module.exports = function(io) {
             var game = gamesList[data.gameName];
             console.log(game);
             socket.emit('SampleUpdate', game);
+
         });
 
         socket.on('resetSampleGame', function(data){
@@ -97,12 +98,12 @@ module.exports = function(io) {
             for(var i = 0; i < playerList.length; i++){
                 playerList[i].money = game.startMoney;
             }
+            io.to(socket.room).emit('SampleUpdate', game);
         });
 
-        socket.on('updateGameData', function(newGameData){ 
-            gamesList.sampleGame = newGameData;
-            console.log(newGameData);
-            io.to(socket.room).emit('newGameData', sampleGame);
+        socket.on('updateSampleGame', function(game){ 
+            gamesList[game.gameName] = game;
+            io.to(socket.room).emit('SampleUpdate', game);
         });
 
         socket.on('disconnect', function(){
@@ -112,8 +113,8 @@ module.exports = function(io) {
         // test connections functions will not be useful soon
         // can you send multiple things over the socket?
         // generates random ammounts of money and sends them to the client endlessly
-        //
-        socket.on("startTest", function(){
+        
+        testingConnection = function(){
             var testConnection = function(game){
                 var players = gamesList["testConnection"]["playerList"];
                 for (player in players){
@@ -121,7 +122,8 @@ module.exports = function(io) {
                         players[player]['money'] = Math.random()*players[player]['imoney'];
                     }    
                 }             
-                socket.emit('testConnection', game)
+                // io.socket.emit('testConnection', game)
+                io.to(socket.room).emit('testConnection', game);
                 console.log("Sending Socket");
             };
             testConnection(gamesList["testConnection"]);
@@ -136,7 +138,8 @@ module.exports = function(io) {
             setTimeout( function(){
                 clearInterval(repeatTest);
                 console.log("Done Sending");
-            }, 8000)
-        });
+            }, 4000)
+        }
+        socket.on("startTest", testingConnection);
     });
 }
