@@ -1,6 +1,6 @@
 module.exports = function(io) {
     var gamesList = {
-        sampleGame:{
+        samplegame:{
             playerList:
             [
                 {
@@ -37,31 +37,31 @@ module.exports = function(io) {
             playerList:
             [
                 {
-                    id:1,
+                    id:0,
                     name: "Andrei",
                     imoney: 100.00,
                     money: 100
                 },
                 {
-                    id:2,
+                    id:1,
                     name: "Jonah",
                     imoney: -100000000.0,
                     money: -100000000.0
                 },
                 {
-                    id:3,
+                    id:2,
                     name: "Paul",
                     imoney: 937.80,
                     money: 937.80
                 },
                 {
-                    id:4,
+                    id:3,
                     name: "Jason",
                     imoney: 80085.69,
                     money: 80085.69
                  },
                  {
-                    id:5,
+                    id:4,
                     name: "Chris",
                     imoney: 1.00,
                     money: 1.00
@@ -75,23 +75,41 @@ module.exports = function(io) {
     // socket things
     io.on('connection', function (socket) {
         //socket.emit('gameStart', gamesList["sampleGame"]);
-        
+
+        // sample Game functions
         socket.on('my other event', function (data) {
             console.log(data);
         });
 
         socket.on('getSampleGame', function(data){
-            console.log(data);
-            game = gamesList[data.gameName];
+            // join the room that you were sent from
+            socket.room = data.gameName;
+            socket.join(data.gameName);
+            console.log(data, socket.room);
+            var game = gamesList[data.gameName];
+            console.log(game);
             socket.emit('SampleUpdate', game);
+        });
+
+        socket.on('resetSampleGame', function(data){
+            console.log(data);
+            var game = gamesList[data.gameName]
+            for(var i = 0; i < playerList.length; i++){
+                playerList[i].money = game.startMoney;
+            }
         });
 
         socket.on('updateGameData', function(newGameData){ 
             gamesList.sampleGame = newGameData;
             console.log(newGameData);
-            socket.emit('newGameData', sampleGame);
-        })
+            io.to(socket.room).emit('newGameData', sampleGame);
+        });
 
+        socket.on('disconnect', function(){
+            socket.leave(socket.room);
+        })
+       
+        // test connections functions will not be useful soon
         // can you send multiple things over the socket?
         // generates random ammounts of money and sends them to the client endlessly
         //
