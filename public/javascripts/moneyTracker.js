@@ -28,7 +28,17 @@ var app = angular.module('App', []);
                     game = data;
                     console.log("Connection is good");
                 });
-               
+                
+
+                $scope.clicked = false;
+                $scope.click = function(){
+                    console.log($scope.clicked);
+                    if($scope.clicked == true){
+                        $scope.clicked = false;
+                    }else{
+                        $scope.clicked = true;
+                    }
+                };
                 // the function that runs when you click on a 
                 // players name
                 $scope.setupAddScreen = function(id){
@@ -82,9 +92,20 @@ var app = angular.module('App', []);
                 $scope.savedVal = $scope.output;
             };
 
+            $scope.subtract = function(){
+                $scope.subtracttoken = true;
+                $scope.calctoken = true;
+                $scope.savedVal = $scope.output;
+    
+            };
+
             $scope.solve = function(){
                 if ($scope.addtoken == true){
                     $scope.savedVal = parseInt($scope.savedVal) + parseInt($scope.output);
+                    $scope.output = $scope.savedVal;
+                }
+                if ($scope.subtracttoken == true){
+                    $scope.savedVal = parseInt($scope.savedVal) - parseInt($scope.output);
                     $scope.output = $scope.savedVal;
                 }
                 $scope.calctoken = true;
