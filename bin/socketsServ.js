@@ -85,15 +85,15 @@ module.exports = function(io) {
             // join the room that you were sent from
             socket.room = data.gameName;
             socket.join(data.gameName);
-            console.log(data, socket.room);
+            //console.log(data, socket.room);
             var game = gamesList[data.gameName];
-            console.log(game);
+            //console.log(game);
             socket.emit('SampleUpdate', game);
 
         });
 
         socket.on('resetSampleGame', function(data){
-            console.log(data);
+            //console.log(data);
             var game = gamesList[data.gameName]
             for(var i = 0; i < playerList.length; i++){
                 playerList[i].money = game.startMoney;
@@ -102,6 +102,7 @@ module.exports = function(io) {
         });
 
         socket.on('updateSampleGame', function(game){ 
+            console.log(game);
             gamesList[game.gameName] = game;
             io.to(socket.room).emit('SampleUpdate', game);
         });

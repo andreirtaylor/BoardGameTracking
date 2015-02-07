@@ -89,15 +89,6 @@ var app = angular.module('App', []);
                 $scope.subtracttoken = false;
             };
 
-            $scope.update = function(){
-                $scope.player.money += parseInt($scope.output);
-                $scope.output = "0";
-                socket.emit('updateSampleGame', $scope.game);
-                $scope.click();
-
-                console.log($scope.game);
-
-            };
 
                 $scope.calctoken = false;
                 $scope.addtoken = false;
@@ -116,5 +107,13 @@ var app = angular.module('App', []);
                         id:socket.playerID
                     });
                 }
+                $scope.update = function(){
+                    $scope.player.money += parseInt($scope.output);
+                    $scope.clear();
+                    $scope.click();
+                    socket.emit('updateSampleGame', $scope.game);
+                    console.log($scope.game);
+
+                };
         }]);
 })()
