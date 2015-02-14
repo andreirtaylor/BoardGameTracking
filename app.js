@@ -7,15 +7,19 @@ var bodyParser = require('body-parser');
 // this file is being used in the database file
 var assert = require('assert');
 
+// ============DATABASE STUFF==================
 // make the MongoClient
 var MongoClient = require('mongodb').MongoClient;
-
 // specify where you can connect to the database
 var url = 'mongodb://localhost:55555/myproject';
 
+
 // all of the database stuff is in the bin folder
 // this makes it easier to know where everything is
-//(require("./bin/database.js"))(MongoClient, url, assert);
+(require("./bin/database.js"))(MongoClient, url, assert);
+
+
+
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
