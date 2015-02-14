@@ -1,6 +1,6 @@
 exports.config = {
     seleniumAddress: 'http://localhost:4444/wd/hub',
-    specs: ['calculator.js'],
+    specs: ['addToPlayer-spec.js'],
     multiCapabilities: [//{browserName: 'firefox'}, 
     {
         browserName: 'chrome'
