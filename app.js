@@ -1,4 +1,3 @@
-// these are all the modules we are using in the webapp
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -16,7 +15,7 @@ var url = 'mongodb://localhost:55555/myproject';
 
 // all of the database stuff is in the bin folder
 // this makes it easier to know where everything is
-(require("./bin/database.js"))(MongoClient, url, assert);
+//(require("./bin/database.js"))(MongoClient, url, assert);
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

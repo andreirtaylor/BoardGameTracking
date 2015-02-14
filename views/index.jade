@@ -6,6 +6,9 @@ block content
             div(class="row-fluid")
             div(class="col-sm-3 col-md-4 col-lg-4" )
             div(class="col-sm-6 col-md-4 col-lg-4" )
+                h1(class='title', style='text-align:center').
+                    Power Grid
+                p
                 div(class="list-group")
                     a(href="" class="list-group-item", ng-repeat="player in playerList", ng-click="click(player)")
                         p(style"text-align:left")
@@ -40,7 +43,7 @@ block content
                     div(class="btn-group",role="group")
                         button(type="button", value="4", class="btn btn-default btn-xl", ng-click="appendToOut(4)") 4
                     div(class="btn-group",role="group")
-                        button(type="button", value="5", class="btn btn-default btn-xl", ng-click="appendToOut(5)") 5
+                        button(id='calc-5', type="button", value="5", class="btn btn-default btn-xl", ng-click="appendToOut(5)") 5
                     div(class="btn-group",role="group")
                         button(type="button", value="6", class="btn btn-default btn-xl", ng-click="appendToOut(6)") 6
                 div(class="btn-group btn-group-justified", role="group", aria-label="...")
@@ -65,5 +68,5 @@ block content
                         button(type="button", value="C", class="btn btn-default btn-xl", ng-click="clear()") C
                     p    
                     div(ng-controller='Emit')
-                        button(type="button", value="update", class="btn btn-success btn-group-justified btn-xl", ng-click="update()") update
+                        button(id='updateGame', type="button", value="update", class="btn btn-success btn-group-justified btn-xl", ng-click="update()") update
             div(class="col-sm-3 col-md-4 col-lg-4" )
