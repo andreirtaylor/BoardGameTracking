@@ -21,7 +21,7 @@ For now the instructions below are for Jonah and Adam (and sometimes Jason) so I
 
  ``` npm start ```
 
-#### If you have do not have npm installed
+#### If you do not have npm installed
 
 3. Go to the local /bin directory (the one within the MoneyTracker folder)
    
