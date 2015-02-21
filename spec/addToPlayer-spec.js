@@ -1,6 +1,6 @@
 'use strict'
 describe('calculator page', function(){
-    browser.get('http://localhost:3000');
+    browser.get('http://localhost:3000/testingCalc');
     var output = element(by.binding('output')); 
     var players = element.all(by.css('.list-group-item'));
     var firstPlayer = element(by.css('.list-group-item'));

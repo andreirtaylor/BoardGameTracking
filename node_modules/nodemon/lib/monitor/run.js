@@ -12,8 +12,6 @@ var utils = require('../utils'),
     noop = function() {},
     restart = null,
     psTree = require('ps-tree'),
-    nodeMajor = parseInt((process.versions.node.split('.') || [null,null])[0] || 0, 10),
-    nodeMinor = parseInt((process.versions.node.split('.') || [null,null])[1] || 0, 10),
     hasPS = true;
 
 // discover if the OS has `ps`, and therefore can use psTree
@@ -60,19 +58,14 @@ function run(options) {
   // special logic for windows, as spaces in the paths need the path fragment
   // quoted, so it reads: c:\"Program Files"\nodejs\node.exe
   if (utils.isWindows && executable.indexOf(' ') !== -1) {
-    executable = executable.split('\\').map(function (part) {
-      if (part.indexOf(' ') !== -1) {
-        return '"' + part.replace(/"/g, '\\"') + '"';
-      }
-      return part;
-    }).join('\\');
+    executable = executable.replace(/\\((\w+\s+)+\w+)(?=([\\\.]))(?=([^"]*"[^"]*")*[^"]*$)/g, '\\"$1"');
   }
 
   args = [executable].concat(args).join(' ').trim();
 
   var spawnArgs = [sh, [shFlag, args]];
 
-  if (nodeMajor === 0 && nodeMinor < 8) {
+  if (utils.version.major === 0 && utils.version.minor < 8) {
     // use the old spawn args :-\
   } else {
     spawnArgs.push({
@@ -198,13 +191,17 @@ function run(options) {
 
       /* Now kill the entire subtree of processes belonging to nodemon */
       var oldPid = child.pid;
-      if (child) { // sometimes (when?!?) the child wonders off
+      if (child) {
         kill(child, 'SIGUSR2', function () {
           // this seems to fix the 0.11.x issue with the "rs" restart command,
           // though I'm unsure why. it seems like more data is streamed in to
           // stdin after we close.
           if (child && options.stdin && oldPid === child.pid) {
-            child.stdin.end();
+            // this is stupid and horrible, but node 0.12 on windows blows up
+            // with this line, so we'll skip it entirely.
+            if (!utils.isWindows) {
+              child.stdin.end();
+            }
           }
           callback();
         });
