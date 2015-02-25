@@ -21,6 +21,21 @@ var findDocuments = function(db, callback) {
   });
 }
 
+var removeDocuments = function(db, callback) {
+
+    var collection = db.collection('documents');
+
+    collection.remove({}, function(err, result){
+        console.log("should have removed all documents");
+        callback(result);
+    }
+    );
+
+
+}
+
+
+
 module.exports = function(MongoClient, url, assert) {
     // Use connect method to connect to the Server
     // if we do not connect it will print a error message
@@ -40,6 +55,10 @@ module.exports = function(MongoClient, url, assert) {
         ///insert documents then fetch them and print them to the console.
         insertDocuments(db, function(){
             console.log('im back from a insert')
+            findDocuments(db, function(){
+                //db.close();
+            });
+            removeDocuments(db, function(){});
             findDocuments(db, function(){
                 db.close();
             });
