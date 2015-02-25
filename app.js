@@ -11,7 +11,7 @@ var assert = require('assert');
 // make the MongoClient
 var MongoClient = require('mongodb').MongoClient;
 // specify where you can connect to the database
-var url = 'mongodb://localhost:55555/myproject';
+var url = 'mongodb://localhost:55555/nodetest1';
 
 
 // all of the database stuff is in the bin folder

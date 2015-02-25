@@ -3,31 +3,31 @@
 
 This, will be, a web based application that allows players to track their money while playing board games.
 
-This project is still under considerable development. Right now it is completely unusuable. 
+This project is still under considerable development. Right now it is completely unusuable.
 
-For now the instructions below are for Jonah and Adam (and sometimes Jason) so I am only outlining installation on Ubuntu and OSX 
+For now the instructions below are for Jonah and Adam (and sometimes Jason) so I am only outlining installation on Ubuntu and OSX
 
 ## How to Install and run
 
 1. Install nodejs from [nodejs.org](http://nodejs.org/download/)
-  
+
 2. Clone the repository into a safe place
 
 #### If you have node and npm installed
 
 3. Go to the direcory using the command line
 
-4. Type 
+4. Type
 
  ``` npm start ```
 
 #### If you do not have npm installed
 
 3. Go to the local /bin directory (the one within the MoneyTracker folder)
-   
+
    ```cd ./bin```
 
-4. Depending on your system you have to type   
+4. Depending on your system you have to type
    ```node www``` or ```nodejs www```
   *try both, one of them will work*
 
@@ -36,9 +36,9 @@ For now the instructions below are for Jonah and Adam (and sometimes Jason) so I
 MongoDB should be run in a separate terminal window from node and protractor
 
 1. [Download the installer](http://www.mongodb.org/downloads?_ga=1.137970489.844461423.1423907808) and run it
-  
+
   **Ubuntu Installation**
-  
+
    ```sudo apt-get install mongodb```
 
 2. in the command line type
@@ -78,7 +78,7 @@ Protractor relies on webdriver-manger running in the background and therefore sh
 
   ```npm install -g protractor```
 
-3. Run the command 
+3. Run the command
 
   ```webdriver-manager update```
 
