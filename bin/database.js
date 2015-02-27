@@ -1,6 +1,11 @@
-// this is now the place for all of the function calls for the database
-// the gameDB object in app.js has access to all of this
+// ================Database=================
+// This allows the database to inheret all the functions
+// we want when it is finished connecting
+// by writing the module this way we extend the databases
+// functionalit instead of overwriting
+
 module.exports = function(db){
+    // this is baggage from before, this will not be used
     db.insertDocuments = function(callback) {
         // Get the documents collection
         var collection = this.collection('gameTemplate');
@@ -14,16 +19,15 @@ module.exports = function(db){
     }
 
     // Finds the game template for the given criteria
-    // criteria is in the form { gameTemplate: "name to search"  }
-    db.findTemplate = function(criteria, callback) {
+    // criteria is in the form 
+    //     { gameTemplate: "name to search"  }
+    db.findTemplate = function(criteria, callback){
         // Get the documents collection
         var collection = this.collection('gameTemplate');
-        // Find some documents
+        // find the game template in the game Template
+        // collection
         collection.findOne(criteria , function(err, docs) {
             callback(docs);
         });
     }
-    console.log(db.collection('gameTemplate'))
-    db.insertDocuments(function(){})
-    db.findTemplate({}, function(result){console.log(result)})
 }
