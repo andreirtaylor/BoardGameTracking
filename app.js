@@ -4,22 +4,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-// this file is being used in the database file
+// this file is not currently being used
 var assert = require('assert');
-
-// ============DATABASE STUFF==================
-// make the MongoClient
-var MongoClient = require('mongodb').MongoClient;
-// specify where you can connect to the database
-var url = 'mongodb://localhost:55555/nodetest1';
-
-
-// all of the database stuff is in the bin folder
-// this makes it easier to know where everything is
-(require("./bin/database.js"))(MongoClient, url, assert);
-
-
-
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -30,7 +16,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// we have a favicon in the public folder but for now the file 
+// we have a favicon in the public folder but for now the file
 // is static and included in layout.js we can change this easily
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -73,6 +59,5 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
 
 module.exports = app;

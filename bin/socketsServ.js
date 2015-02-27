@@ -1,4 +1,4 @@
-module.exports = function(io) {
+module.exports = function(io, gameDB) {
     gamesList = {
         samplegame:{
             playerList:
@@ -75,6 +75,12 @@ module.exports = function(io) {
     // socket things
     io.on('connection', function (socket) {
         //socket.emit('gameStart', gamesList["sampleGame"]);
+            
+        socket.on('startGameFromTemplate', function(data){
+            gameDB.find({ templateName: data.templateName},function(data){
+                console.log(data)
+            }); 
+        });
 
         // sample Game functions
         socket.on('my other event', function (data) {
