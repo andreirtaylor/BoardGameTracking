@@ -71,15 +71,21 @@ module.exports = function(io, gameDB) {
             numberOfPlayers: 5
         }
     };
+    parseMongo = function(item){
+        var stringed = JSON.stringify(item);
+        console.log(stringed)
+        stringed = JSON.parse(stringed);
+        delete stringed._id;
+        return stringed;
+    }
 
     // socket things
     io.on('connection', function (socket) {
         //socket.emit('gameStart', gamesList["sampleGame"]);
             
         socket.on('startGameFromTemplate', function(data){
-            gameDB.find({ templateName: data.templateName},function(data){
-                console.log(data)
-            }); 
+            var query = { templateName: data.templateName };
+            var result = gameDB.findTemplate(data);  
         });
 
         // sample Game functions
