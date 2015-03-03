@@ -1,3 +1,4 @@
+// module dependencies
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -5,19 +6,21 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// logic to get the server working with sockets
 var app = require('express')();
 var server = require('http').Server(app);
+// make the server accessable
 app.server = server;
 var io = require('socket.io')(server);
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
+// make sockets accessable
+app.io = io;
 
 // ============DATABASE STUFF==================
 // make the MongoClient
 var MongoClient = require('mongodb').MongoClient;
 // specify where you can connect to the database
 var url = 'mongodb://localhost:55555/gameDB';
+
 // connect to the database
 MongoClient.connect(url, function(err, db) {
     if(err != null){
@@ -34,10 +37,16 @@ MongoClient.connect(url, function(err, db) {
     // this makes it easier to know where everything is
     // all of the database function calls are here
     (require("./bin/database.js"))(db);
+
     // now that we are connected, connect the socket and the server
     // all of the socket logic is in the socketsServ file
     (require("./bin/socketsServ.js"))(io, db);
+    app.db = db;
 });
+
+// route forwarding
+var routes = require('./routes/index');
+var users = require('./routes/users');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

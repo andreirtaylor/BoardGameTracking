@@ -1,31 +1,19 @@
 module.exports = function(io, gameDB) {
-    // moved the big and ugle games list out of here
+    // moved the big and ugly games list out of here
     var gamesList = require('./gamesList.js');
 
-    // socket things
-    // ___________NOTES_________
-    // mdb_something
-    //      This socket interacts with mongodb
     io.on('connection', function (socket) {
-        //socket.emit('gameStart', gamesList["sampleGame"]);
-            
-        // send me a game that has players and the template 
+        // send me a game that has players and the template
         // that you want and I will start it for you
-
         socket.on('getGameTemplate', function(data){
-            var query = { 
-                templateName: data.templateName 
+            var query = {
+                templateName: data.templateName
             };
             // find the template, when you come back send the
             // info to the right people
             gameDB.findTemplate( query, function(result){
-                console.log(result)
-            }); 
-        }); 
-
-        // sample Game functions
-        socket.on('my other event', function (data) {
-            console.log(data);
+                socket.emit("recieveGameTemplate", result);
+            });
         });
 
         socket.on('getSampleGame', function(data){
@@ -48,7 +36,7 @@ module.exports = function(io, gameDB) {
             io.to(socket.room).emit('SampleUpdate', game);
         });
 
-        socket.on('updateSampleGame', function(game){ 
+        socket.on('updateSampleGame', function(game){
             console.log(game);
             gamesList[game.gameName] = game;
             io.to(socket.room).emit('SampleUpdate', game);
@@ -57,25 +45,25 @@ module.exports = function(io, gameDB) {
         socket.on('disconnect', function(){
             socket.leave(socket.room);
         })
-       
+
         // test connections functions will not be useful soon
         // can you send multiple things over the socket?
         // generates random ammounts of money and sends them to the client endlessly
-        
+
         testingConnection = function(){
             var testConnection = function(game){
                 var players = gamesList["testConnection"]["playerList"];
                 for (player in players){
                     if(players.hasOwnProperty(player)){
                         players[player]['money'] = Math.random()*players[player]['imoney'];
-                    }    
-                }             
+                    }
+                }
                 // io.socket.emit('testConnection', game)
                 io.to(socket.room).emit('testConnection', game);
                 console.log("Sending Socket");
             };
             testConnection(gamesList["testConnection"]);
-            
+
             // use this to test your connection, if you see the game money updating
             // you are in good shape
             var repeatTest = setInterval(function(){
