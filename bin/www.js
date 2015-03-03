@@ -4,6 +4,7 @@
  */
 
 var app = require('../app');
+var server = app.server;
 var debug = require('debug')('MoneyTracker:server');
 var http = require('http');
 
@@ -18,50 +19,16 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+//var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-
-// ============DATABASE STUFF==================
-// make the MongoClient
-var MongoClient = require('mongodb').MongoClient;
-// specify where you can connect to the database
-var url = process.argv[2] ? process.argv[2] :'mongodb://localhost:55555/gameDB';
-
-// connect to the database in the main thread because
-// I cant for the life of me figure out how to reliably get the database 
-// into the main application without this. 
-// This might even be better in the www file 
-// Im not sure, it works lets use it.
-
-var io = require("socket.io").listen(server);
 server.listen(port)
 server.on('error', onError);
 server.on('listening', onListening);
 
-//var io = require("./moneyTracker.js")
-MongoClient.connect(url, function(err, db) {
-    if(err != null){
-        // something went wrong abort abort!!!
-        console.log('Error from DB: ' + err);
-        console.log('Did not connect to database');
-        return;
-    }
-    // if you get here you connected
-    console.log( "Connected correctly to Database" );
-    console.log(url);
-
-    // all of the database stuff is in the bin folder
-    // this makes it easier to know where everything is
-    // all of the database function calls are here
-    (require("./database.js"))(db);
-    // now that we are connected, connect the socket and the server
-    // all of the socket logic is in the socketsServ file
-    (require("./socketsServ.js"))(io, db);
-});
 
 
 /**
