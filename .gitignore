@@ -3,5 +3,5 @@
 
 #no vim swp files
 *.swp
-
+#no files within sampleDB
 sampleDB/
