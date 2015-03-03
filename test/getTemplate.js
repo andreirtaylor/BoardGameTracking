@@ -1,28 +1,33 @@
 'use strict';
 var app = require("../app.js"),
     server = app.server;
-
 var port = 8000;
 var io = require('socket.io-client');
 var socketURL = "http://localhost:" + port;
 
+// this allows the test to be run muliple times
+var options ={
+    //transports: ['websocket'],
+    'force new connection': true
+};
+
+
+//start the server
+server.listen(port);
 
 describe('Server connection', function () {
-
-    server.listen(port);
-
     it('should connect in a few seconds', function(done){
-        this.timeout(1001);
+        // wait for the server to connect
         setTimeout(function(){
-            console.log(db);
-            var db = app.db;
-            db.should.not.equal(null)
-        }, 1000);
+            done();
+        }, 500);
     });
 
+    // look in the local db for powergrid
     it('should find powergrid', function (done) {
-        var socket = io.connect(socketURL);
-        socket.emit('getGameTemplate', {templateName:'PowerGrid'})
+        var socket = io.connect(socketURL, options);
+        console.log(socketURL)
+        socket.emit('getGameTemplate', {templateName:'PowerGrid'});
         socket.on('recieveGameTemplate', function(result){
             console.log(result);
             result.should.have.property('templateName', 'PowerGrid');
@@ -30,6 +35,13 @@ describe('Server connection', function () {
             done();
         });
     });
-    server.close(function(){console.log('done')});
+
+    // it should be able to close down the connection
+    it('Should close', function(done){
+        server.close(function(){
+            app.db.close();
+            done();
+        });
+    });
 });
 

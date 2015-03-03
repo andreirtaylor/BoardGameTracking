@@ -35,6 +35,7 @@ MongoClient.connect(url, function(err, db) {
     // this makes it easier to know where everything is
     // all of the database function calls are here
     (require("./bin/database.js"))(db);
+    db.findTemplate({}, function(res){console.log(res)});
     // now that we are connected, connect the socket and the server
     // all of the socket logic is in the socketsServ file
     (require("./bin/socketsServ.js"))(io, db);

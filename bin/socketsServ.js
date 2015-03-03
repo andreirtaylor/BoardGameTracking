@@ -6,6 +6,7 @@ module.exports = function(io, gameDB) {
         // send me a game that has players and the template
         // that you want and I will start it for you
         socket.on('getGameTemplate', function(data){
+            console.log('something')
             var query = {
                 templateName: data.templateName
             };
