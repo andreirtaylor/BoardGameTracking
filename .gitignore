@@ -1,0 +1,6 @@
+# no .o files
+*.o
+
+#no vim swp files
+*.swp
+
