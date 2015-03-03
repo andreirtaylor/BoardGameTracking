@@ -3,12 +3,22 @@ module.exports = function(io, gameDB) {
     var gamesList = require('./gamesList.js');
 
     // socket things
+    // ___________NOTES_________
+    // mdb_something
+    //      This socket interacts with mongodb
     io.on('connection', function (socket) {
         //socket.emit('gameStart', gamesList["sampleGame"]);
             
-        socket.on('startGameFromTemplate', function(data){
-            var query = { templateName: data.templateName };
-            gameDB.findTemplate(data, function(result){
+        // send me a game that has players and the template 
+        // that you want and I will start it for you
+
+        socket.on('getGameTemplate', function(data){
+            var query = { 
+                templateName: data.templateName 
+            };
+            // find the template, when you come back send the
+            // info to the right people
+            gameDB.findTemplate( query, function(result){
                 console.log(result)
             }); 
         }); 

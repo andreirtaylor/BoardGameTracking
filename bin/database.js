@@ -8,7 +8,7 @@ module.exports = function(db){
     // this is baggage from before, this will not be used
     db.insertDocuments = function(callback) {
         // Get the documents collection
-        var collection = this.collection('gameTemplate');
+        var collection = this.collection('gameTemplates');
         // Insert some documents
         collection.insert([
             {a : 1}, {a : 2}, {a : 3}
@@ -23,10 +23,11 @@ module.exports = function(db){
     //     { gameTemplate: "name to search"  }
     db.findTemplate = function(criteria, callback){
         // Get the documents collection
-        var collection = this.collection('gameTemplate');
+        var collection = this.collection('gameTemplates');
         // find the game template in the game Template
         // collection
-        collection.findOne(criteria , function(err, docs) {
+        collection.findOne(criteria,{'_id':0} , function(err, docs) {
+            console.log(criteria)
             callback(docs);
         });
     }

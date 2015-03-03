@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon bin/www.js"
+    "start": "nodemon bin/www.js",
+    "pretest": "node bin/www.js",
+    "test": "node_modules/.bin/mocha -w -R spec"
   },
   "dependencies": {
     "body-parser": "~1.10.2",
@@ -12,10 +14,14 @@
     "express": "~4.11.1",
     "jade": "~1.9.1",
     "jasmine": "^2.1.1",
+    "mongodb": "~2.0",
     "morgan": "~1.5.1",
     "nodemon": "^1.3.5",
     "serve-favicon": "~2.2.0",
-    "socket.io": "1.3.2",
-    "mongodb": "~2.0"
+    "socket.io": "1.3.2"
+  },
+  "devDependencies": {
+    "should": "^5.0.1",
+    "mocha": "^2.1.0"
   }
 }

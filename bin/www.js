@@ -11,7 +11,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = '3000';//normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
@@ -29,13 +29,20 @@ var server = http.createServer(app);
 // make the MongoClient
 var MongoClient = require('mongodb').MongoClient;
 // specify where you can connect to the database
-var url = 'mongodb://localhost:55555/gameDB';
+var url = process.argv[2] ? process.argv[2] :'mongodb://localhost:55555/gameDB';
 
 // connect to the database in the main thread because
 // I cant for the life of me figure out how to reliably get the database 
 // into the main application without this. 
 // This might even be better in the www file 
 // Im not sure, it works lets use it.
+
+var io = require("socket.io").listen(server);
+server.listen(port)
+server.on('error', onError);
+server.on('listening', onListening);
+
+//var io = require("./moneyTracker.js")
 MongoClient.connect(url, function(err, db) {
     if(err != null){
         // something went wrong abort abort!!!
@@ -45,27 +52,17 @@ MongoClient.connect(url, function(err, db) {
     }
     // if you get here you connected
     console.log( "Connected correctly to Database" );
+    console.log(url);
 
     // all of the database stuff is in the bin folder
     // this makes it easier to know where everything is
     // all of the database function calls are here
     (require("./database.js"))(db);
-    app.gameDB = db;
+    // now that we are connected, connect the socket and the server
+    // all of the socket logic is in the socketsServ file
+    (require("./socketsServ.js"))(io, db);
 });
 
-// cheap hack XXX
-// wait a second, if the databse doesnt connect then setup the sockets anyways
-setTimeout(function(){
-    // setup the sockets
-    var io = require("socket.io").listen(server);
-    server.listen(port);
-    server.on('error', onError);
-    server.on('listening', onListening);
-    // all of the socket logic is in the socketsServ file
-    (require("./socketsServ.js"))(io, app.gameDB);
-}, 1000);
-
-// from here down is express stuff
 
 /**
  * Normalize a port into a number, string, or false.
