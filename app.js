@@ -20,7 +20,6 @@ app.io = io;
 var MongoClient = require('mongodb').MongoClient;
 // specify where you can connect to the database
 var url = 'mongodb://localhost:55555/gameDB';
-
 // connect to the database
 MongoClient.connect(url, function(err, db) {
     if(err != null){
@@ -32,12 +31,10 @@ MongoClient.connect(url, function(err, db) {
     // if you get here you connected
     console.log( "Connected correctly to Database" );
     console.log(url);
-
     // all of the database stuff is in the bin folder
     // this makes it easier to know where everything is
     // all of the database function calls are here
     (require("./bin/database.js"))(db);
-
     // now that we are connected, connect the socket and the server
     // all of the socket logic is in the socketsServ file
     (require("./bin/socketsServ.js"))(io, db);
