@@ -33,8 +33,8 @@ describe('Server connection', function () {
     // look in the local db for powergrid
     it('should find powergrid', function (done) {
         var socket = io.connect(socketURL, options);
-        socket.emit('getGameTemplate', {templateName:'PowerGrid'});
-        socket.on('recieveGameTemplate', function(result){
+        socket.emit('startGame', {templateName:'PowerGrid'});
+        socket.on('startGame', function(result){
             result.should.have.property('templateName', 'PowerGrid');
             socket.disconnect();
             done();
