@@ -11,31 +11,39 @@ var options ={
     'force new connection': true
 };
 
+var mongoReady = function(){
+    return app.db;
+};
 
-//start the server
-server.listen(port);
 
 describe('Server connection', function () {
     it('should connect in a few seconds', function(done){
+        //start the server
+        server.listen(port);
         // wait for the server to connect
-        setTimeout(function(){
-            done();
-        }, 500);
+        var wait = setInterval(function(){
+            if(mongoReady()){
+                //console.log('ready!!!');
+                clearInterval(wait);
+                done();
+            }
+        }, 1);
     });
 
     // look in the local db for powergrid
     it('should find powergrid', function (done) {
         var socket = io.connect(socketURL, options);
-        console.log(socketURL)
         socket.emit('getGameTemplate', {templateName:'PowerGrid'});
         socket.on('recieveGameTemplate', function(result){
-            console.log(result);
             result.should.have.property('templateName', 'PowerGrid');
             socket.disconnect();
             done();
         });
     });
 
+});
+
+describe('Kill everything', function () {
     // it should be able to close down the connection
     it('Should close', function(done){
         server.close(function(){
@@ -44,4 +52,3 @@ describe('Server connection', function () {
         });
     });
 });
-

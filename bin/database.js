@@ -13,7 +13,7 @@ module.exports = function(db){
         collection.insert([
             {a : 1}, {a : 2}, {a : 3}
         ], function(err, result) {
-            console.log("Inserted 3 documents into the document collection");
+            //console.log("Inserted 3 documents into the document collection");
             callback(result);
         });
     }
@@ -27,7 +27,7 @@ module.exports = function(db){
         // find the game template in the game Template
         // collection
         collection.findOne(criteria,{'_id':0} , function(err, docs) {
-            console.log(criteria)
+            //console.log(criteria)
             callback(docs);
         });
     }

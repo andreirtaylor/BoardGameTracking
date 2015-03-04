@@ -1,12 +1,15 @@
 module.exports = function(io, gameDB) {
     // moved the big and ugly games list out of here
     var gamesList = require('./gamesList.js');
+    // all of the database stuff is in the bin folder
+    // this makes it easier to know where everything is
+    // all of the database function calls are here
+    (require("./database.js"))(gameDB);
 
     io.on('connection', function (socket) {
         // send me a game that has players and the template
         // that you want and I will start it for you
         socket.on('getGameTemplate', function(data){
-            console.log('something')
             var query = {
                 templateName: data.templateName
             };
@@ -38,7 +41,7 @@ module.exports = function(io, gameDB) {
         });
 
         socket.on('updateSampleGame', function(game){
-            console.log(game);
+            //console.log(game);
             gamesList[game.gameName] = game;
             io.to(socket.room).emit('SampleUpdate', game);
         });
@@ -61,7 +64,7 @@ module.exports = function(io, gameDB) {
                 }
                 // io.socket.emit('testConnection', game)
                 io.to(socket.room).emit('testConnection', game);
-                console.log("Sending Socket");
+                //console.log("Sending Socket");
             };
             testConnection(gamesList["testConnection"]);
 
@@ -74,7 +77,7 @@ module.exports = function(io, gameDB) {
             //turn off the test after a few seconds
             setTimeout( function(){
                 clearInterval(repeatTest);
-                console.log("Done Sending");
+                //console.log("Done Sending");
             }, 4000)
         }
         socket.on("startTest", testingConnection);
