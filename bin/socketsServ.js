@@ -21,18 +21,18 @@ module.exports = function(io, gameDB) {
         return {
             templateName: template.templateName
         };
-        
     };
 
     // Finds the game template for the given criteria
-    // criteria is in the form 
-    //     { gameTemplate: "name to search"  }
-    gameDB.startGame = function(template, callback){
-        var query = parseGameTemplate(template);
+    gameDB.startGame = function(game, callback){
+        var query = parseGameTemplate(game);
         // get the query from the game Templates collection
-        this.GT.findOne( query, { '_id': 0 }, function(err, docs) {
-            //should eventually handle the possibility of error
-            callback(docs);
+        gameDB.GT.findOne( query, { '_id': 0 }, function(err, doc) {
+            for(var i = 0; i < game.gamePlayers.length; i++){
+                game.gamePlayers[i].cash = doc.startMoney;
+            };
+            //console.log(game) 
+            callback(game);
         });
     };
 
@@ -46,18 +46,16 @@ module.exports = function(io, gameDB) {
             socket.on(operation, function(){
                 var args = arguments;
                 var that = this;
-                gameDB[operation].apply(gameDB, [args[0], callback]);
+                gameDB[operation].apply(that, [args[0], callback]);
             });
         };
 
         // send me a game that has players and the template
         // that you want and I will start it for you
-        socket.mongo('startGame', function(data){
-
-            socket.emit("startGame", data);
-            console.log(data);
+        socket.mongo('startGame', function(game){
+            //console.log(game)
+            socket.emit("startGame", game);
         });
-
 
         socket.on('getSampleGame', function(data){
             // join the room that you were sent from

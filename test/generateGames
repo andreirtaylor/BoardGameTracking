@@ -6,7 +6,7 @@ var chance = new Chance();
 
 
 //this stitches the game pieces together
-//function(string,array,int)
+//function(string, array, int)
 var gameCreate = function(gameName,players,numOfPlayers){
     var game ={
         name:gameName,
@@ -54,12 +54,9 @@ var genXGames = function(numGames){
             //stitch the game together
             var newgame = gameCreate(getGameName(),people,numPlayers);
 
-            //print the game
-            console.log(newgame);
+            // return the game
+            return newgame;
     }
 };
 
-
-//creates 5 games
-genXGames(5);
-
+module.exports = genXGames;

@@ -4,6 +4,7 @@ var app = require("../app.js"),
 var port = 8000;
 var io = require('socket.io-client');
 var socketURL = "http://localhost:" + port;
+var genXGames = require('./generateGames');
 
 // this allows the test to be run muliple times
 var options ={
@@ -11,12 +12,38 @@ var options ={
     'force new connection': true
 };
 
-var mongoReady = function(){
+// list of game templates
+var templates = [
+    { 
+        startMoney:50, 
+        templateName: "PowerGrid"
+    },
+    {
+        startMoney:1500,
+        templateName: "Monopoly"
+    }
+];
+
+var mongoReady = function() {
     return app.db;
 };
 
+var dbName = 'gameTemplates';
+
+// insert document into the game db
+var insert = function(documents, donefunc){
+    // Get the documents collection
+    var collection = app.db.collection(dbName);
+    // Insert some documents
+    collection.insert(documents, function(err, result) {
+        if(!err){
+            donefunc();
+        }
+    });
+};
 
 describe('Server connection', function () {
+
     it('should connect in a few seconds', function(done){
         //start the server
         server.listen(port);
@@ -25,31 +52,79 @@ describe('Server connection', function () {
             if(mongoReady()){
                 //console.log('ready!!!');
                 clearInterval(wait);
-                done();
+                insert(templates, done);
             }
         }, 1);
     });
+});
 
+describe('Starting a Game', function () {
+    var sampleGame;
+    before(function(){
+    
+    })
+
+    beforeEach(function(){
+        sampleGame = genXGames(1);
+        sampleGame.templateName = 'PowerGrid';
+    })
     // look in the local db for powergrid
     it('should find powergrid', function (done) {
         var socket = io.connect(socketURL, options);
-        socket.emit('startGame', {templateName:'PowerGrid'});
+
+        socket.emit('startGame', sampleGame);
         socket.on('startGame', function(result){
-            result.should.have.property('templateName', 'PowerGrid');
+            result.should.have.property('templateName');
             socket.disconnect();
             done();
         });
     });
 
-});
+    it('gives players money', function (done) {
+        var socket = io.connect(socketURL, options);
+        var sampleGame = genXGames(1);
+        sampleGame.templateName = 'PowerGrid';
 
-describe('Kill everything', function () {
-    // it should be able to close down the connection
-    it('Should close', function(done){
-        this.timeout(5000);
-        server.close(function(){
+        socket.emit('startGame', sampleGame);
+        socket.on('startGame', function(result){
+            socket.disconnect();
+            var PL = result.gamePlayers;
+            for(var i = 0; i < PL.length; i++){
+                PL[i].should.have.property('cash');
+            }
             done();
         });
-        app.db.close();
+    });
+
+//    it('gives players the right amount of money', function(done) {
+//        var socket = io.connect(socketURL, options);
+//        var sampleGame = genXGames(1);
+//        sampleGame.templateName = 'PowerGrid';
+//        socket.emit('startGame', sampleGame);
+//        socket.on('startGame', function(result){
+//            socket.disconnect();
+//            var PL = result.gamePlayers;
+//            for(var i = 0; i < PL.length; i++){
+//                PL[i].should.have.property('cash');
+//            }
+//            done();
+//        });
+//    });
+});
+
+// after each test we should close down everything
+describe('Kill everything', function () {
+    // it should be able to close down the connection
+    it('closes without complaint', function (done) {
+        // now close the server
+        server.close(function(){
+            // when the server is closed clear the db
+            app.db.collection(dbName).remove({}, function(){
+                // when the db is clear close it
+                app.db.close(function(){
+                    done();
+                });
+            });
+        });
     });
 });
