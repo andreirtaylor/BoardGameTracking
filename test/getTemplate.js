@@ -46,9 +46,10 @@ describe('Server connection', function () {
 describe('Kill everything', function () {
     // it should be able to close down the connection
     it('Should close', function(done){
+        this.timeout(5000);
         server.close(function(){
-            app.db.close();
             done();
         });
+        app.db.close();
     });
 });
