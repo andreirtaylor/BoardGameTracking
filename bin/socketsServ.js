@@ -1,4 +1,5 @@
 module.exports = function(io, gameDB) {
+
     // moved the big and ugly games list out of here
     var gamesList = require('./gamesList.js');
     // this is baggage from before, this will not be used
