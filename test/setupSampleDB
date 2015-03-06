@@ -1,0 +1,50 @@
+'use strict';
+
+// list of game templates
+var templates = [
+    { 
+        startMoney: 50, 
+        templateName: "PowerGrid"
+    },
+    {
+        startMoney: 1500,
+        templateName: "Monopoly"
+    }
+];
+
+var dbName = 'gameTemplates';
+
+
+// make the MongoClient
+var MongoClient = require('mongodb').MongoClient;
+// specify where you can connect to the database
+var url = 'mongodb://localhost:55555/gameDB';
+// connect to the database
+MongoClient.connect(url, function(err, db) {
+    if(err){
+        // something went wrong abort abort!!!
+        console.log('Error from DB: ' + err);
+        console.log('Did not connect to database');
+        return;
+    }
+
+    // insert document into the game db
+    var insert = function(documents){
+        // Get the documents collection
+        var collection = db.collection(dbName);
+        // Insert some documents
+        collection.insert(documents, function(err, result) {
+            if(!err){
+            }
+        });
+    };
+    
+    // if you get here you connected
+    console.log( "Connected correctly to Database" );
+    console.log(url);
+    // now that we are connected, connect the socket and the server
+    // all of the socket logic is in the socketsServ file
+
+    insert(templates);
+    db.close();
+});
