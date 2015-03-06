@@ -32,40 +32,20 @@ block content
                 p
                 h1(style="text-align:right")
                     {{output}}
-                div(class="btn-group btn-group-justified", role="group", aria-label="...")
-                    div(class="btn-group",role="group")
-                        button(type="button", value="1", class="btn btn-default btn-xl", ng-click="appendToOut(1)") 1
-                    div(class="btn-group", role="group")
-                        button(type="button", value="2", class="btn btn-default btn-xl", ng-click="appendToOut(2)") 2
-                    div(class="btn-group", role="group")
-                        button(type="button", value="3", class="btn btn-default btn-xl", ng-click="appendToOut(3)") 3
-                div(class="btn-group btn-group-justified", role="group", aria-label="...")
-                    div(class="btn-group",role="group")
-                        button(type="button", value="4", class="btn btn-default btn-xl", ng-click="appendToOut(4)") 4
-                    div(class="btn-group",role="group")
-                        button(id='calc-5', type="button", value="5", class="btn btn-default btn-xl", ng-click="appendToOut(5)") 5
-                    div(class="btn-group",role="group")
-                        button(type="button", value="6", class="btn btn-default btn-xl", ng-click="appendToOut(6)") 6
-                div(class="btn-group btn-group-justified", role="group", aria-label="...")
-                    div(class="btn-group",role="group")
-                        button(type="button", value="7", class="btn btn-default btn-xl", ng-click="appendToOut(7)") 7
-                    div(class="btn-group",role="group")
-                        button(type="button", value="8", class="btn btn-default btn-xl", ng-click="appendToOut(8)") 8
-                    div(class="btn-group",role="group")
-                        button(type="button", value="9", class="btn btn-default btn-xl", ng-click="appendToOut(9)") 9
-                div(class="btn-group btn-group-justified", role="group", aria-label="...")
-                    div(class="btn-group",role="group")
-                        button(type="button", value="+", class="btn btn-default btn-xl", ng-click="add()") +
-                    div(class="btn-group",role="group")
-                        button(type="button", value="0", class="btn btn-default btn-xl", ng-click="appendToOut(0)") 0
-                    div(class="btn-group",role="group")
-                        button(type="button", value="-", class="btn btn-default btn-xl", ng-click="subtract()") -
+
+                - var calculator = [[1,2,3],[4,5,6],[7,8,9],['-','0','+']];
+                each row in calculator
+                    div(class="btn-group btn-group-justified", role="group", aria-label="...")
+                        each button in row
+                            div(class="btn-group",role="group")
+                                button(type="button", id="calc-"+button, value=button, class="btn btn-default btn-xl", ng-click="calc_func('" + button + "')")= button
+
                 div
                     p
                     button(class="btn btn-default btn-xl", ng-click="click()", style="text-align:center") Go Back
                     span(style="float:right")
-                        button(type="button", value="=", class="btn btn-default btn-xl", ng-click="solve()") =
-                        button(type="button", value="C", class="btn btn-default btn-xl", ng-click="clear()") C
+                        button(type="button", value="=", class="btn btn-default btn-xl", ng-click="calc_func('=')") =
+                        button(type="button", value="C", class="btn btn-default btn-xl", ng-click="calc_func('C')") C
                     p    
                     div(ng-controller='Emit')
                         button(id='updateGame', type="button", value="update", class="btn btn-success btn-group-justified btn-xl", ng-click="update()") update
