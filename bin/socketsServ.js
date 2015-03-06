@@ -1,4 +1,5 @@
 module.exports = function(io, gameDB) {
+
     // moved the big and ugly games list out of here
     var gamesList = require('./gamesList.js');
     // this is baggage from before, this will not be used
@@ -44,9 +45,11 @@ module.exports = function(io, gameDB) {
         // after mongo returns
         socket.mongo = function( operation, callback){
             socket.on(operation, function(){
-                var args = arguments;
+                var args = Array.prototype.slice.call(arguments,0)
+                args.push(callback);
+                console.log(args)
                 var that = this;
-                gameDB[operation].apply(that, [args[0], callback]);
+                gameDB[operation].apply(that, args);
             });
         };
 

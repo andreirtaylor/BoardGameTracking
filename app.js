@@ -6,6 +6,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+//authentication dependencies
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var userDB = "userInfo";
+
 // logic to get the server working with sockets
 var app = require('express')();
 var server = require('http').Server(app);
@@ -15,7 +20,7 @@ var io = require('socket.io')(server);
 // make sockets accessable
 app.io = io;
 
-// ============DATABASE STUFF==================
+// ============DATABASE==================
 // make the MongoClient
 var MongoClient = require('mongodb').MongoClient;
 // specify where you can connect to the database
@@ -56,6 +61,59 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+
+
+//===========authentication===========
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.post('/login',
+  passport.authenticate('local', {
+    successRedirect: '/loginSuccess',
+    failureRedirect: '/loginFailure'
+  })
+);
+ 
+app.get('/loginFailure', function(req, res, next) {
+  res.send('Failed to authenticate');
+});
+ 
+app.get('/loginSuccess', function(req, res, next) {
+  res.send('Successfully authenticated');
+});
+
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+ 
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+// this will only work after mongo has returned
+// this might be a good thing to remove XXX
+passport.use(new LocalStrategy(function(username, password, done) {
+    process.nextTick(function() {
+        app.db.collection(userDB).findOne({
+            'username': username,
+        }, function(err, user) {
+            if (err) {
+            return done(err);
+        }
+
+        if (!user) {
+            return done(null, false);
+        }
+
+        if (user.password != password) {
+            return done(null, false);
+        }
+
+        return done(null, user);
+    });
+    // Auth Check Logic
+  });
+}));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

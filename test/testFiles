@@ -1,0 +1,37 @@
+module.exports = function(){
+    ret = {}
+    // this allows the test to be run muliple times
+    ret.options = {
+        //transports: ['websocket'],
+        'force new connection': true
+    };
+
+    // list of game templates
+    ret.templates = [
+        {  
+            startMoney: 50, 
+            templateName: "PowerGrid"
+        },
+        {
+            startMoney: 1500,
+            templateName: "Monopoly"
+        }
+    ];
+
+    // given a template name find the expected start money
+    ret.findStartMoney = function(templateName){
+        for(var i = 0; i < ret.templates.length; i++){
+            if(ret.templates[i].templateName == templateName){
+                return ret.templates[i].startMoney;
+            }
+        }
+    };
+
+    // get a random template from the ones available.
+    ret.getRandomTemplate = function(){
+        var index = Math.floor( Math.random() * ret.templates.length );
+        return ret.templates[index].templateName;
+    };
+
+    return ret;
+}
