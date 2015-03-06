@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon bin/www.js",
-    "test": "node_modules/.bin/mocha -w -R spec"
+    "test": "node_modules/.bin/mocha -w -R spec",
   },
   "dependencies": {
     "body-parser": "~1.10.2",

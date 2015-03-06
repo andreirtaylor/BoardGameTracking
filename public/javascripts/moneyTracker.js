@@ -46,52 +46,102 @@ var app = angular.module('App', []);
 
         app.controller('Calculator', ['$scope', function($scope){
             //calculator functions
-            $scope.output=0;
-            $scope.savedVal= 0;
-            $scope.appendToOut = function(num){
-                if($scope.output == "0" || $scope.calctoken){
+            $scope.output="0";
+            $scope.savedVal=""; 
+
+            $scope.calc_func = function(button){
+                if (!isNaN(parseInt(button))){
+                    appendToOut(button);
+                }
+                else if (button == '-'){
+                    subtract();
+                }
+                else if (button == '+'){
+                    add();
+                }
+                else if (button == '='){
+                    solve();
+                }
+                else if (button == 'C'){
+                    $scope.clear();
+                }
+            }
+
+            //appends number to calculator screen if there was already a number there
+            //if - or + was pressed, flag is set, and new string starts
+            var appendToOut = function(num){
+                if($scope.output === "0" || $scope.subtracttoken || $scope.addtoken){
                     $scope.output=num;
-                    $scope.calctoken=false;
+                    $scope.addtoken=false;
+                    $scope.subtracttoken=false;
                 }else{
                     $scope.output += String(num);
                 }
             };
+            
+            //clears all statuses including saved value, might want to a clear button that doesn't reset saved value
             $scope.clear = function(){
                 $scope.output = "0";
+                $scope.savedVal = "";
                 $scope.addtoken = false;
                 $scope.subtracttoken = false;
-                $scope.calctoken = false;
             };
-
-            $scope.add = function(){
-                $scope.addtoken = true;
-                $scope.calctoken = true;
-                $scope.savedVal = $scope.output;
-            };
-
-            $scope.subtract = function(){
-                $scope.subtracttoken = true;
-                $scope.calctoken = true;
-                $scope.savedVal = $scope.output;
-    
-            };
-
-            $scope.solve = function(){
-                if ($scope.addtoken == true){
-                    $scope.savedVal = parseInt($scope.savedVal) + parseInt($scope.output);
-                    $scope.output = $scope.savedVal;
-                }
+            
+            //if subtract or add was not clicked last, set add flag, add number to saved val followed by +
+            //if add was clicked last, do nothing
+            //if subtract was clicked last, pop off the - and push a + to savedval
+            var add = function(){
                 if ($scope.subtracttoken == true){
-                    $scope.savedVal = parseInt($scope.savedVal) - parseInt($scope.output);
-                    $scope.output = $scope.savedVal;
+                   $scope.subtracttoken = false;
+                   $scope.savedVal = $scope.savedVal.substring(0, $scope.savedVal.length - 1); 
+                   $scope.savedVal += "+"
+                   $scope.addtoken = true;
                 }
-                $scope.calctoken = true;
-                $scope.addtoken = false;
+                else if ($scope.addtoken==false && $scope.subtracttoken == false && $scope.output != "-"){
+                    $scope.addtoken = true;
+                    $scope.savedVal += $scope.output;
+                    $scope.savedVal += "+"
+                }
+            };
+
+            //if subtract of add was not clicked last, check output to see if it is 0, if it is, replace with -
+                //if output is not 0, set subtract flag, push number to savedval, push -
+            //if subtract was clicked last, do nothing
+            //if add was clicked last, pop off the + and push a + to savedval
+            var subtract = function(){
+                if ($scope.addtoken == true){
+                   $scope.addtoken = false;
+                   $scope.savedVal = $scope.savedVal.substring(0, $scope.savedVal.length - 1); 
+                   $scope.savedVal += "-"
+                   $scope.subtracttoken = true;
+                }
+                else if ($scope.subtracttoken==false && $scope.addtoken == false){
+                    if ($scope.output === "0"){
+                        if($scope.savedVal === ""){
+                            $scope.output = "-";
+                        }
+                    }
+                    else{
+                        if ($scope.output!="-"){
+                            $scope.subtracttoken = true;
+                            $scope.savedVal += $scope.output;
+                            $scope.savedVal += "-"
+                        }
+                    }
+                }
+            };
+            
+            //output is set to savedval and savedval is reset, but can still be used as it is in the output screen
+            var solve = function(){
+                $scope.savedVal += $scope.output;
+                $scope.output = $scope.savedVal;
+                $scope.output = eval($scope.output);
+                $scope.savedVal = ""
+                $scope.subtracttoken = false;
                 $scope.subtracttoken = false;
             };
 
 
-                $scope.calctoken = false;
                 $scope.addtoken = false;
                 $scope.subtracttoken = false;
             //end of calculator functions
