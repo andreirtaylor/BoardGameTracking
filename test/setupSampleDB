@@ -18,7 +18,7 @@ var dbName = 'gameTemplates';
 // make the MongoClient
 var MongoClient = require('mongodb').MongoClient;
 // specify where you can connect to the database
-var url = 'mongodb://localhost:55555/gameDB';
+var url = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55555/gameDB';
 // connect to the database
 MongoClient.connect(url, function(err, db) {
     if(err){

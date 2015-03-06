@@ -1,4 +1,4 @@
-// module dependencies
+// express dependencies
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -24,7 +24,7 @@ app.io = io;
 // make the MongoClient
 var MongoClient = require('mongodb').MongoClient;
 // specify where you can connect to the database
-var url = 'mongodb://localhost:55555/gameDB';
+var url = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55556/gameDB';
 // connect to the database
 MongoClient.connect(url, function(err, db) {
     if(err != null){
@@ -59,6 +59,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// routing middleware
 app.use('/', routes);
 app.use('/users', users);
 
@@ -67,6 +68,8 @@ app.use('/users', users);
 app.use(passport.initialize());
 app.use(passport.session());
 
+//when they send the login info determine if it is a
+//success or failure
 app.post('/login',
   passport.authenticate('local', {
     successRedirect: '/loginSuccess',
@@ -74,10 +77,12 @@ app.post('/login',
   })
 );
  
+//if its a failure send them this
 app.get('/loginFailure', function(req, res, next) {
   res.send('Failed to authenticate');
 });
  
+//if it is a success send them this
 app.get('/loginSuccess', function(req, res, next) {
   res.send('Successfully authenticated');
 });
@@ -91,7 +96,9 @@ passport.deserializeUser(function(user, done) {
 });
 
 // this will only work after mongo has returned
-// this might be a good thing to remove XXX
+// this might be a good thing to block during the 
+// connection to mongo
+// Authenticator
 passport.use(new LocalStrategy(function(username, password, done) {
     process.nextTick(function() {
         app.db.collection(userDB).findOne({
@@ -111,7 +118,6 @@ passport.use(new LocalStrategy(function(username, password, done) {
 
         return done(null, user);
     });
-    // Auth Check Logic
   });
 }));
 
