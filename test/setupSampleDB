@@ -10,7 +10,7 @@ var templates = [
         startMoney: 1500,
         templateName: "Monopoly"
     }
-];
+]
 
 var dbName = 'gameTemplates';
 
@@ -36,6 +36,7 @@ MongoClient.connect(url, function(err, db) {
         collection.insert(documents, function(err, result) {
             if(!err){
             }
+                db.close();
         });
     };
     
@@ -46,5 +47,4 @@ MongoClient.connect(url, function(err, db) {
     // all of the socket logic is in the socketsServ file
 
     insert(templates);
-    db.close();
 });
