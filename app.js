@@ -43,6 +43,7 @@ MongoClient.connect(url, function(err, db) {
 // route forwarding
 var routes = require('./routes/index');
 var login = require('./routes/login');
+var registration = require('./routes/register');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -101,6 +102,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 // routing middleware
 app.use('/', routes);
 app.use('/login', login);
+app.use('/register', registration);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
