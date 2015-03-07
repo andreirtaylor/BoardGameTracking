@@ -14,7 +14,7 @@ var userDB = "userInfo";
 // logic to get the server working with sockets
 var app = express();
 var server = require('http').Server(app);
-// make the server accessable
+// make the server accessable 
 app.server = server;
 var io = require('socket.io')(server);
 
