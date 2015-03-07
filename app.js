@@ -12,13 +12,11 @@ var LocalStrategy = require('passport-local').Strategy;
 var userDB = "userInfo";
 
 // logic to get the server working with sockets
-var app = require('express')();
+var app = express();
 var server = require('http').Server(app);
 // make the server accessable
 app.server = server;
 var io = require('socket.io')(server);
-// make sockets accessable
-app.io = io;
 
 // ============DATABASE==================
 // make the MongoClient
@@ -76,12 +74,12 @@ app.post('/login',
     failureRedirect: '/loginFailure'
   })
 );
- 
+
 //if its a failure send them this
 app.get('/loginFailure', function(req, res, next) {
   res.send('Failed to authenticate');
 });
- 
+
 //if it is a success send them this
 app.get('/loginSuccess', function(req, res, next) {
   res.send('Successfully authenticated');
@@ -90,13 +88,13 @@ app.get('/loginSuccess', function(req, res, next) {
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
- 
+
 passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
 // this will only work after mongo has returned
-// this might be a good thing to block during the 
+// this might be a good thing to block during the
 // connection to mongo
 // Authenticator
 passport.use(new LocalStrategy(function(username, password, done) {
