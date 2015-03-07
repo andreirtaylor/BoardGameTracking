@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 
 //authentication dependencies
 var passport = require('passport');
+var crypto = require('crypto');
 var LocalStrategy = require('passport-local').Strategy;
 var userDB = "userInfo";
 
@@ -49,30 +50,50 @@ var registration = require('./routes/register');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// using sessions
+var sess = {
+    secret: 'Money Money',
+    cookie: {},
+    resave: false,
+    saveUninitialized: false
+}
+
 // we have a favicon in the public folder but for now the file
 // is static and included in layout.js we can change this easily
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(sess.secret));
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 
+
 //===========authentication===========
+var session = require('express-session');
+
+
+// re enable this if we make this website secure
+//if (app.get('env') === 'production') {
+//  app.set('trust proxy', 1) // trust first proxy
+//  sess.cookie.secure = true // serve secure cookies
+//}
+
+app.use(session(sess))
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+// http://en.wikipedia.org/wiki/Serialization
 passport.serializeUser(function(user, done) {
-  done(null, user);
+  done(null, user.id);
 });
 
-passport.deserializeUser(function(user, done) {
-  done(null, user);
+passport.deserializeUser(function(id, done) {
+  app.db.collection(userDB).find({ "_id":id }, function(err, user) {
+    done(err, user);
+  });
 });
-
 // this will only work after mongo has returned
 // this might be a good thing to block during the
 // connection to mongo
@@ -85,14 +106,23 @@ passport.use(new LocalStrategy(function(username, password, done) {
             if (err) {
             return done(err);
         }
-
+        // if we dont return a user then the username is incorrect
         if (!user) {
             return done(null, false);
         }
-
-        if (user.password != password) {
-            return done(null, false);
+        
+        // https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm
+        var hash = crypto.createHash('sha1');
+        hash.update(password);
+        var result = hash.digest('hex') ;
+           
+        if (result == user.hash){
+            return done(null, user._id);
         }
+        else
+        {
+            done(null, false);
+        }  
 
         return done(null, user);
     });
@@ -100,6 +130,13 @@ passport.use(new LocalStrategy(function(username, password, done) {
 }));
 
 // routing middleware
+// Make our db accessible to our router
+app.use(function(req,res,next){
+    console.log(req.session) 
+    req.db = app.db;
+    next();
+});
+
 app.use('/', routes);
 app.use('/login', login);
 app.use('/register', registration);
@@ -112,7 +149,6 @@ app.use(function (req, res, next) {
 });
 
 // error handlers
-
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {

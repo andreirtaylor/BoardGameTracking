@@ -47,7 +47,7 @@ module.exports = function(io, gameDB) {
             socket.on(operation, function(){
                 var args = Array.prototype.slice.call(arguments,0)
                 args.push(callback);
-                console.log(args)
+                //console.log(args)
                 var that = this;
                 gameDB[operation].apply(that, args);
             });

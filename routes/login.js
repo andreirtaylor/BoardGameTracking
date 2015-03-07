@@ -17,8 +17,6 @@ router.post('/',
   })
 );
 
-
-
 //if its a failure send them this
 router.get('/loginFailure', function(req, res, next) {
   res.send('Failed to authenticate');
