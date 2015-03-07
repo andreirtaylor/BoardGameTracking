@@ -1,3 +1,4 @@
+// ==============Express===============
 // express dependencies
 var express = require('express');
 var path = require('path');
@@ -5,27 +6,43 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+// route forwarding
+var routes = require('./routes/index');
+var login = require('./routes/login');
+var registration = require('./routes/register');
+var app = express();
 
+//============Authentication==============
 //authentication dependencies
 var passport = require('passport');
 var crypto = require('crypto');
 var LocalStrategy = require('passport-local').Strategy;
-var userDB = "userInfo";
 
-// logic to get the server working with sockets
-var app = express();
-var server = require('http').Server(app);
-// make the server accessable
-app.server = server;
-var io = require('socket.io')(server);
+// variables for authentication
+var session = require('express-session');
+// using sessions
+var sess = {
+    secret: 'Money Money',
+    cookie: {},
+    resave: false,
+    saveUninitialized: false
+}
 
 // ============DATABASE==================
-// make the MongoClient
+// mongo dependencies
 var MongoClient = require('mongodb').MongoClient;
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+// variables for database
+var userDB = "userInfo";
+app.server = server;
 // specify where you can connect to the database
-var url = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55556/gameDB';
+var dbUrl = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55556/gameDB';
+
+// make the MongoClient
 // connect to the database
-MongoClient.connect(url, function(err, db) {
+MongoClient.connect(dbUrl, function(err, db) {
     if(err != null){
         // something went wrong abort abort!!!
         console.log('Error from DB: ' + err);
@@ -34,29 +51,18 @@ MongoClient.connect(url, function(err, db) {
     }
     // if you get here you connected
     console.log( "Connected correctly to Database" );
-    console.log(url);
+    console.log(dbUrl);
+
     // now that we are connected, connect the socket and the server
     // all of the socket logic is in the socketsServ file
     (require("./bin/socketsServ.js"))(io, db);
     app.db = db;
 });
 
-// route forwarding
-var routes = require('./routes/index');
-var login = require('./routes/login');
-var registration = require('./routes/register');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
-// using sessions
-var sess = {
-    secret: 'Money Money',
-    cookie: {},
-    resave: false,
-    saveUninitialized: false
-}
 
 // we have a favicon in the public folder but for now the file
 // is static and included in layout.js we can change this easily
@@ -67,14 +73,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(sess.secret));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
-
-//===========authentication===========
-var session = require('express-session');
-
-
-// re enable this if we make this website secure
+// uncomment this if we make this website secure
 //if (app.get('env') === 'production') {
 //  app.set('trust proxy', 1) // trust first proxy
 //  sess.cookie.secure = true // serve secure cookies
@@ -94,6 +93,7 @@ passport.deserializeUser(function(id, done) {
     done(err, user);
   });
 });
+
 // this will only work after mongo has returned
 // this might be a good thing to block during the
 // connection to mongo
@@ -129,14 +129,15 @@ passport.use(new LocalStrategy(function(username, password, done) {
   });
 }));
 
-// routing middleware
 // Make our db accessible to our router
+// on every request!!!
 app.use(function(req,res,next){
-    console.log(req.session) 
+    console.log(req.isAuthenticated()) 
     req.db = app.db;
     next();
 });
 
+// routing middleware
 app.use('/', routes);
 app.use('/login', login);
 app.use('/register', registration);

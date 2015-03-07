@@ -4,6 +4,18 @@ var router = require('express').Router();
 //authentication dependencies
 var passport = require('passport');
 
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { return next(); }
+    res.redirect('/login')
+}
+
+router.get('/lounge', 
+    ensureAuthenticated, 
+    function(req,res,next){
+        res.send("#louge you found it baby.") 
+});
+
 router.get('/', function(req, res, next) {
 	res.render('login', { layout: "loginLayout"});
 });
@@ -23,7 +35,7 @@ router.get('/loginFailure', function(req, res, next) {
 });
 
 //if it is a success send them this
-router.get('/loginSuccess', function(req, res, next) {
+router.get('/loginSuccess',  function(req, res, next) {
   res.send('Successfully authenticated');
 });
 
