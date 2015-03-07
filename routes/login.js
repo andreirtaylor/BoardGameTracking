@@ -12,8 +12,8 @@ router.get('/', function(req, res, next) {
 //success or failure
 router.post('/',
   passport.authenticate('local', {
-    successRedirect: '/loginSuccess',
-    failureRedirect: '/loginFailure'
+    successRedirect: '/login/loginSuccess',
+    failureRedirect: '/login/loginFailure'
   })
 );
 

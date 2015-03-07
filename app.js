@@ -57,9 +57,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// routing middleware
-app.use('/', routes);
-app.use('/login', login);
 
 
 //===========authentication===========
@@ -100,6 +97,10 @@ passport.use(new LocalStrategy(function(username, password, done) {
     });
   });
 }));
+
+// routing middleware
+app.use('/', routes);
+app.use('/login', login);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
