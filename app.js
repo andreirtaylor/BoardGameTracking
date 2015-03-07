@@ -8,8 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 // route forwarding
 var routes = require('./routes/index');
-var login = require('./routes/login');
-var registration = require('./routes/register');
+var users = require('./routes/users');
 var app = express();
 
 //============Authentication==============
@@ -139,8 +138,7 @@ app.use(function(req,res,next){
 
 // routing middleware
 app.use('/', routes);
-app.use('/login', login);
-app.use('/register', registration);
+app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
