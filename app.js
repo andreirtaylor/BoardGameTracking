@@ -14,7 +14,7 @@ var userDB = "userInfo";
 // logic to get the server working with sockets
 var app = express();
 var server = require('http').Server(app);
-// make the server accessable 
+// make the server accessable
 app.server = server;
 var io = require('socket.io')(server);
 
@@ -42,7 +42,7 @@ MongoClient.connect(url, function(err, db) {
 
 // route forwarding
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var login = require('./routes/login');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -59,31 +59,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // routing middleware
 app.use('/', routes);
-app.use('/users', users);
+app.use('/login', login);
 
 
 //===========authentication===========
 app.use(passport.initialize());
 app.use(passport.session());
 
-//when they send the login info determine if it is a
-//success or failure
-app.post('/login',
-  passport.authenticate('local', {
-    successRedirect: '/loginSuccess',
-    failureRedirect: '/loginFailure'
-  })
-);
-
-//if its a failure send them this
-app.get('/loginFailure', function(req, res, next) {
-  res.send('Failed to authenticate');
-});
-
-//if it is a success send them this
-app.get('/loginSuccess', function(req, res, next) {
-  res.send('Successfully authenticated');
-});
 
 passport.serializeUser(function(user, done) {
   done(null, user);

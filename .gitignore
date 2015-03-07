@@ -5,3 +5,6 @@
 *.swp
 #no files within sampleDB
 sampleDB/
+
+#no log files
+*.log
