@@ -6,6 +6,13 @@ router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express'});
 });
 
+router.get('/login', function(req, res, next) {
+	res.redirect('/users/login');
+});
+
+router.get('/register', function(req, res, next) {
+	res.redirect('/users/register');
+});
 
 router.get('/samplegame', function(req, res, next){
     res.render('index', {});

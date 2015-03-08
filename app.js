@@ -27,6 +27,13 @@ var sess = {
     saveUninitialized: false
 }
 
+function passwordHash(password){
+    // https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm
+    var hash = crypto.createHash('sha1');
+    hash.update(password);
+    return hash.digest('hex') ;
+}
+
 // ============DATABASE==================
 // mongo dependencies
 var MongoClient = require('mongodb').MongoClient;
@@ -110,10 +117,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
             return done(null, false);
         }
         
-        // https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm
-        var hash = crypto.createHash('sha1');
-        hash.update(password);
-        var result = hash.digest('hex') ;
+        result = passwordHash(password)
            
         if (result == user.hash){
             return done(null, user._id);
@@ -131,7 +135,8 @@ passport.use(new LocalStrategy(function(username, password, done) {
 // Make our db accessible to our router
 // on every request!!!
 app.use(function(req,res,next){
-    console.log(req.isAuthenticated()) 
+    req.passwordHash = passwordHash;
+    req.userDB = userDB;
     req.db = app.db;
     next();
 });
