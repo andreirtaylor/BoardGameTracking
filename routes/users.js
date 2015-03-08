@@ -30,16 +30,20 @@ router.get('/register', function(req, res, next) {
 });
 
 router.post('/register', function(req, res, next) {
+    //make a new user
+    // defined in the main app
     var userDB = req.userDB;
     var db = req.db;
     var passwordHash = req.passwordHash;
+    // get the username and password
     var username = req.body.username;
     var password = req.body.password;
-    console.log(username, password);
+    // make sure that the username and password exist
     if(req.userName && req.password){
         res.send("Both boxes must contain something");
         return;
     }
+    //check for duplicates in the database
     db.collection(userDB).findOne({ 'username': username }, function (err, user){
         if(err){
             res.send('Error processing request');
@@ -68,7 +72,9 @@ router.post('/register', function(req, res, next) {
 router.post('/',
   passport.authenticate('local', {
     successRedirect: '/users/loginSuccess',
-    failureRedirect: '/users/loginFailure'
+    failureRedirect: '/users/loginFailure',
+    failureFlash: true,
+    successflash: 'one moment please'
   })
 );
 

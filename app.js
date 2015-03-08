@@ -6,6 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 // route forwarding
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -18,7 +19,6 @@ var crypto = require('crypto');
 var LocalStrategy = require('passport-local').Strategy;
 
 // variables for authentication
-var session = require('express-session');
 // using sessions
 var sess = {
     secret: 'Money Money',
@@ -106,30 +106,29 @@ passport.deserializeUser(function(id, done) {
 // Authenticator
 passport.use(new LocalStrategy(function(username, password, done) {
     process.nextTick(function() {
-        app.db.collection(userDB).findOne({
-            'username': username,
-        }, function(err, user) {
-            if (err) {
-            return done(err);
-        }
-        // if we dont return a user then the username is incorrect
-        if (!user) {
-            return done(null, false);
-        }
-        
-        result = passwordHash(password)
-           
-        if (result == user.hash){
-            return done(null, user._id);
-        }
-        else
-        {
-            done(null, false);
-        }  
+        app.db.collection(userDB).findOne({'username': username },
+            function(err, user) {
+                if (err) {
+                return done(err);
+            }
+            // if we dont return a user then the username is incorrect
+            if (!user) {
+                return done(null, false);
+            }
+            
+            result = passwordHash(password)
+               
+            if (result == user.hash){
+                return done(null, user._id);
+            }
+            else
+            {
+                done(null, false);
+            }  
 
-        return done(null, user);
+            return done(null, user);
+        });
     });
-  });
 }));
 
 // Make our db accessible to our router
