@@ -24,10 +24,28 @@ app.set('port', port);
 /**
  * Listen on provided port, on all network interfaces.
  */
+// make the MongoClient
+// connect to the database
+app.MongoClient.connect(app.dbUrl, function(err, db) {
+    if(err != null){
+        // something went wrong abort abort!!!
+        console.log('Error from DB: ' + err);
+        console.log('Did not connect to database');
+        return;
+    }
+    // if you get here you connected
+    console.log( "Connected correctly to Database" );
+    // hide the username an password
+    console.log(app.dbUrl.replace(/^.*@/,''));
 
-server.listen(port)
-server.on('error', onError);
-server.on('listening', onListening);
+    // now that we are connected, connect the socket and the server
+    // all of the socket logic is in the socketsServ file
+    (require("./socketsServ.js"))(app.io, db);
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+    app.db = db;
+});
 
 
 

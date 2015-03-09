@@ -27,6 +27,7 @@ var sess = {
     saveUninitialized: false
 }
 
+// this should definitely be moved out and made into a new algorithm
 function passwordHash(password){
     // https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm
     var hash = crypto.createHash('sha1');
@@ -37,33 +38,19 @@ function passwordHash(password){
 // ============DATABASE==================
 // mongo dependencies
 var MongoClient = require('mongodb').MongoClient;
+app.MongoClient = MongoClient;
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+app.io = io
 
 // variables for database
 var userDB = "userInfo";
 app.server = server;
 // specify where you can connect to the database
 var dbUrl = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55556/gameDB';
+app.dbUrl = dbUrl;
 
-// make the MongoClient
-// connect to the database
-MongoClient.connect(dbUrl, function(err, db) {
-    if(err != null){
-        // something went wrong abort abort!!!
-        console.log('Error from DB: ' + err);
-        console.log('Did not connect to database');
-        return;
-    }
-    // if you get here you connected
-    console.log( "Connected correctly to Database" );
-    console.log(dbUrl);
 
-    // now that we are connected, connect the socket and the server
-    // all of the socket logic is in the socketsServ file
-    (require("./bin/socketsServ.js"))(io, db);
-    app.db = db;
-});
 
 
 // view engine setup
