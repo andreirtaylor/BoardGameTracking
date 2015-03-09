@@ -13,7 +13,7 @@ var options ={
 
 var socket;
 
-describe('Starting a Game', function () {
+describe('Saving a Game', function () {
     var sampleGame;
 
     beforeEach(function(){
@@ -21,11 +21,12 @@ describe('Starting a Game', function () {
         sampleGame = genXGames(1);
         sampleGame.templateName = files.getRandomTemplate();
         socket.emit('connectme', { url: 'http://localhost:3000/users/register/?room=forest-time' });
-        socket.emit('startGame', sampleGame);
     })
 
     // look in the local db for powergrid
     it('should find powergrid', function (done) {
+        socket.emit('startGame', sampleGame);
+
         socket.on('startGame', function(result){
             result.should.have.property('templateName');
             socket.disconnect();
@@ -34,6 +35,8 @@ describe('Starting a Game', function () {
     });
 
     it('should give players money', function (done) {
+        socket.emit('startGame', sampleGame);
+
         socket.on('startGame', function(result){
             var PL = result.gamePlayers;
             for(var i = 0; i < PL.length; i++){
@@ -47,6 +50,8 @@ describe('Starting a Game', function () {
     //tests if the money that the players recieve corresponds to
     //the ammount defined in the template.
     it('gives players the right amount of money', function(done) {
+        socket.emit('startGame', sampleGame);
+
         socket.on('startGame', function(result){
             var PL = result.gamePlayers;
             var startMoney = files.findStartMoney(result.templateName);

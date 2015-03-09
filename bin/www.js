@@ -40,11 +40,11 @@ app.MongoClient.connect(app.dbUrl, function(err, db) {
 
     // now that we are connected, connect the socket and the server
     // all of the socket logic is in the socketsServ file
-    (require("./socketsServ.js"))(app.io, db);
+    app.db = db;
+    (require("./socketsServ.js"))(app);
     server.listen(port);
     server.on('error', onError);
     server.on('listening', onListening);
-    app.db = db;
 });
 
 

@@ -1,7 +1,15 @@
-module.exports = function(io, gameDB) {
-
+module.exports = function(app) {
+    var io = app.io;
+    var gameDB = app.db;
+    var crypto = app.crypto;
+    var chance = app.chance;
     // moved the big and ugly games list out of here
     var gamesList = require('./gamesList.js');
+    var url = require('url');
+
+    function _error(err) {
+        console.log('error from mongo' + err);
+    }
     // this is baggage from before, this will not be used
     gameDB.startGame = function(callback) {
         // Get the documents collection
@@ -17,6 +25,8 @@ module.exports = function(io, gameDB) {
    
     // GT = game templats collection
     gameDB.GT = gameDB.collection('gameTemplates');
+    // GR = game repository
+    gameDB.GR = gameDB.collection('games');
     
     var parseGameTemplate = function(template){
         return {
@@ -25,15 +35,38 @@ module.exports = function(io, gameDB) {
     };
 
     // Finds the game template for the given criteria
+    gameDB.updateGame = function (game, callback) {
+        
+    };
+    var findOptions = { '_id': 0, 'hash':0 }
+
+    gameDB.insertNewGame = function (game, callback) {
+        game.index = chance.string({ length: 20 });
+        var index = game.index;
+        //console.log(index);
+        gameDB.GR.findOne({ 'index': index }, findOptions, function (err, doc) {
+            if (err) _error();
+            if (!doc) {
+                gameDB.GR.insert(game, function (err, result) {
+                    if (err) _error();
+                    callback(game);
+                });
+            } else {
+                gameDB.insertNewGamefunction(game, callback);
+            }
+        });
+    };
+
     gameDB.startGame = function(game, callback){
         var query = parseGameTemplate(game);
         // get the query from the game Templates collection
-        gameDB.GT.findOne( query, { '_id': 0 }, function(err, doc) {
+        gameDB.GT.findOne( query, findOptions, function(err, doc) {
             for(var i = 0; i < game.gamePlayers.length; i++){
                 game.gamePlayers[i].cash = doc.startMoney;
             };
-            //console.log(game) 
-            callback(game);
+            gameDB.insertNewGame(game, function(game){
+                callback(game);
+            });
         });
     };
 
@@ -43,6 +76,7 @@ module.exports = function(io, gameDB) {
         // it basically make the appropriate call to mongo
         // You write the function that you would like to run
         // after mongo returns
+        
         socket.mongo = function( operation, callback){
             socket.on(operation, function(){
                 var args = Array.prototype.slice.call(arguments,0)
@@ -53,11 +87,21 @@ module.exports = function(io, gameDB) {
             });
         };
 
+        socket.on('connectme', function (data) {
+            socket.room = url.parse(data.url, true).query.room
+            socket.join(socket.room);
+        });
+
         // send me a game that has players and the template
         // that you want and I will start it for you
         socket.mongo('startGame', function(game){
             //console.log(game)
-            socket.emit("startGame", game);
+            io.to(socket.room).emit('startGame', game);
+        });
+
+        socket.mongo('updateGame', function(game){
+            //console.log(game)
+            io.to(socket.room).emit('updateGame', game);
         });
 
         socket.on('getSampleGame', function(data){

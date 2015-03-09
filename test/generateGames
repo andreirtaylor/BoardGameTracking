@@ -45,7 +45,6 @@ var genXGames = function(numGames){
                 //append the player to people
                 people.push({ 
                     name:getRandomName(),
-                    cash:getRandomBig(),
                     banker:false
                 });
                 //if banker set banker to true

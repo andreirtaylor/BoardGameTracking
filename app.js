@@ -11,11 +11,15 @@ var session = require('express-session');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var app = express();
+var Chance = require('chance');
+var chance = new Chance();
+app.chance = chance;
 
 //============Authentication==============
 //authentication dependencies
 var passport = require('passport');
 var crypto = require('crypto');
+app.crypto = crypto;
 var LocalStrategy = require('passport-local').Strategy;
 
 // variables for authentication
@@ -34,6 +38,7 @@ function passwordHash(password){
     hash.update(password);
     return hash.digest('hex') ;
 }
+app.passwordHash = passwordHash;
 
 // ============DATABASE==================
 // mongo dependencies
@@ -121,7 +126,7 @@ passport.use(new LocalStrategy(function(username, password, done) {
 // Make our db accessible to our router
 // on every request!!!
 app.use(function(req,res,next){
-    req.passwordHash = passwordHash;
+    req.passwordHash = app.passwordHash;
     req.userDB = userDB;
     req.db = app.db;
     next();
