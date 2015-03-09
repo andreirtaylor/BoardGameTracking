@@ -16,17 +16,21 @@ var socket;
 describe('Starting a Game', function () {
     var sampleGame;
 
-    beforeEach(function(){
+    beforeEach( function(done){
         socket = io.connect(socketURL, options);
         sampleGame = genXGames(1);
         sampleGame.templateName = files.getRandomTemplate();
-        socket.emit('connectme', { url: 'http://localhost:3000/users/register/?room=forest-time' });
+        // you need to have a room otherwise you will not be sent a game do give an arbitrary room.
         socket.emit('startGame', sampleGame);
+        socket.on('startGame', function(result){
+            socket.emit('connectme', { url: 'http://localhost:3000/users/register/?room=' + result.room });
+            done();
+        });
     })
 
     // look in the local db for powergrid
     it('should find powergrid', function (done) {
-        socket.on('startGame', function(result){
+        socket.on('incomingGame', function (result) {
             result.should.have.property('templateName');
             socket.disconnect();
             done();
@@ -34,7 +38,7 @@ describe('Starting a Game', function () {
     });
 
     it('should give players money', function (done) {
-        socket.on('startGame', function(result){
+        socket.on('incomingGame', function(result){
             var PL = result.gamePlayers;
             for(var i = 0; i < PL.length; i++){
                 PL[i].should.have.property('cash');
@@ -47,12 +51,20 @@ describe('Starting a Game', function () {
     //tests if the money that the players recieve corresponds to
     //the ammount defined in the template.
     it('gives players the right amount of money', function(done) {
-        socket.on('startGame', function(result){
+        socket.on('incomingGame', function(result){
             var PL = result.gamePlayers;
             var startMoney = files.findStartMoney(result.templateName);
             for(var i = 0; i < PL.length; i++){
                 PL[i].should.have.property('cash', startMoney);
             }
+            socket.disconnect();
+            done();
+        });
+    });
+
+    it('should have given the game a room', function(done) {
+        socket.on('incomingGame', function(result){
+            result.should.have.property('room');
             socket.disconnect();
             done();
         });

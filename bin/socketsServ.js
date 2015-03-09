@@ -10,18 +10,6 @@ module.exports = function(app) {
     function _error(err) {
         console.log('error from mongo' + err);
     }
-    // this is baggage from before, this will not be used
-    gameDB.startGame = function(callback) {
-        // Get the documents collection
-        var collection = this.collection('gameTemplates');
-        // Insert some documents
-        collection.insert([
-            {a : 1}, {a : 2}, {a : 3}
-        ], function(err, result) {
-            //console.log("Inserted 3 documents into the document collection");
-            callback(result);
-        });
-    }
    
     // GT = game templats collection
     gameDB.GT = gameDB.collection('gameTemplates');
@@ -36,23 +24,46 @@ module.exports = function(app) {
 
     // Finds the game template for the given criteria
     gameDB.updateGame = function (game, callback) {
-        
+        var room = game.room;
+        gameDB.GR.insert(game, function(err, result){
+            if (err) {
+                _error(err);
+            }
+            //if you inserted correctly remove the old one
+            else {
+                gameDB.GR.remove({ 'room': room }, true, function (err, doc) {
+                    if (err) _error(err);
+                    if (doc) {
+                        gameDB.GR.insert(game, function (err, result) {
+                            if (err) _error(err);
+                            // im not sure why we need to do this but it seems like
+                            // the _id is being added into the game even though it shouldnt be.
+                            delete game._id;
+                            callback(game);
+                        });
+                    }
+                });
+            }
+        });
     };
+
     var findOptions = { '_id': 0, 'hash':0 }
 
     gameDB.insertNewGame = function (game, callback) {
-        game.index = chance.string({ length: 20 });
-        var index = game.index;
-        //console.log(index);
-        gameDB.GR.findOne({ 'index': index }, findOptions, function (err, doc) {
-            if (err) _error();
+        game.room = chance.integer({min:1, max:10000}) + '-' + chance.province() + '-' + chance.state();
+        var room = game.room;
+        gameDB.GR.findOne({ 'room': room }, findOptions, function (err, doc) {
+            if (err) _error(err);
             if (!doc) {
                 gameDB.GR.insert(game, function (err, result) {
-                    if (err) _error();
+                    if (err) _error(err);
+                    // im not sure why we need to do this but it seems like
+                    // the _id is being added into the game even though it shouldnt be.
+                    delete game._id;
                     callback(game);
                 });
             } else {
-                gameDB.insertNewGamefunction(game, callback);
+                gameDB.insertNewGame(game, callback);
             }
         });
     };
@@ -67,6 +78,14 @@ module.exports = function(app) {
             gameDB.insertNewGame(game, function(game){
                 callback(game);
             });
+        });
+    };
+    
+    gameDB.connectme = function (data, callback) {
+        var room = url.parse(data.url, true).query.room;
+        gameDB.GR.findOne({ 'room': room }, findOptions, function (err, doc) {
+            if (err) _error(err);
+            if (doc) callback(doc);
         });
     };
 
@@ -87,21 +106,21 @@ module.exports = function(app) {
             });
         };
 
-        socket.on('connectme', function (data) {
-            socket.room = url.parse(data.url, true).query.room
-            socket.join(socket.room);
+        socket.mongo('connectme', function (game) {
+            socket.room = game.room;
+            socket.join(game.room);
+            socket.emit('incomingGame', game);
         });
 
         // send me a game that has players and the template
         // that you want and I will start it for you
         socket.mongo('startGame', function(game){
             //console.log(game)
-            io.to(socket.room).emit('startGame', game);
+            socket.emit('startGame', game);
         });
 
         socket.mongo('updateGame', function(game){
-            //console.log(game)
-            io.to(socket.room).emit('updateGame', game);
+            io.to(socket.room).emit('incomingGame', game);
         });
 
         socket.on('getSampleGame', function(data){

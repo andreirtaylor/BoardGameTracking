@@ -11,55 +11,45 @@ var options ={
     'force new connection': true
 };
 
-var socket;
+var socket, game, sampleGame;
 
-describe('Saving a Game', function () {
+describe('Multiple Connections', function () {
     var sampleGame;
 
-    beforeEach(function(){
+    beforeEach(function(done){
         socket = io.connect(socketURL, options);
         sampleGame = genXGames(1);
         sampleGame.templateName = files.getRandomTemplate();
-        socket.emit('connectme', { url: 'http://localhost:3000/users/register/?room=forest-time' });
+        socket.emit('startGame', sampleGame);
+        socket.on('startGame', function(result){
+            socket.emit('connectme', { url: 'http://localhost:3000/users/register/?room=' + result.room });
+            game = result;
+            done();
+        });
     })
 
     // look in the local db for powergrid
-    it('should find powergrid', function (done) {
-        socket.emit('startGame', sampleGame);
+    it('should be able to reconnect', function (done) {
+        var socket2 = io.connect(socketURL, options);
+        socket2.emit('connectme', { url: 'http://localhost:3000/?room=' + game.room });
 
-        socket.on('startGame', function(result){
-            result.should.have.property('templateName');
-            socket.disconnect();
+        socket2.on('incomingGame', function (result) {
+            // the two games should be identical
+            JSON.stringify(result).should.equal(JSON.stringify(game));
             done();
         });
     });
 
-    it('should give players money', function (done) {
-        socket.emit('startGame', sampleGame);
+    it('should be able to update the game', function (done) {
+        var money = 75;
+        var run = false;
+        game.gamePlayers[0].cash = money;
+        socket.emit('updateGame', game);
 
-        socket.on('startGame', function(result){
-            var PL = result.gamePlayers;
-            for(var i = 0; i < PL.length; i++){
-                PL[i].should.have.property('cash');
-            }
-            socket.disconnect();
-            done();
-        });
-    });
-
-    //tests if the money that the players recieve corresponds to
-    //the ammount defined in the template.
-    it('gives players the right amount of money', function(done) {
-        socket.emit('startGame', sampleGame);
-
-        socket.on('startGame', function(result){
-            var PL = result.gamePlayers;
-            var startMoney = files.findStartMoney(result.templateName);
-            for(var i = 0; i < PL.length; i++){
-                PL[i].should.have.property('cash', startMoney);
-            }
-            socket.disconnect();
-            done();
+        socket.on('incomingGame', function (result) {
+            game.gamePlayers[0].cash.should.equal(money);
+            if (run) done();
+            run = true;
         });
     });
 });
