@@ -3,7 +3,7 @@
     // it is necessary to run the digest function on 
     // incoming data
     app.factory('socket', function ($rootScope) {
-        var socket = io.connect('http://localhost:3000/?room=asdfs');
+        var socket = io.connect();
         // returns a object that will have the ability to 
         // send and recieve data on the socket
         return {
