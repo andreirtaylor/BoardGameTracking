@@ -68,54 +68,41 @@ module.exports = function(app) {
         });
     };
 
-    gameDB.startGame = function(game, callback){
-        var query = parseGameTemplate(game);
-        // get the query from the game Templates collection
-        gameDB.GT.findOne( query, findOptions, function(err, doc) {
-            for(var i = 0; i < game.gamePlayers.length; i++){
-                game.gamePlayers[i].cash = doc.startMoney;
-            };
-            gameDB.insertNewGame(game, callback);
-        });
-    };
 
-    gameDB.connectme = function (data, callback) {
-        var room = url.parse(data.url, true).query.room;
-        gameDB.GR.findOne({ 'room': room }, findOptions, function (err, doc) {
-            if (err) _error(err);
-            if (doc) callback(doc);
-        });
-    };
 
     io.on('connection', function (socket) {
-        // gives the ability to write the socket as if you
-        // are returning with the proper information
-        // it basically make the appropriate call to mongo
-        // You write the function that you would like to run
-        // after mongo returns
 
-        socket.mongo = function( operation, callback){
-            socket.on(operation, function(){
-                var args = Array.prototype.slice.call(arguments,0)
-                args.push(callback);
-                //console.log(args)
-                var that = this;
-                gameDB[operation].apply(that, args);
+        socket.on('startGame', function(game){
+            var query = parseGameTemplate(game);
+            // get the query from the game Templates collection
+            gameDB.GT.findOne( query, findOptions, function(err, doc) {
+                for(var i = 0; i < game.gamePlayers.length; i++){
+                    game.gamePlayers[i].cash = doc.startMoney;
+                };
+                gameDB.insertNewGame(game, function(){
+                    socket.emit('startGame', game);
+                });
             });
-        };
+        });
 
-        socket.mongo('connectme', function (game) {
-            socket.room = game.room;
-            socket.join(game.room);
-            socket.emit('incomingGame', game);
+        socket.on('connectme', function (data) {
+            var room = url.parse(data.url, true).query.room;
+            gameDB.GR.findOne({ 'room': room }, findOptions, function (err, game) {
+                if (err) _error(err);
+                if (game){
+                    socket.room = game.room;
+                    socket.join(game.room);
+                    socket.emit('incomingGame', game);
+                }
+            });
         });
 
         // send me a game that has players and the template
         // that you want and I will start it for you
-        socket.mongo('startGame', function(game){
-            console.log('emitting');
-            socket.emit('startGame', game);
-        });
+        //socket.mongo('startGame', function(game){
+        //    console.log('emitting');
+        //    socket.emit('startGame', game);
+        //});
 
         socket.mongo('updateGame', function(game){
             io.to(socket.room).emit('incomingGame', game);

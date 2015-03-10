@@ -7,8 +7,9 @@ var app = angular.module('App', []);
         // update this later
         app.controller('MT', ['$scope', 'socket', function ($scope , socket) {
                 // these socket functions are all possible because of the socket factory
-                socket.emit('connectme', { url: window.location});
-                socket.on('SampleUpdate', function(data){
+                socket.emit('connectme', { url: window.location.toString()});
+                socket.on('incomingGame', function(data){
+                    console.log(data)
                     $scope.game = data;
                     scopegame = $scope.game;
                     $scope.playerList = data.playerList;
