@@ -1,0 +1,28 @@
+extends layout.jade
+
+block scripts
+    script(src="/javascripts/angular.min.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="/javascripts/moneyTracker.js")
+    script(src="/javascripts/sockets.js")
+
+block content
+    div()
+        div(class="container-fluid", ng-hide="clicked")
+            div(class="row-fluid")
+            div(class="col-sm-3 col-md-4 col-lg-4" )
+            div(class="col-sm-6 col-md-4 col-lg-4", ng-controller="newgame")
+                h1(class='title', style='text-align:center').
+                    Power Grid
+                div(class="input-group")
+                    input(type="text", ng-model="newPlayerName", class="form-control" placeholder="Input Player...")
+                    span(class="input-group-btn")
+                        button(class="btn btn-default" type="button" ng-click="addPlayer()")= "AddPlayer"
+
+
+                div(class="list-group")
+                    a(href="" class="list-group-item", ng-repeat="player in playerList", ng-click="remove(player)")
+                        p()= "{{ player.name }}"
+                div(ng-controller="Emit")
+                    button(class="btn btn-default", ng-click="startGame()", style="text-align:center")= "Start Game"
+            div(class="col-sm-3 col-md-4 col-lg-4" )
