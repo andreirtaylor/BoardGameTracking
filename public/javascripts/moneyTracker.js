@@ -12,7 +12,7 @@ var app = angular.module('App', []);
                     console.log(data)
                     $scope.game = data;
                     scopegame = $scope.game;
-                    $scope.playerList = data.playerList;
+                    $scope.playerList = data.gamePlayers;
                 });
 
                 $scope.player = $scope.player?$scope.player:{};
@@ -152,7 +152,7 @@ var app = angular.module('App', []);
             console.log('working')
             $scope.playerList = [];
             $scope.template = 'PowerGrid'
-            xxx = $scope.newPlayerName = '';
+            $scope.newPlayerName = '';
             $scope.addPlayer = function(name){
                 if($scope.newPlayerName){
                     var player = {
@@ -187,18 +187,21 @@ var app = angular.module('App', []);
 
 
                 $scope.updateGameData = function(){
-                    socket.emit('updateGameData', {
+                    socket.emit('updateGame', {
                         game:socket.game,
                         id:socket.playerID
                     });
                 }
+
                 $scope.update = function(){
-                    $scope.player.money += parseInt($scope.output);
+                    $scope.player.cash += parseInt($scope.output);
                     $scope.clear();
                     $scope.click();
-                    socket.emit('updateSampleGame', $scope.game);
+                    for(var i = 0; i < $scope.game.gamePlayers.length; i++){
+                        delete $scope.game.gamePlayers[i].$$hashKey;
+                    }
+                    socket.emit('updateGame', $scope.game);
                     console.log($scope.game);
-
                 };
         }]);
 })()

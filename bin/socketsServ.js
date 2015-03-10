@@ -23,29 +23,6 @@ module.exports = function(app) {
     };
 
     // Finds the game template for the given criteria
-    gameDB.updateGame = function (game, callback) {
-        var room = game.room;
-        gameDB.GR.insert(game, function(err, result){
-            if (err) {
-                _error(err);
-            }
-            //if you inserted correctly remove the old one
-            else {
-                gameDB.GR.remove({ 'room': room }, true, function (err, doc) {
-                    if (err) _error(err);
-                    if (doc) {
-                        gameDB.GR.insert(game, function (err, result) {
-                            if (err) _error(err);
-                            // im not sure why we need to do this but it seems like
-                            // the _id is being added into the game even though it shouldnt be.
-                            delete game._id;
-                            callback(game);
-                        });
-                    }
-                });
-            }
-        });
-    };
 
     var findOptions = { '_id': 0, 'hash':0 }
 
@@ -97,15 +74,28 @@ module.exports = function(app) {
             });
         });
 
-        // send me a game that has players and the template
-        // that you want and I will start it for you
-        //socket.mongo('startGame', function(game){
-        //    console.log('emitting');
-        //    socket.emit('startGame', game);
-        //});
-
-        socket.mongo('updateGame', function(game){
-            io.to(socket.room).emit('incomingGame', game);
+        socket.on( 'updateGame' , function (game) {
+            var room = game.room;
+            gameDB.GR.insert(game, function(err, result){
+                if (err) {
+                    _error(err);
+                }
+                //if you inserted correctly remove the old one
+                else {
+                    gameDB.GR.remove({ 'room': room }, true, function (err, doc) {
+                        if (err) _error(err);
+                        if (doc) {
+                            gameDB.GR.insert(game, function (err, result) {
+                                if (err) _error(err);
+                                // im not sure why we need to do this but it seems like
+                                // the _id is being added into the game even though it shouldnt be.
+                                delete game._id;
+                                io.to(socket.room).emit('incomingGame', game);
+                            });
+                        }
+                    });
+                }
+            });
         });
 
         socket.on('getSampleGame', function(data){
