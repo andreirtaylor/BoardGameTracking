@@ -1,62 +1,17 @@
 extends layout
 
 block content
-    nav(class="navbar navbar-default")
-        div(class="container-fluid")
-            //Brand and toggle get grouped for better mobile display
-            div(class="navbar-header")
-                button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1")
-                    span(class="sr-only")= "Toggle navigation"
-                    span(class="icon-bar")
-                    span(class="icon-bar")
-                    span(class="icon-bar")
-                a(class="navbar-brand" href="#")= "Brand"
-            div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
-                ul(class="nav navbar-nav")
-                    li(class="active")
-                        a(href="#")= "Link" 
-                            span(class="sr-only")= "(current)"
-                    li
-                        a(href="#")= "Link"
-                    li(class="dropdown")
-                        a(href="#", class="dropdown-toggle", data-toggle="dropdown", role="button", aria-expanded="false")= "Dropdown"
-                            span(class="caret")
-                        ul(class="dropdown-menu", role="menu")
-                            li
-                                a(href="#")= "Action"
-                            li
-                                a(href="#")= "Another action"
-                            li
-                                a(href="#")= "Something else here"
-                            li(class="divider")
-                            li
-                                a(href="#")= "Separated link"
-                            li(class="divider")
-                                a(href="#")= "One more separated link"
-                ul(class="nav navbar-nav navbar-right")
-                    li
-                        a(href="#")= "Link"
-                    li(class="dropdown")
-                        a(href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false")="Dropdown" 
-                            span(class="caret")
-                        ul(class="dropdown-menu" role="menu")
-                            li
-                                a(href="#")= "Action"
-                            li
-                                a(href="#")= "Another action"
-                            li
-                                a(href="#")= "Something else here"
-                            li(class="divider")
-                            li
-                                a(href="#")= "Separated link"
-
     div(class="container-fluid", ng-hide="clicked")
         div(class="row-fluid")
         div(class="col-sm-3 col-md-4 col-lg-4" )
         div(class="col-sm-6 col-md-4 col-lg-4" )
             h1(class='title', style='text-align:center').
                 Board Game Money Tracking!
-            p.
+            p
+            p(style="text-align:center").
                 Paper money is lame, track your money in style
-            button(id='updateGame', type="button", value="update", class="btn btn-success btn-group-justified btn-xl", ng-click="update()") update
+            p
+            p
+            a(href="/newgame")
+                button(type="button", class="btn btn-success btn-group-justified btn-xl")= "Start a Game now!"
         div(class="col-sm-3 col-md-4 col-lg-4" )

@@ -1,5 +1,11 @@
 extends layout
 
+block scripts
+    script(src="/javascripts/angular.min.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="/javascripts/moneyTracker.js")
+    script(src="/javascripts/sockets.js")
+
 block content
     div(ng-controller="MT")
         div(class="container-fluid", ng-hide="clicked")
@@ -16,9 +22,6 @@ block content
                             span(style="float:right").
                                 {{ player.money | currency }} 
                 div(ng-controller="Emit")
-                    p
-                    button(class="btn btn-default", ng-click="testConnection()", style="text-align:center").
-                        TestConnection 
             div(class="col-sm-3 col-md-4 col-lg-4" )
 
         div(class="container-fluid",id="calculator", ng-controller="Calculator", ng-show="clicked")

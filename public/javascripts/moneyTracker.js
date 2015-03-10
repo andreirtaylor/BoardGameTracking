@@ -7,14 +7,13 @@ var app = angular.module('App', []);
         // update this later
         app.controller('MT', ['$scope', 'socket', function ($scope , socket) {
                 // these socket functions are all possible because of the socket factory
-                socket.emit('getGameTemplate', {templateName:'PowerGrid'});
-                socket.emit('getSampleGame', { gameName: "samplegame"});
+                socket.emit('connectme', { url: window.location});
                 socket.on('SampleUpdate', function(data){
                     $scope.game = data;
                     scopegame = $scope.game;
                     $scope.playerList = data.playerList;
                 });
-               
+
                 $scope.player = $scope.player?$scope.player:{};
 
                 socket.on('gameStart', function (data) {
@@ -31,7 +30,7 @@ var app = angular.module('App', []);
                     game = data;
                     console.log("Connection is good");
                 });
-                
+
 
                 $scope.clicked = false;
                 $scope.click = function(player){
@@ -47,7 +46,7 @@ var app = angular.module('App', []);
         app.controller('Calculator', ['$scope', function($scope){
             //calculator functions
             $scope.output="0";
-            $scope.savedVal=""; 
+            $scope.savedVal="";
 
             $scope.calc_func = function(button){
                 if (!isNaN(parseInt(button))){
@@ -78,7 +77,7 @@ var app = angular.module('App', []);
                     $scope.output += String(num);
                 }
             };
-            
+
             //clears all statuses including saved value, might want to a clear button that doesn't reset saved value
             $scope.clear = function(){
                 $scope.output = "0";
@@ -86,14 +85,14 @@ var app = angular.module('App', []);
                 $scope.addtoken = false;
                 $scope.subtracttoken = false;
             };
-            
+
             //if subtract or add was not clicked last, set add flag, add number to saved val followed by +
             //if add was clicked last, do nothing
             //if subtract was clicked last, pop off the - and push a + to savedval
             var add = function(){
                 if ($scope.subtracttoken == true){
                    $scope.subtracttoken = false;
-                   $scope.savedVal = $scope.savedVal.substring(0, $scope.savedVal.length - 1); 
+                   $scope.savedVal = $scope.savedVal.substring(0, $scope.savedVal.length - 1);
                    $scope.savedVal += "+"
                    $scope.addtoken = true;
                 }
@@ -111,7 +110,7 @@ var app = angular.module('App', []);
             var subtract = function(){
                 if ($scope.addtoken == true){
                    $scope.addtoken = false;
-                   $scope.savedVal = $scope.savedVal.substring(0, $scope.savedVal.length - 1); 
+                   $scope.savedVal = $scope.savedVal.substring(0, $scope.savedVal.length - 1);
                    $scope.savedVal += "-"
                    $scope.subtracttoken = true;
                 }
@@ -130,7 +129,7 @@ var app = angular.module('App', []);
                     }
                 }
             };
-            
+
             //output is set to savedval and savedval is reset, but can still be used as it is in the output screen
             var solve = function(){
                 $scope.savedVal += $scope.output;
@@ -145,13 +144,47 @@ var app = angular.module('App', []);
                 $scope.addtoken = false;
                 $scope.subtracttoken = false;
             //end of calculator functions
-       
+
+        }]);
+
+        app.controller('newgame', ['$scope', 'socket', function ($scope , socket) {
+            console.log('working')
+            $scope.playerList = [];
+            $scope.template = 'PowerGrid'
+            xxx = $scope.newPlayerName = '';
+            $scope.addPlayer = function(name){
+                if($scope.newPlayerName){
+                    var player = {
+                        "name": $scope.newPlayerName
+                    }
+                    $scope.playerList.push(player);
+                    $scope.newPlayerName = '';
+                }
+            };
+
+            $scope.startGame = function(){
+                console.log($scope.playerList, $scope.template);
+                for(var i = 0; i < $scope.playerList.length; i++){
+                    delete $scope.playerList[i].$$hashKey;
+                }
+                console.log($scope.playerList)
+                socket.emit('startGame', {
+                    gamePlayers: $scope.playerList,
+                    templateName: $scope.template
+                });
+            }
+
+            socket.on('startGame', function(game){
+                window.location= "/gamescreen/?room=" + game.room;
+            });
         }]);
 
         app.controller('Emit', ['$scope', 'socket', function ($scope , socket) {
                 $scope.testConnection = function(){
                     socket.emit('startTest');
                 }
+
+
                 $scope.updateGameData = function(){
                     socket.emit('updateGameData', {
                         game:socket.game,

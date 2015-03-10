@@ -10,12 +10,12 @@ module.exports = function(app) {
     function _error(err) {
         console.log('error from mongo' + err);
     }
-   
+
     // GT = game templats collection
     gameDB.GT = gameDB.collection('gameTemplates');
     // GR = game repository
     gameDB.GR = gameDB.collection('games');
-    
+
     var parseGameTemplate = function(template){
         return {
             templateName: template.templateName
@@ -75,12 +75,10 @@ module.exports = function(app) {
             for(var i = 0; i < game.gamePlayers.length; i++){
                 game.gamePlayers[i].cash = doc.startMoney;
             };
-            gameDB.insertNewGame(game, function(game){
-                callback(game);
-            });
+            gameDB.insertNewGame(game, callback);
         });
     };
-    
+
     gameDB.connectme = function (data, callback) {
         var room = url.parse(data.url, true).query.room;
         gameDB.GR.findOne({ 'room': room }, findOptions, function (err, doc) {
@@ -90,12 +88,12 @@ module.exports = function(app) {
     };
 
     io.on('connection', function (socket) {
-        // gives the ability to write the socket as if you 
+        // gives the ability to write the socket as if you
         // are returning with the proper information
         // it basically make the appropriate call to mongo
         // You write the function that you would like to run
         // after mongo returns
-        
+
         socket.mongo = function( operation, callback){
             socket.on(operation, function(){
                 var args = Array.prototype.slice.call(arguments,0)
@@ -115,7 +113,7 @@ module.exports = function(app) {
         // send me a game that has players and the template
         // that you want and I will start it for you
         socket.mongo('startGame', function(game){
-            //console.log(game)
+            console.log('emitting');
             socket.emit('startGame', game);
         });
 
