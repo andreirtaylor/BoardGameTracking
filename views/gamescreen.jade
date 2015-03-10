@@ -1,0 +1,48 @@
+extends layout
+
+block content
+    div(ng-controller="MT")
+        div(class="container-fluid", ng-hide="clicked")
+            div(class="row-fluid")
+            div(class="col-sm-3 col-md-4 col-lg-4" )
+            div(class="col-sm-6 col-md-4 col-lg-4" )
+                h1(class='title', style='text-align:center').
+                    Power Grid
+                p
+                div(class="list-group")
+                    a(href="" class="list-group-item", ng-repeat="player in playerList", ng-click="click(player)")
+                        p(style"text-align:left")
+                            | {{ player.name }}
+                            span(style="float:right").
+                                {{ player.money | currency }} 
+                div(ng-controller="Emit")
+                    p
+                    button(class="btn btn-default", ng-click="testConnection()", style="text-align:center").
+                        TestConnection 
+            div(class="col-sm-3 col-md-4 col-lg-4" )
+
+        div(class="container-fluid",id="calculator", ng-controller="Calculator", ng-show="clicked")
+            div(class="col-sm-3 col-md-4 col-lg-4" )
+            div(class="col-sm-6 col-md-4 col-lg-4" )
+                a(href="", class="list-group-item")
+                    p(style="text-align:left")= "{{ player.name }}" &nbsp
+                        span(style="float:right")= "{{ player.money | currency }}" &nbsp
+                h1(style="text-align:right")= "{{output}}"
+
+                - var calculator = [[1,2,3],[4,5,6],[7,8,9],['-','0','+']];
+                each row in calculator
+                    div(class="btn-group btn-group-justified", role="group", aria-label="...")
+                        each button in row
+                            div(class="btn-group",role="group")
+                                button(type="button", id="calc-"+button, value=button, class="btn btn-default btn-xl", ng-click="calc_func('" + button + "')")= button
+
+                div
+                    p
+                    button(class="btn btn-default btn-xl", ng-click="click()", style="text-align:center") Go Back
+                    span(style="float:right")
+                        button(type="button", value="=", class="btn btn-default btn-xl", ng-click="calc_func('=')") =
+                        button(type="button", value="C", class="btn btn-default btn-xl", ng-click="calc_func('C')") C
+                    p    
+                    div(ng-controller='Emit')
+                        button(id='updateGame', type="button", value="update", class="btn btn-success btn-group-justified btn-xl", ng-click="update()") update
+            div(class="col-sm-3 col-md-4 col-lg-4" )
