@@ -13,6 +13,7 @@ var users = require('./routes/users');
 var app = express();
 var Chance = require('chance');
 var chance = new Chance();
+var compression = require('compression');
 app.chance = chance;
 
 //============Authentication==============
@@ -65,6 +66,7 @@ app.set('view engine', 'jade');
 // we have a favicon in the public folder but for now the file
 // is static and included in layout.js we can change this easily
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(compression());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
