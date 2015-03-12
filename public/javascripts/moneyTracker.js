@@ -176,4 +176,8 @@ var app = angular.module('App', []);
                     console.log($scope.game);
                 };
         }]);
+
+        app.controller('profile', ['$scope', 'socket', function ($scope , socket) {
+                
+        }]);
 })()
