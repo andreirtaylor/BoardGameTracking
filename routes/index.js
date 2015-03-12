@@ -16,7 +16,8 @@ router.get('/login', function(req, res, next) {
 	res.redirect('/users/login');
 });
 
-router.get('/logout', function(req, res, next) {
+router.get('/logout', function (req, res, next) {
+    console.log(req.session.user_id);
 	res.redirect('/users/logout');
 });
 

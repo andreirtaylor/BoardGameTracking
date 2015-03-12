@@ -4,9 +4,27 @@ var router = require('express').Router();
 //authentication dependencies
 var passport = require('passport');
 
-//==========Dont test for the posts ===========
-//when they send the login info determine if it is a
-//success or failure
+// redirect the user if they are logged in
+function testAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) { 
+        req.user.loggedIn = true;
+        res.redirect('/profile'); 
+    }else{
+        next();
+    }
+}
+
+router.get('/', function(req, res, next) {
+	res.redirect('/login');
+});
+
+router.get(
+    '/login', 
+    testAuthenticated,
+    function(req, res, next) {
+	    res.render('login');
+});
+
 router.post('/login',
   passport.authenticate('local', {
     successRedirect: '/profile',
@@ -14,7 +32,19 @@ router.post('/login',
   })
 );
 
+//if its a failure send them this
+router.get('/loginFailure', function(req, res, next) {
+  res.send('Failed to authenticate');
+});
 
+router.get(
+    '/register', 
+    testAuthenticated,
+    function(req, res, next) {
+	    res.render('register');
+});
+
+// new registration
 router.post('/register', function(req, res, next) {
     //make a new user
     // defined in the main app
@@ -62,46 +92,10 @@ router.post('/register', function(req, res, next) {
                     }else{
                         res.send("Go to login to sign in")
                     }
-            });
+                }
+            );
         }
     })
-});
-
-
-//if its a failure send them this
-router.get('/loginFailure', function(req, res, next) {
-  res.send('Failed to authenticate');
-});
-
-
-
-router.get('/', function(req, res, next) {
-	res.redirect('/login');
-});
-
-// redirect the user if they are logged in
-function testAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) { 
-        req.user.loggedIn = true;
-        res.redirect('/profile'); 
-    }else{
-        next();
-    }
-}
-
-// never render these if the user is logged in
-router.get(
-    '/login', 
-    testAuthenticated,
-    function(req, res, next) {
-	    res.render('login');
-});
-
-router.get(
-    '/register', 
-    testAuthenticated,
-    function(req, res, next) {
-	    res.render('register');
 });
 
 router.get('/logout', function(req, res, next) {
@@ -122,22 +116,23 @@ router.use(ensureAuthenticated);
 
 function parameterGen(user){
     return {
-        loggedIn: true,
+        loggedIn: user.loggedIn,
         username: user.username
     }
 }
 
 //if it is a success send them this
 router.get('/profile',  function(req, res, next) {
-    console.log(req.user);
 	res.render('profile', parameterGen(req.user));
 });
 
 //little secret for the ladies ;)
-router.get('/lounge', 
+router.get(
+    '/lounge',
     ensureAuthenticated, 
     function(req,res,next){
         res.send("you found it baby.") 
-});
+    }
+);
 
 module.exports = router;
