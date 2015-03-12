@@ -17,9 +17,40 @@ html(lang="en", ng-app="App")
 
         // local scripts
         link(rel="shortcut icon", type="image/png", href="/images/favicon.ico")
-        script(src="/socket.io/socket.io.js")
-        script(src="/javascripts/angular.min.js")
-        script(src="/javascripts/moneyTracker.js")
-        script(src="/javascripts/sockets.js")
+        block scripts
+
     body(style='padding:0px')
+        nav(class="navbar navbar-default")
+            div(class="container-fluid")
+                //Brand and toggle get grouped for better mobile display
+                div(class="navbar-header")
+                    button(type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1")
+                        span(class="sr-only")= "Toggle navigation"
+                        span(class="icon-bar")
+                        span(class="icon-bar")
+                        span(class="icon-bar")
+                    a(class="navbar-brand" href="/")= "Money Tracker"
+                div(class="collapse navbar-collapse" id="bs-example-navbar-collapse-1")
+                    ul(class="nav navbar-nav navbar-right")
+                        li
+                            a(href="/newgame")= "New Game"
+                        li(class="dropdown")
+                            if !loggedIn
+                                a(href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false")="Account"
+                                    span(class="caret")
+                                ul(class="dropdown-menu" role="menu")
+                                    li
+                                        a(href="/register")= "SignUp"
+                                    li(class="divider")
+                                    li
+                                        a(href="/login")= "Login"
+                            else
+                                a(href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false")= username + ' '
+                                    span(class="caret")
+                                ul(class="dropdown-menu" role="menu")
+                                    li
+                                        a(href="/profile")= "Profile"
+                                    li(class="divider")
+                                    li
+                                        a(href="/logout")= "Logout"
         block content

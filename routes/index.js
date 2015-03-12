@@ -1,13 +1,23 @@
 var express = require('express');
 var router = express.Router();
+var gameREGEX = /[0-9]{4}-[\w]{2}-[\w]{2}/;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	res.render('index', { title: 'Express'});
 });
 
+//forward people who put in the room without the game screen
+router.get(gameREGEX, function(req, res, next) {
+    res.redirect('gamescreen/?room='+ gameREGEX.exec(req.url));
+});
+
 router.get('/login', function(req, res, next) {
 	res.redirect('/users/login');
+});
+
+router.get('/logout', function(req, res, next) {
+	res.redirect('/users/logout');
 });
 
 router.get('/register', function(req, res, next) {
@@ -15,19 +25,19 @@ router.get('/register', function(req, res, next) {
 });
 
 router.get('/samplegame', function(req, res, next){
-    res.render('index', {});
+    res.render('samplegame', {});
 });
 
-router.get('/addScreen/:id', function(req, res, next){
-    idNum = req.params.id;
-	res.render('addScreen', {
-        title: 'Test calculator',
-        id: idNum
-    });
+router.get('/newgame', function(req, res, next){
+    res.render('newgame', {});
 });
 
-router.get('/addScreen', function(req, res, next){
-	res.render('addScreen', {title: 'Test calculator'});
+router.get('/gamescreen', function(req, res, next){
+	res.render('gamescreen', {title: 'Test calculator'});
+});
+
+router.get('/profile',  function(req, res, next) {
+	res.redirect('/users/profile');
 });
 
 module.exports = router;

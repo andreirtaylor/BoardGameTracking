@@ -1,0 +1,22 @@
+extends layout.jade
+
+block scripts
+    script(src="/javascripts/angular.min.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="/javascripts/moneyTracker.js")
+    script(src="/javascripts/sockets.js")
+
+block content
+    div()
+        div(class="container-fluid")
+            div(class="row-fluid")
+            div(class="col-sm-3 col-md-4 col-lg-4" )
+            div(class="col-sm-6 col-md-4 col-lg-4", ng-controller="profile")
+                h1(class='title', style='text-align:center')= "In Progress"
+                div(class="list-group")
+                    a(href="" class="list-group-item", ng-repeat="game in inProgress", ng-click="goTo(game.room)")
+                        p= "game: {{ game.templateName }}"
+                        p= "players:"
+                            span(ng-repeat="player in game.gamePlayers").
+                                {{ player.name }}
+            div(class="col-sm-3 col-md-4 col-lg-4" )
