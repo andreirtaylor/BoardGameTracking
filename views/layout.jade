@@ -35,12 +35,22 @@ html(lang="en", ng-app="App")
                         li
                             a(href="/newgame")= "New Game"
                         li(class="dropdown")
-                            a(href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false")="Account"
-                                span(class="caret")
-                            ul(class="dropdown-menu" role="menu")
-                                li
-                                    a(href="/register")= "SignUp"
-                                li(class="divider")
-                                li
-                                    a(href="/login")= "Login"
+                            if !loggedIn
+                                a(href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false")="Account"
+                                    span(class="caret")
+                                ul(class="dropdown-menu" role="menu")
+                                    li
+                                        a(href="/register")= "SignUp"
+                                    li(class="divider")
+                                    li
+                                        a(href="/login")= "Login"
+                            else
+                                a(href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false")= username + ' '
+                                    span(class="caret")
+                                ul(class="dropdown-menu" role="menu")
+                                    li
+                                        a(href="/profile")= "Profile"
+                                    li(class="divider")
+                                    li
+                                        a(href="/logout")= "Logout"
         block content

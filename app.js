@@ -21,15 +21,8 @@ var passport = require('passport');
 var crypto = require('crypto');
 app.crypto = crypto;
 var LocalStrategy = require('passport-local').Strategy;
+var MongoStore = require('connect-mongo')(session);
 
-// variables for authentication
-// using sessions
-var sess = {
-    secret: 'Money Money',
-    cookie: {},
-    resave: false,
-    saveUninitialized: false
-}
 
 // this should definitely be moved out and made into a new algorithm
 function passwordHash(password){
@@ -52,6 +45,7 @@ var ObjectId = function(){
     return require('mongodb').ObjectID;
 };
 app.ObjectId = ObjectId;
+ObjectID = ObjectId();
 
 // variables for database
 var userDB = "userInfo";
@@ -60,12 +54,22 @@ app.server = server;
 var dbUrl = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55556/gameDB';
 app.dbUrl = dbUrl;
 
-
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+// variables for authentication
+// using sessions
+var sess = {
+    secret: 'Money Money',
+    cookie: {},
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({
+        url: app.dbUrl,
+        touchAfter: 0, // time period in seconds
+    })
+}
 
 // we have a favicon in the public folder but for now the file
 // is static and included in layout.js we can change this easily
@@ -86,15 +90,31 @@ app.use(session(sess))
 app.use(passport.initialize());
 app.use(passport.session());
 
+// remove attributes from the user
+function unpackUser(user){
+    return {
+        username:user.username,
+        _id:user._id + ''
+    };
+}
+
+// when we find users with passport dont return the 
+// games list
+var findUsers = {inProgress: 0}
+
 // http://en.wikipedia.org/wiki/Serialization
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+    done(null, unpackUser(user) );
 });
 
-passport.deserializeUser(function(id, done) {
-  app.db.collection(userDB).find({ "_id":id }, function(err, user) {
-    done(err, user);
-  });
+passport.deserializeUser(function(user, done) {
+    app.db.collection(userDB).findOne(
+        { "_id": new ObjectID(user._id) }, 
+        findUsers,
+        function(err) {
+            done(err, unpackUser(user));
+        }
+    );
 });
 
 // this will only work after mongo has returned
@@ -103,28 +123,31 @@ passport.deserializeUser(function(id, done) {
 // Authenticator
 passport.use(new LocalStrategy(function(username, password, done) {
     process.nextTick(function() {
-        app.db.collection(userDB).findOne({'username': username },
+        app.db.collection(userDB).findOne(
+            {'username': username },
+            findUsers,
             function(err, user) {
+                console.log('in the local strategy')
+                console.log(user)
                 if (err) {
-                return done(err);
+                    return done(err);
+                }
+                // if we dont return a user then the username is incorrect
+                if (!user) {
+                    return done(null, false);
+                }
+                
+                result = passwordHash(password)
+                   
+                if (result == user.hash){
+                    return done(null, unpackUser(user));
+                }
+                else
+                {
+                    done(null, false);
+                }  
             }
-            // if we dont return a user then the username is incorrect
-            if (!user) {
-                return done(null, false);
-            }
-            
-            result = passwordHash(password)
-               
-            if (result == user.hash){
-                return done(null, user._id);
-            }
-            else
-            {
-                done(null, false);
-            }  
-
-            return done(null, user);
-        });
+        );
     });
 }));
 
@@ -139,6 +162,8 @@ app.use(function(req,res,next){
 
 // routing middleware
 app.use('/', routes);
+// make sure that users is last at there is routing to bump anyone who
+// is not logged in
 app.use('/users', users);
 
 // catch 404 and forward to error handler

@@ -16,6 +16,10 @@ router.get('/login', function(req, res, next) {
 	res.redirect('/users/login');
 });
 
+router.get('/logout', function(req, res, next) {
+	res.redirect('/users/logout');
+});
+
 router.get('/register', function(req, res, next) {
 	res.redirect('/users/register');
 });
@@ -30,6 +34,10 @@ router.get('/newgame', function(req, res, next){
 
 router.get('/gamescreen', function(req, res, next){
 	res.render('gamescreen', {title: 'Test calculator'});
+});
+
+router.get('/profile',  function(req, res, next) {
+	res.redirect('/users/profile');
 });
 
 module.exports = router;
