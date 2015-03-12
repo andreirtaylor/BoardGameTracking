@@ -17,22 +17,6 @@ var app = angular.module('App', []);
 
                 $scope.player = $scope.player?$scope.player:{};
 
-                socket.on('gameStart', function (data) {
-                    $scope.game = data;
-                    scopegame = $scope.game;
-                    $scope.playerList = data.playerList;
-                });
-
-                socket.on('testConnection', function(data){
-                    $scope.game = data;
-                    socket.game = $scope.game;
-                    $scope.playerList = data.playerList;
-                    scopegame = $scope.game;
-                    game = data;
-                    console.log("Connection is good");
-                });
-
-
                 $scope.clicked = false;
                 $scope.click = function(player){
                     $scope.player = player;
@@ -181,18 +165,6 @@ var app = angular.module('App', []);
         }]);
 
         app.controller('Emit', ['$scope', 'socket', function ($scope , socket) {
-                $scope.testConnection = function(){
-                    socket.emit('startTest');
-                }
-
-
-                $scope.updateGameData = function(){
-                    socket.emit('updateGame', {
-                        game:socket.game,
-                        id:socket.playerID
-                    });
-                }
-
                 $scope.update = function(){
                     $scope.player.cash += parseInt($scope.output);
                     $scope.clear();
