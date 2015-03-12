@@ -6,6 +6,7 @@ module.exports = function(app) {
     var ObjectId = app.ObjectId();
     // the option for querying games from the database
     var findGames = { '_id': 0, 'hash':0 }
+    var findUsers = { '_id': 0, 'hash':0 }
 
     var url = require('url');
 
@@ -100,24 +101,31 @@ module.exports = function(app) {
 
         // initilizes the profile of a signed in player
         socket.on( 'initProfile' , function (user) {
-            console.log(user.username);
             // find the player in the database
-            gameDB.UR.findOne({ 'username': user.username }, function(err, userFromDB){
-                if(err){ 
-                    console.log("err from db" + err ); 
-                    return;
+            gameDB.UR.findOne(
+                {'username': user.username }, 
+                findUsers,
+                function(err, userFromDB){
+                    if(err){ 
+                        console.log("err from db" + err ); 
+                        return;
+                    }
+                    // convert the games into object ids so we can find them
+                    var objectIds = userFromDB.inProgress.map(function(idObj){
+                        return new ObjectId(idObj._id);
+                    });
+                    // go find the games
+                    gameDB.GR.find(
+                        {'_id': { $in: objectIds }},
+                        findGames
+                        ).toArray(function(err, games){
+                            userFromDB.inProgress = games;
+                            //console.log(userFromDB);
+                            socket.emit('initProfile', userFromDB);
+                        }
+                    );
                 }
-                // convert the games into object ids so we can find them
-                var objectIds = userFromDB.inProgress.map(function(idObj){
-                    return new ObjectId(idObj._id);
-                });
-                // go find the games
-                gameDB.GR.find({'_id': { $in: objectIds }}).toArray(function(err, games){
-                    userFromDB.inProgress = games;
-                    console.log(userFromDB);
-                    socket.emit('initProfile', userFromDB);
-                });
-            });
+            );
         });
     });
 };

@@ -90,7 +90,7 @@ router.get('/loginSuccess',  function(req, res, next) {
 
 //if it is a success send them this
 router.get('/profile',  function(req, res, next) {
-	res.render('newgame');
+	res.render('profile');
 });
 
 module.exports = router;

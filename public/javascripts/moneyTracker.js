@@ -178,10 +178,14 @@ var app = angular.module('App', []);
         }]);
 
         app.controller('profile', ['$scope', 'socket', function ($scope , socket) {
+            $scope.inProgress = [];
+            $scope.username = '';
+
             socket.emit('initProfile', { username:'andrei' });
 
             socket.on('initProfile', function(profile){
-                   
+                $scope.username = profile.username;       
+                $scope.inProgress = profile.inProgress;
             });
         }]);
 })()
