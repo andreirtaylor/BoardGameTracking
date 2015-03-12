@@ -46,7 +46,12 @@ var MongoClient = require('mongodb').MongoClient;
 app.MongoClient = MongoClient;
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
-app.io = io
+app.io = io;
+// because ObjectID is a constructor you have to 
+var ObjectId = function(){
+    return require('mongodb').ObjectID;
+};
+app.ObjectId = ObjectId;
 
 // variables for database
 var userDB = "userInfo";

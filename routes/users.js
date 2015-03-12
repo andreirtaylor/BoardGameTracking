@@ -88,4 +88,9 @@ router.get('/loginSuccess',  function(req, res, next) {
   res.send('Successfully authenticated');
 });
 
+//if it is a success send them this
+router.get('/profile',  function(req, res, next) {
+	res.render('newgame');
+});
+
 module.exports = router;

@@ -178,6 +178,10 @@ var app = angular.module('App', []);
         }]);
 
         app.controller('profile', ['$scope', 'socket', function ($scope , socket) {
-                
+            socket.emit('initProfile', { username:'andrei' });
+
+            socket.on('initProfile', function(profile){
+                   
+            });
         }]);
 })()
