@@ -11,66 +11,64 @@ var session = require('express-session');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var app = express();
+var compression = require('compression');
+
+// ============DATABASE==================
+// mongo dependencies
+var MongoClient = require('mongodb').MongoClient;
+var server = require('http').Server(app);
+var io = require('socket.io')(server)
+// this is a litte confusing it is used to parse mogo id's
+var ObjectId = function(){
+    return require('mongodb').ObjectID;
+};
+var ObjectID = ObjectId();
 var Chance = require('chance');
 var chance = new Chance();
-var compression = require('compression');
-app.chance = chance;
+var userDB = "userInfo";
+// variables for database
+// specify where you can connect to the database
+var dbUrl = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55556/gameDB';
 
 //============Authentication==============
 //authentication dependencies
 var passport = require('passport');
 var crypto = require('crypto');
-app.crypto = crypto;
 var LocalStrategy = require('passport-local').Strategy;
 var MongoStore = require('connect-mongo')(session);
-
-
-// this should definitely be moved out and made into a new algorithm
 function passwordHash(password){
     // https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm
     var hash = crypto.createHash('sha1');
     hash.update(password);
     return hash.digest('hex') ;
 }
-app.passwordHash = passwordHash;
-
-// ============DATABASE==================
-// mongo dependencies
-var MongoClient = require('mongodb').MongoClient;
-app.MongoClient = MongoClient;
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-app.io = io;
-// because ObjectID is a constructor you have to 
-var ObjectId = function(){
-    return require('mongodb').ObjectID;
-};
-app.ObjectId = ObjectId;
-ObjectID = ObjectId();
-
-// variables for database
-var userDB = "userInfo";
-app.server = server;
-// specify where you can connect to the database
-var dbUrl = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55556/gameDB';
-app.dbUrl = dbUrl;
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-// variables for authentication
-// using sessions
+// session settings
 var sess = {
     secret: 'Money Money',
     cookie: {},
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({
-        url: app.dbUrl,
+        url: dbUrl,
         touchAfter: 0, // time period in seconds
     })
-}
+};
+var sessionMiddleware = session(sess);
+
+//===============Globalss for other files=============
+app.dbUrl = dbUrl;
+app.chance = chance;
+app.passwordHash = passwordHash;
+app.MongoClient = MongoClient;
+app.crypto = crypto;
+app.io = io;
+// because ObjectID is a constructor you have to run it in the file you want
+app.ObjectId = ObjectId;
+app.server = server;
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 // we have a favicon in the public folder but for now the file
 // is static and included in layout.js we can change this easily
@@ -88,7 +86,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 //  sess.cookie.secure = true // serve secure cookies
 //}
 
-app.use(session(sess))
+
+io.use(function (socket, next) {
+    sessionMiddleware(socket.request, socket.request.res, next);
+});
+
+app.use(sessionMiddleware);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -129,8 +132,6 @@ passport.use(new LocalStrategy(function(username, password, done) {
             {'username': username },
             findUsers,
             function(err, user) {
-                console.log('in the local strategy')
-                console.log(user)
                 if (err) {
                     return done(err);
                 }

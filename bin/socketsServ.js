@@ -50,6 +50,9 @@ module.exports = function(app) {
 
 
     io.on('connection', function (socket) {
+        var userId = socket.request.session.passport.user;
+        console.log("Your User ID is", userId);
+
         socket.on('startGame', function(game){
             var query = parseGameTemplate(game);
             // get the query from the game Templates collection
@@ -100,10 +103,11 @@ module.exports = function(app) {
         });
 
         // initilizes the profile of a signed in player
-        socket.on( 'initProfile' , function (user) {
+        socket.on( 'initProfile' , function () {
             // find the player in the database
+            username = socket.request.session.passport.user.username;
             gameDB.UR.findOne(
-                {'username': user.username }, 
+                {'username': username }, 
                 findUsers,
                 function(err, userFromDB){
                     if(err){ 
@@ -111,7 +115,9 @@ module.exports = function(app) {
                         return;
                     }
                     // convert the games into object ids so we can find them
-                    var objectIds = userFromDB.inProgress.map(function(idObj){
+                    gamesIP = userFromDB.inProgress;
+                    gamesIP = gamesIP ? gamesIP : [];
+                    var objectIds = gamesIP.map(function(idObj){
                         return new ObjectId(idObj._id);
                     });
                     // go find the games
