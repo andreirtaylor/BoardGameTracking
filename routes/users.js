@@ -51,12 +51,19 @@ router.post('/register', function(req, res, next) {
     var userDB = req.userDB;
     var db = req.db;
     var passwordHash = req.passwordHash;
-    // get the username and password
+    // get the username, password, password confirm, and email
     var username = req.body.username;
     var password = req.body.password;
-    // make sure that the username and password exist
-    if(req.userName && req.password){
-        res.send("Both boxes must contain something");
+    var passConf = req.body.passwordConf;
+    var email = req.body.email;
+    // make sure that all fields are filled
+    if(!req.body.username || !req.body.password || !req.body.passwordConf || !req.body.email){
+        res.send("All boxes must contain something");
+        return;
+    }
+    //make sure the passwords match
+    if(!(password === passConf)){
+        res.send("Passwords do not match");
         return;
     }
     //check for duplicates in the database
@@ -71,7 +78,8 @@ router.post('/register', function(req, res, next) {
             password = passwordHash(password);
             db.collection(userDB).insert({ 
                     "username": username,
-                    "hash": password
+                    "hash": password,
+                    "email": email
                 }, function(err){
                     if(err){
                         res.send("Error processing request");
