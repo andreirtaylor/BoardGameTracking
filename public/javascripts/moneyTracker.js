@@ -54,12 +54,15 @@ var app = angular.module('App', []);
             //appends number to calculator screen if there was already a number there
             //if - or + was pressed, flag is set, and new string starts
             var appendToOut = function(num){
-                if($scope.output === "0" || $scope.subtracttoken || $scope.addtoken){
+                if($scope.output === "0" || $scope.subtracttoken || $scope.addtoken || $scope.eqtoken){
                     $scope.output=num;
                     $scope.addtoken=false;
                     $scope.subtracttoken=false;
+                    $scope.eqtoken = false;
                 }else{
-                    $scope.output += String(num);
+                    if(!(num == 0 && $scope.output == "-")){
+                        $scope.output += String(num);
+                    }
                 }
             };
 
@@ -69,6 +72,7 @@ var app = angular.module('App', []);
                 $scope.savedVal = "";
                 $scope.addtoken = false;
                 $scope.subtracttoken = false;
+                $scope.eqtoken = false;
             };
 
             //if subtract or add was not clicked last, set add flag, add number to saved val followed by +
@@ -85,6 +89,9 @@ var app = angular.module('App', []);
                     $scope.addtoken = true;
                     $scope.savedVal += $scope.output;
                     $scope.savedVal += "+"
+                }
+                else{
+                    $scope.output = "0";
                 }
             };
 
@@ -123,9 +130,10 @@ var app = angular.module('App', []);
                 $scope.savedVal = ""
                 $scope.subtracttoken = false;
                 $scope.subtracttoken = false;
+                $scope.eqtoken = true;
             };
-
-
+                
+                $scope.eqtoken = false;
                 $scope.addtoken = false;
                 $scope.subtracttoken = false;
             //end of calculator functions
