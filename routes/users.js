@@ -112,7 +112,10 @@ router.post('/register', function(req, res, next) {
             res.send('Error processing request');
         }
         else if(user){
-            res.send('username is taken');
+            return res.render('register', {
+                message:"Username is taken",
+                type: "danger"
+            }); 
         }
         else{
             password = passwordHash(password);
@@ -124,7 +127,10 @@ router.post('/register', function(req, res, next) {
                     if(err){
                         res.send("Error processing request");
                     }else{
-                        res.send("Go to login to sign in")
+                        return res.render('register', {
+                            message:"Go to login to sign in",
+                            type: "success"
+                        }); 
                     }
                 }
             );
