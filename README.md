@@ -29,7 +29,7 @@ This is a summary of the rules found [here](http://docs.mongolab.com/connecting/
    ```i.e. "mongodb://wickedUsername:gloriousPassword@ds12345.mongolab.com:578910/sample-db" ```
 
 2. Make a new environment variable for this database (you will have to do this everytime you want to run the server).
-   **DISCLAIMER: If an eliete HAX0R gets ahold of the URI they have complete control of your database. Keep this private**
+   **DISCLAIMER: If an elite HAX0R gets ahold of the URI they have complete control of your database. Keep this private**
    *if you want to save this variable permanently google how to set environment variables.*
 
    In Unixland:
