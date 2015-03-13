@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 
 //forward people who put in the room without the game screen
 router.get(gameREGEX, function(req, res, next) {
-    res.redirect('gamescreen/?room='+ gameREGEX.exec(req.url));
+    res.redirect('/users/gamescreen/?room='+ gameREGEX.exec(req.url));
 });
 
 router.get('/login', function(req, res, next) {
@@ -27,10 +27,6 @@ router.get('/register', function(req, res, next) {
 
 router.get('/newgame', function(req, res, next){
     res.redirect('users/newgame');
-});
-
-router.get('/gamescreen', function(req, res, next){
-    res.redirect('users/gamescreen');
 });
 
 router.get('/profile',  function(req, res, next) {
