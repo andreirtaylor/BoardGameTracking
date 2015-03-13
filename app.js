@@ -122,9 +122,6 @@ passport.deserializeUser(function(user, done) {
     );
 });
 
-// this will only work after mongo has returned
-// this might be a good thing to block during the
-// connection to mongo
 // Authenticator
 passport.use(new LocalStrategy(function(username, password, done) {
     process.nextTick(function() {
