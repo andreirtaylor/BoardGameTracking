@@ -30,7 +30,7 @@ This is a summary of the rules found [here](http://docs.mongolab.com/connecting/
 
 2. Make a new environment variable for this database (you will have to do this everytime you want to run the server).
    **DISCLAIMER: If an elite HAX0R gets ahold of the URI they have complete control of your database. Keep this private**
-   *if you want to save this variable permanently google how to set environment variables.*
+   *if you want to save this variable permanently stored google how to set environment variables.*
 
    In Unixland:
    ```export DATABASE= "mongodb://<dbuser>:<dbpassword>@<randomnumber>.mongolab.com:port/<Databasename>"```
