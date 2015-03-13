@@ -29,8 +29,11 @@ block content
             div(class="col-sm-6 col-md-4 col-lg-4" )
                 a(href="", class="list-group-item")
                     p(style="text-align:left")= "{{ player.name }}" &nbsp
-                        span(style="float:right")= "{{ player.money | currency }}" &nbsp
+                        span(style="float:right")= "{{ player.cash | currency }}" &nbsp
                 h1(style="text-align:right")= "{{output}}"
+
+                
+        
 
                 - var calculator = [[1,2,3],[4,5,6],[7,8,9],['-','0','+']];
                 each row in calculator
