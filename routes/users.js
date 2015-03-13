@@ -1,22 +1,45 @@
-//var express = require('express');
 var router = require('express').Router();
-
 //authentication dependencies
 var passport = require('passport');
+
+// generate the jade parameters
+function parameterGen(req, message){
+    if(req.isAuthenticated()){
+        var user = req.user;
+        return {
+            loggedIn: true,
+            username: user.username,
+            message: message
+        }
+    }
+}
+
+// render pages with the correct dropdown menu if the
+// user is logged in
+router.get('/', function(req, res, next) {
+	res.render('index', parameterGen(req));
+});
+
+router.get('/newgame', function(req, res, next){
+    res.render('newgame', parameterGen(req));
+});
+
+router.get('/samplegame', function(req, res, next){
+    res.render('samplegame', parameterGen(req));
+});
+
+router.get('/gamescreen', function(req, res, next){
+	res.render('gamescreen', parameterGen(req));
+});
 
 // redirect the user if they are logged in
 function testAuthenticated(req, res, next) {
     if (req.isAuthenticated()) { 
-        req.user.loggedIn = true;
         res.redirect('/profile'); 
     }else{
         next();
     }
 }
-
-router.get('/', function(req, res, next) {
-	res.redirect('/login');
-});
 
 router.get(
     '/login', 
@@ -25,12 +48,29 @@ router.get(
 	    res.render('login');
 });
 
-router.post('/login',
-  passport.authenticate('local', {
-    successRedirect: '/profile',
-    failureRedirect: '/users/loginFailure'
-  })
-);
+router.post('/login', function(req, res, next){
+  //passport.authenticate('local', {
+  //  successRedirect: '/profile',
+  //  failureRedirect: '/users/loginFailure'
+  //})
+    passport.authenticate('local', function(err, user, info) {    
+        if (err) { 
+            return next(err); 
+        }
+        if (!user) { 
+            return res.render('login', {
+                message: "Authentication Failed",
+                type: "danger"
+            }); 
+        }
+        req.logIn(user, function(err) {
+            if (err) { 
+                return next(err); 
+            }
+            return res.redirect('/profile');
+        });
+    })(req, res, next)
+});
 
 //if its a failure send them this
 router.get('/loginFailure', function(req, res, next) {
@@ -108,16 +148,10 @@ function ensureAuthenticated(req, res, next) {
 
 router.use(ensureAuthenticated);
 
-function parameterGen(user){
-    return {
-        loggedIn: user.loggedIn,
-        username: user.username
-    }
-}
-
 //if it is a success send them this
 router.get('/profile',  function(req, res, next) {
-	res.render('profile', parameterGen(req.user));
+    console.log(req.message)
+	res.render('profile', parameterGen(req));
 });
 
 //little secret for the ladies ;)

@@ -4,26 +4,24 @@ var app = angular.module('App', []);
         // the way that this is written it will not be able to be iminified
         // update this later
         app.controller('MT', ['$scope', 'socket', function ($scope , socket) {
-                // these socket functions are all possible because of the socket factory
-                socket.emit('connectme', { url: window.location.toString()});
-                socket.on('incomingGame', function(data){
-                    console.log(data)
-                    $scope.game = data;
-                    scopegame = $scope.game;
-                    $scope.playerList = data.gamePlayers;
-                });
+            // these socket functions are all possible because of the socket factory
+            socket.emit('connectme', { url: window.location.toString()}); socket.on('incomingGame', function(data){ console.log(data)
+                $scope.game = data;
+                scopegame = $scope.game;
+                $scope.playerList = data.gamePlayers;
+            });
 
-                $scope.player = $scope.player?$scope.player:{};
+            $scope.player = $scope.player?$scope.player:{};
 
-                $scope.clicked = false;
-                $scope.click = function(player){
-                    $scope.player = player;
-                    if($scope.clicked == true){
-                        $scope.clicked = false;
-                    }else{
-                        $scope.clicked = true;
-                    }
-                };
+            $scope.clicked = false;
+            $scope.click = function(player){
+                $scope.player = player;
+                if($scope.clicked == true){
+                    $scope.clicked = false;
+                }else{
+                    $scope.clicked = true;
+                }
+            };
         }]);
 
         app.controller('Calculator', ['$scope', function($scope){

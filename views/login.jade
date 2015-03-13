@@ -1,17 +1,41 @@
 extends layout
 
 block content
-    .container
-        h1 Login Page
-        p.lead 
-        br
-        form(role='form', method="post", style='max-width: 300px;')
-            .form-group
-                input.form-control(type='text', name="username", placeholder='Enter Username')
-            .form-group
-                input.form-control(type='password', name="password", placeholder='Password')
-            button.btn.btn-default(type='submit') Submit &nbsp;
-            a(href='/register')
-                button.btn.btn-primary(type="button") Register &nbsp;
-            a(href='/')
-                button.btn.btn-primary(type="button") Cancel
+    div(class="container-fluid", ng-hide="clicked")
+        div(class="row-fluid")
+            div(class="col-sm-3 col-md-4 col-lg-4" )
+            div(class="col-sm-6 col-md-4 col-lg-4" )
+                block title
+                if signup
+                    h1(style="text-align:center")= "Sign Up"
+                else
+                    h1(style="text-align:center")= "Login"
+                p.lead 
+                br
+                div(class="jumbotron")
+                    form(role='form', method="post", style='max-width: 300px;')
+                        .form-group
+                            input.form-control(type='text', name="username", placeholder='Enter Username')
+                        br
+                        .form-group
+                            input.form-control(type='password', name="password", placeholder='Password')
+                        block register
+                        if message
+                            div(style= "text-align:center" class="alert alert-"+ type +"" role="alert")= message
+                            //alert-success
+                            //alert alert-info"
+                            //alert alert-warning
+                            //alert alert-danger
+                        h1= ""
+                        button.btn.btn-default(type='submit') Submit &nbsp;
+                        a(href='/')
+                            button.btn.btn-primary(type="button" style="float:right") Cancel
+                if signup
+                    p(style='text-align:center')= "Have an account? "
+                        span
+                            a(href="/login")= "Login Here"
+                else    
+                    p(style='text-align:center')= "Dont have an account? "
+                        span
+                            a(href="/register")= "Register Here"
+            div(class="col-sm-3 col-md-4 col-lg-4" )
