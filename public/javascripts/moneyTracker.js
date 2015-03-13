@@ -164,7 +164,7 @@ var app = angular.module('App', []);
             }
 
             socket.on('startGame', function(game){
-                window.location= "/gamescreen/?room=" + game.room;
+                window.location= game.room;
             });
         }]);
 
