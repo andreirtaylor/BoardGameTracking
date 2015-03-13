@@ -21,7 +21,7 @@ Mongo is cumpulsory. The server will not run without it.
 
 This is a summary of the rules found [here](http://docs.mongolab.com/connecting/#connect-string)
 
-1. Sign up for a free accout on [MongoLab](https://mongolab.com
+1. Sign up for a free accout on [MongoLab](https://mongolab.com)
 2. Click on add database user and make a username and password.
 
 3. Put the username and password into the URI from the top of the mongolab page (case-sensitive)
