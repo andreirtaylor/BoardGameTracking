@@ -1,5 +1,3 @@
-var addScreenLocation = 'addScreen';
-
 var app = angular.module('App', []);
 // this is the place to store the angular controllers.
 (function(){
@@ -85,12 +83,12 @@ var app = angular.module('App', []);
                    $scope.savedVal += "+"
                    $scope.addtoken = true;
                 }
-                else if ($scope.addtoken==false && $scope.subtracttoken == false && $scope.output != "-"){
+                else if ($scope.addtoken==false && $scope.subtracttoken == false && $scope.output != "-" && $scope.output != "0"){
                     $scope.addtoken = true;
                     $scope.savedVal += $scope.output;
                     $scope.savedVal += "+"
                 }
-                else{
+                else if ($scope.addtoken == false){
                     $scope.output = "0";
                 }
             };
