@@ -16,7 +16,7 @@ block content
                     Power Grid
                 p
                 div(class="list-group")
-                    a(href="" class="list-group-item", ng-repeat="player in playerList", ng-click="click(player)")
+                    a(href="" class="list-group-item", ng-repeat="player in gamePlayers", ng-click="click(player)")
                         p(style"text-align:left")
                             | {{ player.name }}
                             span(style="float:right").
@@ -28,14 +28,12 @@ block content
             div(class="col-sm-3 col-md-4 col-lg-4" )
             div(class="col-sm-6 col-md-4 col-lg-4" )
                 a(href="", class="list-group-item")
-                    p(style="text-align:left")= "{{ player.name }}" &nbsp
-                        span(style="float:right")= "{{ player.cash | currency }}" &nbsp
+                    p(style="text-align:left")= "{{ player.name }}"
+                        span(style="float:right")= "{{ player.cash | currency }}" 
                 h1(style="text-align:right")= "{{output}}"
 
-                
-        
-
                 - var calculator = [[1,2,3],[4,5,6],[7,8,9],['-','0','+']];
+
                 each row in calculator
                     div(class="btn-group btn-group-justified", role="group", aria-label="...")
                         each button in row

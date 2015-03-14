@@ -5,16 +5,20 @@ var app = angular.module('App', []);
         // update this later
         app.controller('MT', ['$scope', 'socket', function ($scope , socket) {
             // these socket functions are all possible because of the socket factory
-            socket.emit('connectme', { url: window.location.toString()}); socket.on('incomingGame', function(data){ console.log(data)
+            socket.emit('connectme', { url: window.location.toString()}); 
+            
+            socket.on('incomingGame', function(data){ console.log(data)
                 $scope.game = data;
                 scopegame = $scope.game;
-                $scope.playerList = data.gamePlayers;
+                $scope.gamePlayers = data.gamePlayers;
             });
 
-            $scope.player = $scope.player?$scope.player:{};
+            $scope.player = $scope.player ? $scope.player : {};
 
             $scope.clicked = false;
+            
             $scope.click = function(player){
+                console.log(player)
                 $scope.player = player;
                 if($scope.clicked == true){
                     $scope.clicked = false;
@@ -129,9 +133,9 @@ var app = angular.module('App', []);
                 $scope.eqtoken = true;
             };
                 
-                $scope.eqtoken = false;
-                $scope.addtoken = false;
-                $scope.subtracttoken = false;
+            $scope.eqtoken = false;
+            $scope.addtoken = false;
+            $scope.subtracttoken = false;
             //end of calculator functions
 
         }]);
@@ -156,7 +160,6 @@ var app = angular.module('App', []);
                 for(var i = 0; i < $scope.playerList.length; i++){
                     delete $scope.playerList[i].$$hashKey;
                 }
-                console.log($scope.playerList)
                 socket.emit('startGame', {
                     gamePlayers: $scope.playerList,
                     templateName: $scope.template
@@ -173,6 +176,8 @@ var app = angular.module('App', []);
                     $scope.player.cash += parseInt($scope.output);
                     $scope.clear();
                     $scope.click();
+                    // angular is adding this hashkey into the array 
+                    // we have to remove it before it goes into the datbase
                     for(var i = 0; i < $scope.game.gamePlayers.length; i++){
                         delete $scope.game.gamePlayers[i].$$hashKey;
                     }
