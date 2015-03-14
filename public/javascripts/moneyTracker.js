@@ -7,7 +7,7 @@ var app = angular.module('App', []);
             // these socket functions are all possible because of the socket factory
             socket.emit('connectme', { url: window.location.toString()}); 
             
-            socket.on('incomingGame', function(data){ console.log(data)
+            socket.on('incomingGame', function(data){ 
                 $scope.game = data;
                 scopegame = $scope.game;
                 $scope.gamePlayers = data.gamePlayers;
@@ -18,7 +18,6 @@ var app = angular.module('App', []);
             $scope.clicked = false;
             
             $scope.click = function(player){
-                console.log(player)
                 $scope.player = player;
                 if($scope.clicked == true){
                     $scope.clicked = false;
@@ -141,7 +140,6 @@ var app = angular.module('App', []);
         }]);
 
         app.controller('newgame', ['$scope', 'socket', function ($scope , socket) {
-            console.log('working')
             $scope.playerList = [];
             $scope.template = 'PowerGrid'
             $scope.newPlayerName = '';
