@@ -49,10 +49,6 @@ router.get(
 });
 
 router.post('/login', function(req, res, next){
-  //passport.authenticate('local', {
-  //  successRedirect: '/profile',
-  //  failureRedirect: '/users/loginFailure'
-  //})
     passport.authenticate('local', function(err, user, info) {    
         if (err) { 
             return next(err); 
@@ -70,11 +66,6 @@ router.post('/login', function(req, res, next){
             return res.redirect('/profile');
         });
     })(req, res, next)
-});
-
-//if its a failure send them this
-router.get('/loginFailure', function(req, res, next) {
-  res.send('Failed to authenticate');
 });
 
 router.get(
