@@ -12,10 +12,9 @@ block content
             div(class="row-fluid")
             div(class="col-sm-3 col-md-4 col-lg-4" )
             div(class="col-sm-6 col-md-4 col-lg-4", ng-controller="newgame")
-                h1(class='title', style='text-align:center').
-                    Power Grid
+                h1(class='title', style='text-align:center') Power Grid
                 div(class="input-group")
-                    input(type="text", ng-model="newPlayerName", class="form-control" placeholder="Input Player...")
+                    input(type="text", ng-model="newPlayerName", class="form-control" placeholder="Input Player..." ng-keydown="$event.keyCode == 13 && addPlayer()")
                     span(class="input-group-btn")
                         button(class="btn btn-default" type="button" ng-click="addPlayer()")= "AddPlayer"
 

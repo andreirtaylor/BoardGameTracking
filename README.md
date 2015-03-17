@@ -7,64 +7,76 @@ This project is still under considerable development. Right now it is completely
 
 For now the instructions below are for Jonah and Adam (and sometimes Jason) so I am only outlining installation on Ubuntu and OSX
 
+Money Tracker is built on node 0.12.*
+
 ## How to Install and run
 
+There are basically 3 steps
+1. Install MongoDB
+2. Install node
+3. Clone and run the tracker
+
+### Install MongoDB (That Database Thing) 
+Mongo is cumpulsory. The server will not run without it.
+
+This is a summary of the rules found [here](http://docs.mongolab.com/connecting/#connect-string)
+
+1. Sign up for a free accout on [MongoLab](https://mongolab.com)
+2. Click on add database user and make a username and password.
+
+3. Put the username and password into the URI from the top of the mongolab page (case-sensitive)
+   ![](http://docs.mongolab.com/assets/screenshot-connectinfo.png)
+   ```i.e. "mongodb://wickedUsername:gloriousPassword@ds12345.mongolab.com:578910/sample-db" ```
+
+2. Make a new environment variable for this database (you will have to do this everytime you want to run the server).
+   **DISCLAIMER: If an elite HAX0R gets ahold of the URI they have complete control of your database. Keep this private**
+   *if you want to save this variable permanently stored google how to set environment variables.*
+
+   In Unixland:
+   ```export DATABASE= "mongodb://<dbuser>:<dbpassword>@<randomnumber>.mongolab.com:port/<Databasename>"```
+
+   In Windows CMD:
+   ```set PORT=1234```
+  
+   In Windows PowerShell:
+   ```$env:PORT = 1234```
+
+4. Run this command (you will only need to do this once per database)
+   ``` node test/setupSampleDB ``` this will give you the available game templates
+
+### Install Node
 1. Install nodejs from [nodejs.org](http://nodejs.org/download/)
 
-2. Clone the repository into a safe place
+### Clone and run the tracker
+1. Clone the repository into a safe place ```git https://github.com/andreirtaylor/MoneyTracker.git```
 
-#### If you have node and npm installed
+2. Go to the repo directory using the command line ``` cd MoneyTracker ```
 
-3. Go to the direcory using the command line
+3. type this ```npm start``` if that doesnt work try ```nodejs bin/www.js```
+  
+   you should see something along the lines of
+   ``` 
+   Connected correctly to Database
+   ds12345.mongolab.com:578910/sample-db
+   Listening on port 3000
+   ```
+   
+##Testing
 
-4. Type
+### Mocha
 
- ``` npm start ```
+``` npm install mocha -g ```
 
-#### If you do not have npm installed
+### Nodemon
 
-3. Go to the local /bin directory (the one within the MoneyTracker folder)
+``` npm install nodemon -g ```
 
-   ```cd ./bin```
-
-4. Depending on your system you have to type
-   ```node www``` or ```nodejs www```
-  *try both, one of them will work*
-
-### MongoDB (That Database Thing)
-
-MongoDB should be run in a separate terminal window from node and protractor
-
-1. [Download the installer](http://www.mongodb.org/downloads?_ga=1.137970489.844461423.1423907808) and run it
-
-  **Ubuntu Installation**
-
-   ```sudo apt-get install mongodb```
-
-2. in the command line type
-
-   ```mongod --version```
-
-  to make sure it installed correctly
-
-3. Run the command
-
-  ```mongod --dbpath=./sampleDB --port 55555```
-
-  This will start a local database inside of sampleDB this will take some time.
-
-  **Do not add this folder to the repository** It is a local database for you own development
-
-4. Now follow the above *Install and Run* commands to start the server
-
-### Protractor (That testing thing.... or something)
-
-This is only useful on the front end, Adam you can stop reading.
+### Protractor (That front end testing thing.... or something)
 
 Protractor relies on webdriver-manger running in the background and therefore should be run in a separate window from node and mongoDB. You should leave this process running while you are writing anything on the front end.
 
 1. Make sure you have the [Java SDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) installed
-  *jdk8 will eventually be out of date so make sure you are downloading the right version*
+   *jdk8 will eventually be out of date so make sure you are downloading the right version*
 
    **Ubuntu Instalation**
 

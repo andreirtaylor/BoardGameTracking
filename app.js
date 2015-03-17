@@ -26,6 +26,7 @@ var ObjectID = ObjectId();
 var Chance = require('chance');
 var chance = new Chance();
 var userDB = "userInfo";
+var templateDB = "gameTemplates";
 // variables for database
 // specify where you can connect to the database
 var dbUrl = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55556/gameDB';
@@ -55,7 +56,7 @@ var sess = {
 };
 var sessionMiddleware = session(sess);
 
-//===============Globalss for other files=============
+//===============Globals for other files=============
 app.dbUrl = dbUrl;
 app.chance = chance;
 app.passwordHash = passwordHash;
@@ -65,6 +66,7 @@ app.io = io;
 // because ObjectID is a constructor you have to run it in the file you want
 app.ObjectId = ObjectId;
 app.server = server;
+app.templateDB = templateDB;
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -122,9 +124,6 @@ passport.deserializeUser(function(user, done) {
     );
 });
 
-// this will only work after mongo has returned
-// this might be a good thing to block during the
-// connection to mongo
 // Authenticator
 passport.use(new LocalStrategy(function(username, password, done) {
     process.nextTick(function() {

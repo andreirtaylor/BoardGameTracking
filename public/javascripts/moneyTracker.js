@@ -1,31 +1,30 @@
-var addScreenLocation = 'addScreen';
-
 var app = angular.module('App', []);
 // this is the place to store the angular controllers.
 (function(){
         // the way that this is written it will not be able to be iminified
         // update this later
         app.controller('MT', ['$scope', 'socket', function ($scope , socket) {
-                // these socket functions are all possible because of the socket factory
-                socket.emit('connectme', { url: window.location.toString()});
-                socket.on('incomingGame', function(data){
-                    console.log(data)
-                    $scope.game = data;
-                    scopegame = $scope.game;
-                    $scope.playerList = data.gamePlayers;
-                });
+            // these socket functions are all possible because of the socket factory
+            socket.emit('connectme', { url: window.location.toString()}); 
+            
+            socket.on('incomingGame', function(data){ 
+                $scope.game = data;
+                scopegame = $scope.game;
+                $scope.gamePlayers = data.gamePlayers;
+            });
 
-                $scope.player = $scope.player?$scope.player:{};
+            $scope.player = $scope.player ? $scope.player : {};
 
-                $scope.clicked = false;
-                $scope.click = function(player){
-                    $scope.player = player;
-                    if($scope.clicked == true){
-                        $scope.clicked = false;
-                    }else{
-                        $scope.clicked = true;
-                    }
-                };
+            $scope.clicked = false;
+            
+            $scope.click = function(player){
+                $scope.player = player;
+                if($scope.clicked == true){
+                    $scope.clicked = false;
+                }else{
+                    $scope.clicked = true;
+                }
+            };
         }]);
 
         app.controller('Calculator', ['$scope', function($scope){
@@ -54,12 +53,15 @@ var app = angular.module('App', []);
             //appends number to calculator screen if there was already a number there
             //if - or + was pressed, flag is set, and new string starts
             var appendToOut = function(num){
-                if($scope.output === "0" || $scope.subtracttoken || $scope.addtoken){
+                if($scope.output === "0" || $scope.subtracttoken || $scope.addtoken || $scope.eqtoken){
                     $scope.output=num;
                     $scope.addtoken=false;
                     $scope.subtracttoken=false;
+                    $scope.eqtoken = false;
                 }else{
-                    $scope.output += String(num);
+                    if(!(num == 0 && $scope.output == "-")){
+                        $scope.output += String(num);
+                    }
                 }
             };
 
@@ -69,6 +71,7 @@ var app = angular.module('App', []);
                 $scope.savedVal = "";
                 $scope.addtoken = false;
                 $scope.subtracttoken = false;
+                $scope.eqtoken = false;
             };
 
             //if subtract or add was not clicked last, set add flag, add number to saved val followed by +
@@ -81,10 +84,13 @@ var app = angular.module('App', []);
                    $scope.savedVal += "+"
                    $scope.addtoken = true;
                 }
-                else if ($scope.addtoken==false && $scope.subtracttoken == false && $scope.output != "-"){
+                else if ($scope.addtoken==false && $scope.subtracttoken == false && $scope.output != "-" && $scope.output != "0"){
                     $scope.addtoken = true;
                     $scope.savedVal += $scope.output;
                     $scope.savedVal += "+"
+                }
+                else if ($scope.addtoken == false){
+                    $scope.output = "0";
                 }
             };
 
@@ -123,17 +129,17 @@ var app = angular.module('App', []);
                 $scope.savedVal = ""
                 $scope.subtracttoken = false;
                 $scope.subtracttoken = false;
+                $scope.eqtoken = true;
             };
-
-
-                $scope.addtoken = false;
-                $scope.subtracttoken = false;
+                
+            $scope.eqtoken = false;
+            $scope.addtoken = false;
+            $scope.subtracttoken = false;
             //end of calculator functions
 
         }]);
 
         app.controller('newgame', ['$scope', 'socket', function ($scope , socket) {
-            console.log('working')
             $scope.playerList = [];
             $scope.template = 'PowerGrid'
             $scope.newPlayerName = '';
@@ -152,7 +158,6 @@ var app = angular.module('App', []);
                 for(var i = 0; i < $scope.playerList.length; i++){
                     delete $scope.playerList[i].$$hashKey;
                 }
-                console.log($scope.playerList)
                 socket.emit('startGame', {
                     gamePlayers: $scope.playerList,
                     templateName: $scope.template
@@ -160,7 +165,7 @@ var app = angular.module('App', []);
             }
 
             socket.on('startGame', function(game){
-                window.location= "/gamescreen/?room=" + game.room;
+                window.location= game.room;
             });
         }]);
 
@@ -169,6 +174,8 @@ var app = angular.module('App', []);
                     $scope.player.cash += parseInt($scope.output);
                     $scope.clear();
                     $scope.click();
+                    // angular is adding this hashkey into the array 
+                    // we have to remove it before it goes into the datbase
                     for(var i = 0; i < $scope.game.gamePlayers.length; i++){
                         delete $scope.game.gamePlayers[i].$$hashKey;
                     }

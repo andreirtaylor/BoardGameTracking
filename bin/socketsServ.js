@@ -47,10 +47,9 @@ module.exports = function(app) {
         });
     };
 
-
-
     io.on('connection', function (socket) {
-        var userId = socket.request.session.passport.user;
+        var userId = socket.request.session.passport
+            && socket.request.session.passport.user;
         console.log("Your User ID is", userId);
 
         socket.on('startGame', function(game){
@@ -107,14 +106,14 @@ module.exports = function(app) {
             // find the player in the database
             username = socket.request.session.passport.user.username;
             gameDB.UR.findOne(
-                {'username': username }, 
+                {'username': username },
                 findUsers,
                 function(err, userFromDB){
-                    if(err){ 
-                        console.log("err from db" + err ); 
+                    if(err){
+                        console.log("err from db" + err );
                         return;
                     }
-                    // convert the games into object ids so we can find them
+                    //games in progress
                     gamesIP = userFromDB.inProgress;
                     gamesIP = gamesIP ? gamesIP : [];
                     var objectIds = gamesIP.map(function(idObj){
