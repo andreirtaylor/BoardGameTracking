@@ -98,7 +98,7 @@ router.post('/register', function(req, res, next) {
         return;
     }
     //check for valid email
-    var re = /^[\w.]+@[\w.].[\w]+$/
+    var re = /^\S+@\S+$/
     if(!re.test(email)){
         res.send("Invalid email");
         return;
