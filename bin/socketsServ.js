@@ -49,7 +49,7 @@ module.exports = function(app) {
 
     io.on('connection', function (socket) {
         var userId = socket.request.session.passport
-        && socket.request.session.passport.user;
+            && socket.request.session.passport.user;
         console.log("Your User ID is", userId);
 
         socket.on('startGame', function(game){
