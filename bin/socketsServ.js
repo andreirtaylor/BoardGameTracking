@@ -34,10 +34,10 @@ module.exports = function(app) {
         game.room = chance.integer({min:1000, max:10000}) + '-' + chance.province() + '-' + chance.state();
         var room = game.room;
         gamesDB.findOne({ 'room': room }, findGames, function (err, doc) {
-            if (err) _error(err);
+            _error(err);
             if (!doc) {
                 gamesDB.insert(game, function (err, result) {
-                    if (err) _error(err);
+                    _error(err);
                     // im not sure why we need to do this but it seems like
                     // the _id is being added into the game even though it shouldnt be.
                     callback(game);
@@ -64,13 +64,7 @@ module.exports = function(app) {
                         var query = { "username": username };
                         var gameId = doc._id;
                         var update = {$push: {inProgress: game._id} }
-                        userDB.update(
-                            query, 
-                            update,
-                            function(err, doc){
-                                _error(err);
-                            }
-                        );
+                        userDB.update( query, update );
                     }
                     delete game._id;
                     socket.emit('startGame', game);
@@ -81,7 +75,7 @@ module.exports = function(app) {
         socket.on('connectme', function (data) {
             var room = url.parse(data.url, true).query.room;
             gamesDB.findOne({ 'room': room }, findGames, function (err, game) {
-                if (err) _error(err);
+                _error(err);
                 if (game){
                     socket.room = game.room;
                     socket.join(game.room);
@@ -92,26 +86,14 @@ module.exports = function(app) {
 
         socket.on( 'updateGame' , function (game) {
             var room = game.room;
-            gamesDB.insert(game, function(err, result){
-                if (err) {
-                    _error(err);
+            var query = { 'room':room };
+            var update = { 
+                $set:{ 
+                    'gamePlayers':game.gamePlayers 
                 }
-                //if you inserted correctly remove the old one
-                else {
-                    gamesDB.remove({ 'room': room }, true, function (err, doc) {
-                        if (err) _error(err);
-                        if (doc) {
-                            gamesDB.insert(game, function (err, result) {
-                                if (err) _error(err);
-                                // im not sure why we need to do this but it seems like
-                                // the _id is being added into the game even though it shouldnt be.
-                                delete game._id;
-                                io.to(socket.room).emit('incomingGame', game);
-                            });
-                        }
-                    });
-                }
-            });
+            };
+            gamesDB.update( query, update );
+            io.to(socket.room).emit('incomingGame', game);
         });
 
         // initilizes the profile of a signed in player
