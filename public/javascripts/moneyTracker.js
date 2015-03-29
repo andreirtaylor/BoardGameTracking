@@ -187,6 +187,9 @@ var app = angular.module('App', []);
         app.controller('profile', ['$scope', 'socket', function ($scope , socket) {
             $scope.inProgress = [];
             $scope.username = '';
+            $scope.goTo = function(room){
+                window.location = room;
+            };
 
             socket.emit('initProfile', { username:'andrei' });
 
