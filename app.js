@@ -45,7 +45,7 @@ function passwordHash(password){
 }
 // session settings
 var sess = {
-    secret: 'Money Money',
+    secret: process.env.COOKIE ? process.env.COOKIE.trim() : 'Money Money',
     cookie: {},
     resave: false,
     saveUninitialized: false,
