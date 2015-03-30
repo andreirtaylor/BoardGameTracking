@@ -16,6 +16,7 @@ app.run(function(editableOptions) {
                 $scope.game = data;
                 scopegame = $scope.game;
                 $scope.gamePlayers = data.gamePlayers;
+                $scope.templateName = data.templateName;
             });
 
             $scope.player = $scope.player ? $scope.player : {};

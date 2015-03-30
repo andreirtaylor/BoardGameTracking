@@ -62,6 +62,7 @@ module.exports = function(app) {
                     socket.emit('invalidGameTemplate');
                     return;
                 }
+                game.templateName = doc.templateName;
                 for(var i = 0; i < game.gamePlayers.length; i++){
                     game.gamePlayers[i].cash = doc.startMoney;
                 };
