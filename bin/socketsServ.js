@@ -1,65 +1,81 @@
 module.exports = function(app) {
     var io = app.io;
-    var gameDB = app.db;
+    var db = app.db;
     var crypto = app.crypto;
     var chance = app.chance;
     var ObjectId = app.ObjectId();
     // the option for querying games from the database
-    var findGames = { '_id': 0, 'hash':0 }
-    var findUsers = { '_id': 0, 'hash':0 }
+    var findGames = { '_id': 0, 'hash':0 },
+        findUsers = { '_id': 0, 'hash':0 },
+        findTemplates = {'_id': 0 }
+
 
     var url = require('url');
 
     function _error(err) {
-        console.log('error from mongo' + err);
+        if(err){
+            console.log('error from mongo' + err);
+        }
     }
 
-    // GT = game templats collection
-    gameDB.GT = gameDB.collection('gameTemplates');
+    // GT = game template collection
+    templateDB = db.collection('gameTemplates');
     // GR = game repository
-    gameDB.GR = gameDB.collection('games');
+    gamesDB = db.collection('games');
     // UR user repository
-    gameDB.UR = gameDB.collection('userInfo');
+    userDB = db.collection('userInfo');
 
-    var parseGameTemplate = function(template){
+    var parseGameTemplate = function(object){
+        if (!object.templateName) return;
         return {
-            templateName: template.templateName
+            search: object.templateName.toUpperCase()
         };
     };
 
     // inserts a new game in the database
-    gameDB.insertNewGame = function (game, callback) {
-        game.room = chance.integer({min:1, max:10000}) + '-' + chance.province() + '-' + chance.state();
+    db.insertNewGame = function (game, callback) {
+        game.room = chance.integer({min:1000, max:10000}) + '-' + chance.province() + '-' + chance.state();
         var room = game.room;
-        gameDB.GR.findOne({ 'room': room }, findGames, function (err, doc) {
-            if (err) _error(err);
+        gamesDB.findOne({ 'room': room }, findGames, function (err, doc) {
+            _error(err);
             if (!doc) {
-                gameDB.GR.insert(game, function (err, result) {
-                    if (err) _error(err);
+                gamesDB.insert(game, function (err, result) {
+                    _error(err);
                     // im not sure why we need to do this but it seems like
                     // the _id is being added into the game even though it shouldnt be.
-                    delete game._id;
                     callback(game);
                 });
             } else {
-                gameDB.insertNewGame(game, callback);
+                console.log('re inserting');
+                db.insertNewGame(game, callback);
             }
         });
     };
 
     io.on('connection', function (socket) {
-        var userId = socket.request.session.passport
-            && socket.request.session.passport.user;
-        console.log("Your User ID is", userId);
-
         socket.on('startGame', function(game){
             var query = parseGameTemplate(game);
             // get the query from the game Templates collection
-            gameDB.GT.findOne( query, findGames, function(err, doc) {
+            templateDB.findOne( query, findGames, function(err, doc) {
+                _error(err);
+                if(!doc){
+                    socket.emit('invalidGameTemplate');
+                    return;
+                }
+                game.templateName = doc.templateName;
                 for(var i = 0; i < game.gamePlayers.length; i++){
                     game.gamePlayers[i].cash = doc.startMoney;
                 };
-                gameDB.insertNewGame(game, function(){
+                db.insertNewGame(game, function(game){
+                    var username = socket.request.session.passport.user &&
+                        socket.request.session.passport.user.username;
+                    if(username){
+                        var query = { "username": username };
+                        var gameId = doc._id;
+                        var update = {$push: {inProgress: game._id} }
+                        userDB.update( query, update );
+                    }
+                    delete game._id;
                     socket.emit('startGame', game);
                 });
             });
@@ -67,8 +83,8 @@ module.exports = function(app) {
 
         socket.on('connectme', function (data) {
             var room = url.parse(data.url, true).query.room;
-            gameDB.GR.findOne({ 'room': room }, findGames, function (err, game) {
-                if (err) _error(err);
+            gamesDB.findOne({ 'room': room }, findGames, function (err, game) {
+                _error(err);
                 if (game){
                     socket.room = game.room;
                     socket.join(game.room);
@@ -77,35 +93,34 @@ module.exports = function(app) {
             });
         });
 
+        socket.on('testTemplate', function(search){
+            var query = parseGameTemplate(search)
+            console.log(query);
+            templateDB.findOne(query, findTemplates,  function(err, template){
+                _error(err);
+                socket.emit('validTemplate', template)
+            })
+        });
+
         socket.on( 'updateGame' , function (game) {
             var room = game.room;
-            gameDB.GR.insert(game, function(err, result){
-                if (err) {
-                    _error(err);
+            var query = { 'room':room };
+            var update = {
+                $set:{
+                    'gamePlayers':game.gamePlayers
                 }
-                //if you inserted correctly remove the old one
-                else {
-                    gameDB.GR.remove({ 'room': room }, true, function (err, doc) {
-                        if (err) _error(err);
-                        if (doc) {
-                            gameDB.GR.insert(game, function (err, result) {
-                                if (err) _error(err);
-                                // im not sure why we need to do this but it seems like
-                                // the _id is being added into the game even though it shouldnt be.
-                                delete game._id;
-                                io.to(socket.room).emit('incomingGame', game);
-                            });
-                        }
-                    });
-                }
-            });
+            };
+            gamesDB.update( query, update );
+            io.to(socket.room).emit('incomingGame', game);
         });
 
         // initilizes the profile of a signed in player
         socket.on( 'initProfile' , function () {
             // find the player in the database
-            username = socket.request.session.passport.user.username;
-            gameDB.UR.findOne(
+            username = socket.request.session.passport.user &&
+                socket.request.session.passport.user.username;
+            if (!username) return;
+            userDB.findOne(
                 {'username': username },
                 findUsers,
                 function(err, userFromDB){
@@ -113,19 +128,17 @@ module.exports = function(app) {
                         console.log("err from db" + err );
                         return;
                     }
+
                     //games in progress
                     gamesIP = userFromDB.inProgress;
-                    gamesIP = gamesIP ? gamesIP : [];
-                    var objectIds = gamesIP.map(function(idObj){
-                        return new ObjectId(idObj._id);
-                    });
+                    objectIds = gamesIP ? gamesIP : [];
+
                     // go find the games
-                    gameDB.GR.find(
+                    gamesDB.find(
                         {'_id': { $in: objectIds }},
                         findGames
                         ).toArray(function(err, games){
                             userFromDB.inProgress = games;
-                            //console.log(userFromDB);
                             socket.emit('initProfile', userFromDB);
                         }
                     );

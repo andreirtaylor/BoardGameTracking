@@ -1,4 +1,9 @@
-var app = angular.module('App', []);
+var app = angular.module("App", ["xeditable"]);
+
+app.run(function(editableOptions) {
+      editableOptions.theme = 'bs3';
+});
+
 // this is the place to store the angular controllers.
 (function(){
         // the way that this is written it will not be able to be iminified
@@ -11,6 +16,7 @@ var app = angular.module('App', []);
                 $scope.game = data;
                 scopegame = $scope.game;
                 $scope.gamePlayers = data.gamePlayers;
+                $scope.templateName = data.templateName;
             });
 
             $scope.player = $scope.player ? $scope.player : {};
@@ -141,7 +147,11 @@ var app = angular.module('App', []);
 
         app.controller('newgame', ['$scope', 'socket', function ($scope , socket) {
             $scope.playerList = [];
-            $scope.template = 'PowerGrid'
+            $scope.template = { 
+                display:'test', 
+                templateName:'PowerGrid',
+                ready:false
+            };
             $scope.newPlayerName = '';
             $scope.addPlayer = function(name){
                 if($scope.newPlayerName){
@@ -153,6 +163,27 @@ var app = angular.module('App', []);
                 }
             };
 
+            socket.emit('testTemplate', { templateName: $scope.template.templateName });
+            
+            $scope.$watch('template.templateName', function(){
+                $scope.template.ready = false;
+                $scope.template.display = $scope.template.templateName;
+                console.log($scope.template);
+                socket.emit('testTemplate', $scope.template );
+            });
+
+            socket.on('validTemplate', function(template){
+                console.log(template)
+                if(template){
+                    $scope.template.display = template.templateName;
+                    $scope.template.ready = true;
+                }
+            })
+
+            socket.on('invalidGameTemplate', function(){
+                alert('invalid Game Template');
+            });
+
             $scope.startGame = function(){
                 console.log($scope.playerList, $scope.template);
                 for(var i = 0; i < $scope.playerList.length; i++){
@@ -160,7 +191,7 @@ var app = angular.module('App', []);
                 }
                 socket.emit('startGame', {
                     gamePlayers: $scope.playerList,
-                    templateName: $scope.template
+                    templateName: $scope.template.templateName
                 });
             }
 
@@ -187,6 +218,9 @@ var app = angular.module('App', []);
         app.controller('profile', ['$scope', 'socket', function ($scope , socket) {
             $scope.inProgress = [];
             $scope.username = '';
+            $scope.goTo = function(room){
+                window.location = room;
+            };
 
             socket.emit('initProfile', { username:'andrei' });
 
