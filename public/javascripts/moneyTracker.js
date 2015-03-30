@@ -179,6 +179,10 @@ app.run(function(editableOptions) {
                 }
             })
 
+            socket.on('invalidGameTemplate', function(){
+                alert('invalid Game Template');
+            });
+
             $scope.startGame = function(){
                 console.log($scope.playerList, $scope.template);
                 for(var i = 0; i < $scope.playerList.length; i++){

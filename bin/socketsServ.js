@@ -57,6 +57,11 @@ module.exports = function(app) {
             var query = parseGameTemplate(game);
             // get the query from the game Templates collection
             templateDB.findOne( query, findGames, function(err, doc) {
+                _error(err);
+                if(!doc){
+                    socket.emit('invalidGameTemplate');
+                    return;
+                }
                 for(var i = 0; i < game.gamePlayers.length; i++){
                     game.gamePlayers[i].cash = doc.startMoney;
                 };
@@ -92,16 +97,16 @@ module.exports = function(app) {
             console.log(query);
             templateDB.findOne(query, findTemplates,  function(err, template){
                 _error(err);
-                socket.emit('validTemplate', template) 
-            })  
+                socket.emit('validTemplate', template)
+            })
         });
 
         socket.on( 'updateGame' , function (game) {
             var room = game.room;
             var query = { 'room':room };
-            var update = { 
-                $set:{ 
-                    'gamePlayers':game.gamePlayers 
+            var update = {
+                $set:{
+                    'gamePlayers':game.gamePlayers
                 }
             };
             gamesDB.update( query, update );
