@@ -5,8 +5,10 @@ module.exports = function(app) {
     var chance = app.chance;
     var ObjectId = app.ObjectId();
     // the option for querying games from the database
-    var findGames = { '_id': 0, 'hash':0 }
-    var findUsers = { '_id': 0, 'hash':0 }
+    var findGames = { '_id': 0, 'hash':0 },
+        findUsers = { '_id': 0, 'hash':0 },
+        findTemplates = {'_id': 0 }
+
 
     var url = require('url');
 
@@ -16,16 +18,17 @@ module.exports = function(app) {
         }
     }
 
-    // GT = game templats collection
+    // GT = game template collection
     templateDB = db.collection('gameTemplates');
     // GR = game repository
     gamesDB = db.collection('games');
     // UR user repository
     userDB = db.collection('userInfo');
 
-    var parseGameTemplate = function(template){
+    var parseGameTemplate = function(object){
+        if (!object.templateName) return;
         return {
-            templateName: template.templateName
+            search: object.templateName.toUpperCase()
         };
     };
 
@@ -84,6 +87,15 @@ module.exports = function(app) {
             });
         });
 
+        socket.on('testTemplate', function(search){
+            var query = parseGameTemplate(search)
+            console.log(query);
+            templateDB.findOne(query, findTemplates,  function(err, template){
+                _error(err);
+                socket.emit('validTemplate', template) 
+            })  
+        });
+
         socket.on( 'updateGame' , function (game) {
             var room = game.room;
             var query = { 'room':room };
@@ -99,7 +111,9 @@ module.exports = function(app) {
         // initilizes the profile of a signed in player
         socket.on( 'initProfile' , function () {
             // find the player in the database
-            username = socket.request.session.passport.user.username;
+            username = socket.request.session.passport.user &&
+                socket.request.session.passport.user.username;
+            if (!username) return;
             userDB.findOne(
                 {'username': username },
                 findUsers,

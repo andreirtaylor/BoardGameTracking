@@ -4,11 +4,13 @@
 var templates = [
     { 
         startMoney: 50, 
-        templateName: "PowerGrid"
+        templateName: "PowerGrid",
+        search: "POWERGRID"
     },
     {
         startMoney: 1500,
-        templateName: "Monopoly"
+        templateName: "Monopoly",
+        search: "MONOPOLY" 
     }
 ]
 
@@ -18,7 +20,7 @@ var dbName = 'gameTemplates';
 // make the MongoClient
 var MongoClient = require('mongodb').MongoClient;
 // specify where you can connect to the database
-var url = process.env.DATABASE ? process.env.DATABASE : 'mongodb://localhost:55555/gameDB';
+var url = process.env.DATABASE ? process.env.DATABASE.trim() : 'mongodb://localhost:55555/gameDB';
 // connect to the database
 MongoClient.connect(url, function(err, db) {
     if(err){
@@ -43,8 +45,6 @@ MongoClient.connect(url, function(err, db) {
     // if you get here you connected
     console.log( "Connected correctly to Database" );
     console.log(url);
-    // now that we are connected, connect the socket and the server
-    // all of the socket logic is in the socketsServ file
 
     insert(templates);
 });

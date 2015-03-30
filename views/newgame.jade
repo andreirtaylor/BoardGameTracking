@@ -1,7 +1,6 @@
 extends layout.jade
 
 block scripts
-    script(src="/javascripts/angular.min.js")
     script(src="/socket.io/socket.io.js")
     script(src="/javascripts/moneyTracker.js")
     script(src="/javascripts/sockets.js")
@@ -12,7 +11,9 @@ block content
             div(class="row-fluid")
             div(class="col-sm-3 col-md-4 col-lg-4" )
             div(class="col-sm-6 col-md-4 col-lg-4", ng-controller="newgame")
-                h1(class='title', style='text-align:center') Power Grid
+                p(class='title', style='text-align:center')
+                    span(editable-text="template.templateName" e-form="textBtnForm")= '{{ template.display|| "No Game Selected" }}'
+                        button(class="btn btn-default" ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible")= "Change Game"
                 div(class="input-group")
                     input(type="text", ng-model="newPlayerName", class="form-control" placeholder="Input Player..." ng-keydown="$event.keyCode == 13 && addPlayer()")
                     span(class="input-group-btn")
