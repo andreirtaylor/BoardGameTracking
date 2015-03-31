@@ -7,6 +7,7 @@ var app = require('../app');
 var server = app.server;
 var debug = require('debug')('MoneyTracker:server');
 var http = require('http');
+var keepAlive = require('./keepAlive');
 
 /**
  * Get port from environment and store in Express.
@@ -45,6 +46,7 @@ app.MongoClient.connect(app.dbUrl, function(err, db) {
     server.listen(port);
     server.on('error', onError);
     server.on('listening', onListening);
+    keepAlive();
 });
 
 
