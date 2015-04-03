@@ -12,13 +12,13 @@ block content
             div(class="col-sm-3 col-md-4 col-lg-4" )
             div(class="col-sm-6 col-md-4 col-lg-4", ng-controller="newgame")
                 h1(class='title', style='text-align:center')
-                    span(ng-show="template.ready") &#10004 
-                    span(ng-hide="template.ready") &#10006
+                    span(class="glyphicon glyphicon-ok" ng-show="template.ready" style="font-size:30px;")
+                    span(class="glyphicon glyphicon-remove" ng-hide="template.ready" style="font-size:30px;")
                     span &nbsp 
                     span(editable-text="template.templateName" e-form="textBtnForm")
                         |{{ template.display|| "No Game Selected" }} &nbsp
                         span
-                            h3(class="glyphicon glyphicon-pencil" href="javascript: void(0)" ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible")
+                            h3(class="glyphicon glyphicon-pencil" href="javascript: void(0)" ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible" style="cursor:pointer;")
                 div(class="input-group")
                     input(type="text", ng-model="newPlayerName", class="form-control" placeholder="Input Player..." ng-keydown="$event.keyCode == 13 && addPlayer()")
                     span(class="input-group-btn")
@@ -26,8 +26,10 @@ block content
 
 
                 div(class="list-group")
-                    a(href="" class="list-group-item", ng-repeat="player in playerList", ng-click="remove(player)")
+                    div(class="list-group-item", ng-model="gamePlayer" ng-repeat="player in playerList")
                         p()= "{{ player.name }}"
+                            button(type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="removePlayer(player.name)")
+                                span(aria-hidden="true") &times
                 div(ng-controller="Emit")
                     button(class="btn btn-default", ng-click="startGame()", style="text-align:center")= "Start Game"
             div(class="col-sm-3 col-md-4 col-lg-4" )
