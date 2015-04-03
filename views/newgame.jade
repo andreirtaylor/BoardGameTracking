@@ -12,10 +12,13 @@ block content
             div(class="col-sm-3 col-md-4 col-lg-4" )
             div(class="col-sm-6 col-md-4 col-lg-4", ng-controller="newgame")
                 h1(class='title', style='text-align:center')
-                    span(ng-show="template.ready") &#10004
+                    span(ng-show="template.ready") &#10004 
                     span(ng-hide="template.ready") &#10006
-                    span(editable-text="template.templateName" e-form="textBtnForm")= '{{ template.display|| "No Game Selected" }}'
-                        button(class="btn btn-default" ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible")= "Change Game"
+                    span &nbsp 
+                    span(editable-text="template.templateName" e-form="textBtnForm")
+                        |{{ template.display|| "No Game Selected" }} &nbsp
+                        span
+                            h3(class="glyphicon glyphicon-pencil" href="javascript: void(0)" ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible")
                 div(class="input-group")
                     input(type="text", ng-model="newPlayerName", class="form-control" placeholder="Input Player..." ng-keydown="$event.keyCode == 13 && addPlayer()")
                     span(class="input-group-btn")
