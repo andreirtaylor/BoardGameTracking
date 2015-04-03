@@ -6,54 +6,56 @@ var express = require('express'),
     logger = require('morgan'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
-    session = require('express-session');
+    session = require('express-session'),
 // route forwarding
-var routes = require('./routes/index'),
+    routes = require('./routes/index'),
     users = require('./routes/users'),
     app = express(),
-    compression = require('compression');
+    compression = require('compression'),
 
 // ============DATABASE==================
 // mongo dependencies
-var MongoClient = require('mongodb').MongoClient,
+    MongoClient = require('mongodb').MongoClient,
     server = require('http').Server(app),
-    io = require('socket.io')(server)
+    io = require('socket.io')(server),
 // this is a litte confusing it is used to parse mogo id's
-var ObjectId = function(){
-    return require('mongodb').ObjectID;
-},
+    ObjectId = function(){
+        return require('mongodb').ObjectID;
+    },
     ObjectID = ObjectId(),
     Chance = require('chance'),
     chance = new Chance(),
     userDB = "userInfo",
-    templateDB = "gameTemplates";
+    templateDB = "gameTemplates",
 // variables for database
 // specify where you can connect to the database
-var dbUrl = process.env.DATABASE ? process.env.DATABASE.trim() : 'mongodb://localhost:55556/gameDB';
+    dbUrl = process.env.DATABASE ? process.env.DATABASE.trim() : 'mongodb://localhost:55556/gameDB';
 
 //============Authentication==============
-//authentication dependencies
-var passport = require('passport'),
+//authentication dependencie
+    passport = require('passport'),
     crypto = require('crypto'),
     LocalStrategy = require('passport-local').Strategy,
-    MongoStore = require('connect-mongo')(session);
-function passwordHash(password){
-    // https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm
-    var hash = crypto.createHash('sha1');
-    hash.update(password);
-    return hash.digest('hex') ;
-}
+    MongoStore = require('connect-mongo')(session),
+    passwordHash = function(password) {
+        // https://nodejs.org/api/crypto.html#crypto_crypto_createhash_algorithm
+        var hash = crypto.createHash('sha1');
+        hash.update(password);
+        return hash.digest('hex') ;
+    },
 // session settings
-var sess = {
-    secret: process.env.COOKIE ? process.env.COOKIE.trim() : 'Money Money',
-    cookie: {},
-    resave: false,
-    saveUninitialized: false,
-    store: new MongoStore({
-        url: dbUrl,
-        touchAfter: 0, // time period in seconds
-    })
-},
+    sess = {
+        secret: process.env.COOKIE ? process.env.COOKIE.trim() : 'Money Money',
+        cookie: {
+            maxAge: 24 * 3600000 // 24 hours
+       },
+        resave: true,
+        saveUninitialized: false,
+        store: new MongoStore({
+            url: dbUrl,
+            touchAfter: 0, // time period in seconds
+        })
+    },
     sessionMiddleware = session(sess);
 
 //===============Globals for other files=============
@@ -159,6 +161,7 @@ app.use(function(req,res,next){
     req.passwordHash = app.passwordHash;
     req.userDB = userDB;
     req.db = app.db;
+    console.log(req.session.cookie)
     next();
 });
 

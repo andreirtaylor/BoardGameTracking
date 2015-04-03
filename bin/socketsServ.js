@@ -46,7 +46,6 @@ module.exports = function(app) {
                     callback(game);
                 });
             } else {
-                console.log('re inserting');
                 db.insertNewGame(game, callback);
             }
         });
@@ -95,7 +94,6 @@ module.exports = function(app) {
 
         socket.on('testTemplate', function(search){
             var query = parseGameTemplate(search)
-            console.log(query);
             templateDB.findOne(query, findTemplates,  function(err, template){
                 _error(err);
                 socket.emit('validTemplate', template)
@@ -124,11 +122,7 @@ module.exports = function(app) {
                 {'username': username },
                 findUsers,
                 function(err, userFromDB){
-                    if(err){
-                        console.log("err from db" + err );
-                        return;
-                    }
-
+                    _error(err);
                     //games in progress
                     gamesIP = userFromDB.inProgress;
                     objectIds = gamesIP ? gamesIP : [];
