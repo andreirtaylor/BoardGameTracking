@@ -153,7 +153,7 @@ app.run(function(editableOptions) {
                 ready:false
             };
             $scope.newPlayerName = '';
-            $scope.addPlayer = function(name){
+            $scope.addPlayer = function(){
                 if($scope.newPlayerName){
                     var player = {
                         "name": $scope.newPlayerName
@@ -161,6 +161,9 @@ app.run(function(editableOptions) {
                     $scope.playerList.push(player);
                     $scope.newPlayerName = '';
                 }
+            };
+            $scope.removePlayer = function(name){
+                $scope.playerList.splice(name,1);
             };
 
             socket.emit('testTemplate', { templateName: $scope.template.templateName });
@@ -202,6 +205,7 @@ app.run(function(editableOptions) {
 
         app.controller('Emit', ['$scope', 'socket', function ($scope , socket) {
                 $scope.update = function(){
+                    if($scope.output=="-") scope.output=0;
                     $scope.player.cash += parseInt($scope.output);
                     $scope.clear();
                     $scope.click();
