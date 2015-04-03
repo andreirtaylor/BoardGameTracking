@@ -27,7 +27,7 @@ This is the template that is used to start the game, they remain static in the g
 { 
     	_id: "adfadsf3234adfsafdafsdf" // this is assigned by mongo
     	startMoney:50, //ammount of money that a game defaults to  
-    	templateName: "PowerGrid", //display name of the game that is currently being played capitilized according to the game
+    	templateName: "PowerGrid", //display name of the game, case sensitive
     	search : "POWERGRID" // case insensitive search for the game
     	maxPlayers: 2, // maximum number of players
     	minPlayers: 3, // minimum number of players
