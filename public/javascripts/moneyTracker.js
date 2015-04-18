@@ -149,7 +149,7 @@ app.run(function(editableOptions) {
             $scope.playerList = [];
             $scope.template = { 
                 display:'test', 
-                templateName:'PowerGrid',
+                templateName:'Monopoly',
                 ready:false
             };
             $scope.newPlayerName = '';
