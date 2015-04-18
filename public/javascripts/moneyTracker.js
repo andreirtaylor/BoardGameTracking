@@ -222,11 +222,26 @@ app.run(function(editableOptions) {
         app.controller('profile', ['$scope', 'socket', function ($scope , socket) {
             $scope.inProgress = [];
             $scope.username = '';
+            $scope.pageNum = 1;
+            $scope.inc_page = function(num){
+                $scope.pageNum = $scope.pageNum == 1 && num < 0 ? 1 : $scope.pageNum + num;
+                socket.emit("initProfile", {
+                    username:'andrei',
+                    nPerPage: 5,
+                    pageNumber: $scope.pageNum
+                });
+            }
+
             $scope.goTo = function(room){
                 window.location = room;
             };
 
-            socket.emit('initProfile', { username:'andrei' });
+            socket.emit('initProfile', { 
+                username:'andrei',
+                nPerPage: 5,
+                pageNumber: $scope.pageNum
+            });
+
 
             socket.on('initProfile', function(profile){
                 $scope.username = profile.username;       

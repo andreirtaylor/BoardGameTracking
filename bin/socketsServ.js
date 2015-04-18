@@ -113,10 +113,14 @@ module.exports = function(app) {
         });
 
         // initilizes the profile of a signed in player
-        socket.on( 'initProfile' , function () {
+        socket.on( 'initProfile' , function (data) {
+            var pageNumber = data.pageNumber,
+                nPerPage = data.nPerPage;
+
             // find the player in the database
             username = socket.request.session.passport.user &&
                 socket.request.session.passport.user.username;
+            ret = []
             if (!username) return;
             userDB.findOne(
                 {'username': username },
@@ -131,7 +135,11 @@ module.exports = function(app) {
                     gamesDB.find(
                         {'_id': { $in: objectIds }},
                         findGames
-                        ).toArray(function(err, games){
+                        )
+                        .skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0)
+                        .limit(nPerPage)
+                        .toArray(function(err, games){
+                            console.log(pageNumber, nPerPage)
                             userFromDB.inProgress = games;
                             socket.emit('initProfile', userFromDB);
                         }
