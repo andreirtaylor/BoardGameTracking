@@ -97,6 +97,12 @@ router.post('/register', function(req, res, next) {
         res.send("Passwords do not match");
         return;
     }
+    //check for valid email
+    var re = /^\S+@\S+$/
+    if(!re.test(email)){
+        res.send("Invalid email");
+        return;
+    }
     //check for duplicates in the database
     db.collection(userDB).findOne({ 'username': username }, function (err, user){
         if(err){
