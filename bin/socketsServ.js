@@ -139,9 +139,11 @@ module.exports = function(app) {
                         .skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0)
                         .limit(nPerPage)
                         .toArray(function(err, games){
-                            console.log(pageNumber, nPerPage)
                             userFromDB.inProgress = games;
-                            socket.emit('initProfile', userFromDB);
+                            console.log(games)
+                            if(games.length > 0){
+                                socket.emit('initProfile', userFromDB);
+                            }
                         }
                     );
                 }
