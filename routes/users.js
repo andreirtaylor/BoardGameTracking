@@ -83,25 +83,28 @@ router.post('/register', function(req, res, next) {
     var db = req.db;
     var passwordHash = req.passwordHash;
     // get the username, password, password confirm, and email
-    var username = req.body.username;
-    var password = req.body.password;
-    var passConf = req.body.passwordConf;
-    var email = req.body.email;
+    var username = req.body.username.trim();
+    var password = req.body.password.trim();
+    var passConf = req.body.passwordConf.trim();
+    var email = req.body.email.trim();
     // make sure that all fields are filled
     if(!req.body.username || !req.body.password || !req.body.passwordConf || !req.body.email){
-        res.send("All boxes must contain something");
-        return;
+        return res.render('register', {
+            message:"Please fill all fields",
+            type: "danger"});
     }
     //make sure the passwords match
     if(!(password === passConf)){
-        res.send("Passwords do not match");
-        return;
+        return res.render('register', {
+            message:"Passwords do not match",
+            type: "danger"});
     }
     //check for valid email
     var re = /^\S+@\S+$/
     if(!re.test(email)){
-        res.send("Invalid email");
-        return;
+        return res.render('register',{
+            message:"Email not valid",
+            type: "danger"});
     }
     //check for duplicates in the database
     db.collection(userDB).findOne({ 'username': username }, function (err, user){
