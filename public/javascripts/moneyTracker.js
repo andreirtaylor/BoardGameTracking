@@ -155,6 +155,11 @@ app.run(function(editableOptions) {
             $scope.newPlayerName = '';
             $scope.addPlayer = function(){
                 if($scope.newPlayerName){
+                    for(i=0;i<$scope.playerList.length;i++){
+                        if($scope.playerList[i].name == $scope.newPlayerName){
+                            return;
+                        }
+                    }
                     var player = {
                         "name": $scope.newPlayerName
                     }
