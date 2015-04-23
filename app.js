@@ -130,7 +130,7 @@ passport.deserializeUser(function(user, done) {
 passport.use(new LocalStrategy(function(username, password, done) {
     process.nextTick(function() {
         app.db.collection(userDB).findOne(
-            {'username': username },
+            {'search': username.toUpperCase() },
             findUsers,
             function(err, user) {
                 if (err) {

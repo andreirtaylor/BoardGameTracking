@@ -11,7 +11,7 @@ function parameterGen(req, message){
             username: user.username,
             message: message
         }
-    }
+}
 }
 
 // render pages with the correct dropdown menu if the
@@ -107,7 +107,7 @@ router.post('/register', function(req, res, next) {
             type: "danger"});
     }
     //check for duplicates in the database
-    db.collection(userDB).findOne({ 'username': username }, function (err, user){
+    db.collection(userDB).findOne({ 'search': username.toUpperCase() }, function (err, user){
         if(err){
             res.send('Error processing request');
         }
@@ -122,20 +122,18 @@ router.post('/register', function(req, res, next) {
             db.collection(userDB).insert({ 
                     "username": username,
                     "hash": password,
-                    "email": email
+                    "email": email,
+                    "search": username.toUpperCase()
                 }, function(err){
                     if(err){
                         res.send("Error processing request");
                     }else{
-                        return res.render('register', {
-                            message:"Go to login to sign in",
-                            type: "success"
-                        }); 
+                        res.redirect('/login');
                     }
                 }
             );
         }
-    })
+    });
 });
 
 router.get('/logout', function(req, res, next) {
@@ -149,7 +147,7 @@ function ensureAuthenticated(req, res, next) {
         req.user.loggedIn = true;
         return next(); 
     }
-    res.redirect('/login')
+    res.redirect('/login');
 }
 
 router.use(ensureAuthenticated);
@@ -158,14 +156,5 @@ router.use(ensureAuthenticated);
 router.get('/profile',  function(req, res, next) {
 	res.render('profile', parameterGen(req));
 });
-
-//little secret for the ladies ;)
-router.get(
-    '/lounge',
-    ensureAuthenticated, 
-    function(req,res,next){
-        res.send("you found it baby.") 
-    }
-);
 
 module.exports = router;

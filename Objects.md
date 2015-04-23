@@ -41,6 +41,7 @@ The user object stores information of a registered user they are dynamy and stor
 	_id: :"adfasdakkdkadsaadfa" //id assigned by mongo
 	username: "Andrei" // username 
 	hash: "string" // password this should never be sent to the client
+    search: "ANDREI" // username in all caps so andrei and AnDrEi both match this object
 	completedGames: [ //array of object ids of games completed ordered by creation
 		"asdfads8fiads9f8asdfia9d8", //game id in gamedb
 		...	
