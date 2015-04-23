@@ -1,26 +1,26 @@
-'use strict';
-
 // list of game templates
 var templates = [
-    { 
-        startMoney: 50, 
+    {
+        startMoney: 50,
         templateName: "PowerGrid",
         search: "POWERGRID"
     },
     {
         startMoney: 1500,
         templateName: "Monopoly",
-        search: "MONOPOLY" 
+        search: "MONOPOLY"
     }
 ]
 
 var dbName = 'gameTemplates';
 
-
 // make the MongoClient
 var MongoClient = require('mongodb').MongoClient;
 // specify where you can connect to the database
-var url = process.env.DATABASE ? process.env.DATABASE.trim() : 'mongodb://localhost:55555/gameDB';
+var url = process.env.DATABASE && process.env.DATABASE.trim();
+
+if(!url){ console.log("NO DATABASE, ") }
+
 // connect to the database
 MongoClient.connect(url, function(err, db) {
     if(err){
@@ -29,22 +29,24 @@ MongoClient.connect(url, function(err, db) {
         console.log('Did not connect to database');
         return;
     }
-
-    // insert document into the game db
-    var insert = function(documents){
-        // Get the documents collection
-        var collection = db.collection(dbName);
-        // Insert some documents
-        collection.insert(documents, function(err, result) {
-            if(!err){
-            }
-                db.close();
-        });
-    };
-    
     // if you get here you connected
     console.log( "Connected correctly to Database" );
     console.log(url);
 
-    insert(templates);
+    // Get the documents collection
+    var collection = db.collection(dbName);
+    // clear the db
+    collection.remove({}, function(){
+        // Insert the templates
+        console.log("Removed old templates")
+        collection.insert(templates, function(err, result) {
+            if(err){
+                console.error("Messed up the insert, you are going to have to try again");
+                console.log(err);
+                return;
+            }
+                console.log("you inserted " + templates.length + " documents");
+                db.close();
+        });
+    });
 });
