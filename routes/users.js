@@ -153,7 +153,6 @@ router.use(ensureAuthenticated);
 
 //if it is a success send them this
 router.get('/profile',  function(req, res, next) {
-    console.log(req.message)
 	res.render('profile', parameterGen(req));
 });
 

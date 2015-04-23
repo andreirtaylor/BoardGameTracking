@@ -2,16 +2,39 @@ extends layout
 
 block content
     div(class="container-fluid", ng-hide="clicked")
-        div(class="row-fluid")
-        div(class="col-sm-3 col-md-4 col-lg-4" )
-        div(class="col-sm-6 col-md-4 col-lg-4" )
-            h1(class='title', style='text-align:center').
-                Board Game Money Tracking!
-            p
-            p(style="text-align:center").
-                Paper money is lame, track your money in style
-            p
-            p
-            a(href="/newgame")
-                button(type="button", class="btn btn-success btn-group-justified btn-xl")= "Start a Game now!"
-        div(class="col-sm-3 col-md-4 col-lg-4" )
+        .row
+            div(class="col-sm-3 col-md-4 col-lg-4" )
+            div(class="col-sm-6 col-md-4 col-lg-4" )
+                h1(class='title', style='text-align:center').
+                    Board Game Money Tracking!
+                p
+                p(style="text-align:center").
+                    Paper money is lame, track your money in style
+                p
+                p
+            div(class="col-sm-3 col-md-4 col-lg-4" )
+        
+        .row.row-list(style="text-align:center;")
+            .col-lg-4.col-md-4.col-sm-4.col-xs.12(style="margin-top:10px;")
+                div(style="background-color:#EEE;border-radius:10px;")
+                    p Click on new game on the top right of the screen to get started, you should then see a screen that looks like this
+                    img(class="img-responsive center-block" src="../images/tutorial/newgame.png" width="90%")
+                    p You can also click on the pencil icon to choose a different game, try inputting a game like: "Monopoly".
+                    p The game name will determine how much money you start with.
+            .col-lg-4.col-md-4.col-sm-4.col-xs.12(style="margin-top:10px;")
+                div(style="background-color:#EEE;border-radius:10px;")
+                    p Once you've input all your players, click start game to start your new game.
+                    p You will now be looking at the game screen. 
+                    p At the top of the screen you should see a bunch of numbers and letters that looks something like this
+                    .alert.alert-info.center-block(style="text-align:center;width:90%;") 4310-BC-NY 
+                    p This is your room number.
+                    p Tell your friends to go to boardgametracking.com/4310-BC-NY to see the game in progress.
+                    img(class="img-responsive center-block" src="../images/tutorial/player.png" width="90%")
+                    p Each player will now have some money.
+                    p If you want to edit this player's money, click on their name and you will be brought to the calculator screen.
+                    p Only the banker has the option of changing player's money.
+            .col-lg-4.col-md-4.col-sm-4.col-xs.12(style="margin-top:10px;")
+                div(style="background-color:#EEE;border-radius:10px;")
+                    p Within the calculator screen, you can add or subtract money from the player, click update and the change will be made.
+                    p Each update will be broadcast live to all players in the gamescreen.
+                    img(class="img-responsive center-block" src="../images/tutorial/calculator.png" width="90%")

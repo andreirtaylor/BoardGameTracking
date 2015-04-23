@@ -1,5 +1,5 @@
-# MoneyTracker
-  *Easy tracking of board game money.*
+# BoardGameTracking
+  *Paper is lame, track your games in real-time online!*
 
 This, will be, a web based application that allows players to track their money while playing board games.
 
@@ -22,9 +22,10 @@ Mongo is cumpulsory. The server will not run without it.
 This is a summary of the rules found [here](http://docs.mongolab.com/connecting/#connect-string)
 
 1. Sign up for a free accout on [MongoLab](https://mongolab.com)
-2. Click on add database user and make a username and password.
+2. Click on the "Users" tab then add database user.
+   **remember the username and password of the database user as they are the ones used below**
 
-3. Put the username and password into the URI from the top of the mongolab page (case-sensitive)
+3. Put the username and password of the **database user you just created** into the URI from the top of the mongolab page (case-sensitive)
    ![](http://docs.mongolab.com/assets/screenshot-connectinfo.png)
    ```i.e. "mongodb://wickedUsername:gloriousPassword@ds12345.mongolab.com:578910/sample-db" ```
 
@@ -109,3 +110,6 @@ If you are running Ubuntu you may get a pretty criptic error saying that you don
       ```sudo apt-get install nodejs-legacy```
 
 For more information on why you have to do this see [here](http://stackoverflow.com/questions/21168141/can-not-install-packages-using-node-package-manager-in-ubuntu)
+
+### Cant connect to the database?
+Make sure you are using the username and password of a database user that you created. This is not the username that you use to login to mongolab. 

@@ -1,4 +1,9 @@
-var app = angular.module('App', []);
+var app = angular.module("App", ["xeditable"]);
+
+app.run(function(editableOptions) {
+      editableOptions.theme = 'bs3';
+});
+
 // this is the place to store the angular controllers.
 (function(){
         // the way that this is written it will not be able to be iminified
@@ -11,6 +16,7 @@ var app = angular.module('App', []);
                 $scope.game = data;
                 scopegame = $scope.game;
                 $scope.gamePlayers = data.gamePlayers;
+                $scope.templateName = data.templateName;
             });
 
             $scope.player = $scope.player ? $scope.player : {};
@@ -141,9 +147,13 @@ var app = angular.module('App', []);
 
         app.controller('newgame', ['$scope', 'socket', function ($scope , socket) {
             $scope.playerList = [];
-            $scope.template = 'PowerGrid'
+            $scope.template = { 
+                display:'test', 
+                templateName:'Monopoly',
+                ready:false
+            };
             $scope.newPlayerName = '';
-            $scope.addPlayer = function(name){
+            $scope.addPlayer = function(){
                 if($scope.newPlayerName){
                     var player = {
                         "name": $scope.newPlayerName
@@ -152,6 +162,30 @@ var app = angular.module('App', []);
                     $scope.newPlayerName = '';
                 }
             };
+            $scope.removePlayer = function(name){
+                $scope.playerList.splice(name,1);
+            };
+
+            socket.emit('testTemplate', { templateName: $scope.template.templateName });
+            
+            $scope.$watch('template.templateName', function(){
+                $scope.template.ready = false;
+                $scope.template.display = $scope.template.templateName;
+                console.log($scope.template);
+                socket.emit('testTemplate', $scope.template );
+            });
+
+            socket.on('validTemplate', function(template){
+                console.log(template)
+                if(template){
+                    $scope.template.display = template.templateName;
+                    $scope.template.ready = true;
+                }
+            })
+
+            socket.on('invalidGameTemplate', function(){
+                alert('invalid Game Template');
+            });
 
             $scope.startGame = function(){
                 console.log($scope.playerList, $scope.template);
@@ -160,7 +194,7 @@ var app = angular.module('App', []);
                 }
                 socket.emit('startGame', {
                     gamePlayers: $scope.playerList,
-                    templateName: $scope.template
+                    templateName: $scope.template.templateName
                 });
             }
 
@@ -171,6 +205,7 @@ var app = angular.module('App', []);
 
         app.controller('Emit', ['$scope', 'socket', function ($scope , socket) {
                 $scope.update = function(){
+                    if($scope.output=="-") scope.output=0;
                     $scope.player.cash += parseInt($scope.output);
                     $scope.clear();
                     $scope.click();
@@ -187,8 +222,26 @@ var app = angular.module('App', []);
         app.controller('profile', ['$scope', 'socket', function ($scope , socket) {
             $scope.inProgress = [];
             $scope.username = '';
+            $scope.pageNum = 1;
+            $scope.inc_page = function(num){
+                $scope.pageNum = $scope.pageNum == 1 && num < 0 ? 1 : $scope.pageNum + num;
+                socket.emit("initProfile", {
+                    username:'andrei',
+                    nPerPage: 5,
+                    pageNumber: $scope.pageNum
+                });
+            }
 
-            socket.emit('initProfile', { username:'andrei' });
+            $scope.goTo = function(room){
+                window.location = room;
+            };
+
+            socket.emit('initProfile', { 
+                username:'andrei',
+                nPerPage: 5,
+                pageNumber: $scope.pageNum
+            });
+
 
             socket.on('initProfile', function(profile){
                 $scope.username = profile.username;       

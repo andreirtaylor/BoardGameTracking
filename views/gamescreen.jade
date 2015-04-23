@@ -1,7 +1,6 @@
 extends layout
 
 block scripts
-    script(src="/javascripts/angular.min.js")
     script(src="/socket.io/socket.io.js")
     script(src="/javascripts/moneyTracker.js")
     script(src="/javascripts/sockets.js")
@@ -13,7 +12,7 @@ block content
             div(class="col-sm-3 col-md-4 col-lg-4" )
             div(class="col-sm-6 col-md-4 col-lg-4" )
                 h1(class='title', style='text-align:center').
-                    Power Grid
+                    {{ templateName }}
                 p
                 div(class="list-group")
                     a(href="" class="list-group-item", ng-repeat="player in gamePlayers", ng-click="click(player)")
