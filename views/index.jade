@@ -3,8 +3,7 @@ extends layout
 block content
     div(class="container-fluid", ng-hide="clicked")
         .row
-            div(class="col-sm-3 col-md-4 col-lg-4" )
-            div(class="col-sm-6 col-md-4 col-lg-4" )
+            .col-sm-6.col-md-4.col-lg-4.col-sm-offset-3.col-md-offset-4.col-lg-offset-4
                 h1(class='title', style='text-align:center').
                     Board Game Money Tracking!
                 p
@@ -12,7 +11,6 @@ block content
                     Paper money is lame, track your money in style
                 p
                 p
-            div(class="col-sm-3 col-md-4 col-lg-4" )
         
         .row.row-list(style="text-align:center;")
             .col-lg-4.col-md-4.col-sm-4.col-xs.12(style="margin-top:10px;")
