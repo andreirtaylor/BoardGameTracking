@@ -163,7 +163,12 @@ app.run(function(editableOptions) {
                 }
             };
             $scope.removePlayer = function(name){
-                $scope.playerList.splice(name,1);
+                for(i=0;i<$scope.playerList.length;i++){
+                    if($scope.playerList[i].name == name){
+                      $scope.playerList.splice(i,1);
+                    }
+                }
+                
             };
 
             socket.emit('testTemplate', { templateName: $scope.template.templateName });
