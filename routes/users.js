@@ -11,7 +11,7 @@ function parameterGen(req, message){
             username: user.username,
             message: message
         }
-    }
+}
 }
 
 // render pages with the correct dropdown menu if the
@@ -107,7 +107,7 @@ router.post('/register', function(req, res, next) {
             type: "danger"});
     }
     //check for duplicates in the database
-    db.collection(userDB).findOne({ 'SEARCH': username.toUpperCase() }, function (err, user){
+    db.collection(userDB).findOne({ 'search': username.toUpperCase() }, function (err, user){
         if(err){
             res.send('Error processing request');
         }
@@ -123,7 +123,7 @@ router.post('/register', function(req, res, next) {
                     "username": username,
                     "hash": password,
                     "email": email,
-                    "SEARCH": username.toUpperCase()
+                    "search": username.toUpperCase()
                 }, function(err){
                     if(err){
                         res.send("Error processing request");
@@ -156,14 +156,5 @@ router.use(ensureAuthenticated);
 router.get('/profile',  function(req, res, next) {
 	res.render('profile', parameterGen(req));
 });
-
-//little secret for the ladies ;)
-router.get(
-    '/lounge',
-    ensureAuthenticated, 
-    function(req,res,next){
-        res.send("you found it baby.") 
-    }
-);
 
 module.exports = router;
