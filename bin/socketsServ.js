@@ -130,18 +130,17 @@ module.exports = function(app) {
                     //games in progress
                     gamesIP = userFromDB.inProgress;
                     objectIds = gamesIP ? gamesIP : [];
-
                     // go find the games
                     gamesDB.find(
                         {'_id': { $in: objectIds }},
                         findGames
                         )
-                        .skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0)
+                        .skip(pageNumber > 1 ? ((pageNumber-1)*nPerPage) : 1)
                         .limit(nPerPage)
                         .toArray(function(err, games){
                             userFromDB.inProgress = games;
-                            console.log(games)
                             if(games.length > 0){
+                                userFromDB.pageNum = pageNumber < 1 ? 1: pageNumber;
                                 socket.emit('initProfile', userFromDB);
                             }
                         }
