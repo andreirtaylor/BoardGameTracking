@@ -9,8 +9,8 @@ block content
     div()
         div(class="container-fluid", ng-hide="clicked")
             div(class="row-fluid")
-            div(class="col-sm-3 col-md-4 col-lg-4" )
-            div(class="col-sm-6 col-md-4 col-lg-4", ng-controller="newgame")
+            //div(class="col-sm-3 col-md-4 col-lg-4" )
+            div(class="col-md-4 col-md-offset-4", ng-controller="newgame")
                 h1(class='title', style='text-align:center')
                     span(class="glyphicon glyphicon-ok" ng-show="template.ready" style="font-size:30px;")
                     span(class="glyphicon glyphicon-remove" ng-hide="template.ready" style="font-size:30px;")
@@ -24,7 +24,6 @@ block content
                     span(class="input-group-btn")
                         button(class="btn btn-default" type="button" ng-click="addPlayer()")= "AddPlayer"
 
-
                 div(class="list-group")
                     div(class="list-group-item", ng-model="gamePlayer" ng-repeat="player in playerList")
                         p()= "{{ player.name }}"
@@ -32,4 +31,4 @@ block content
                                 span(aria-hidden="true") &times
                 div(ng-controller="Emit")
                     button(class="btn btn-default", ng-click="startGame()", style="text-align:center")= "Start Game"
-            div(class="col-sm-3 col-md-4 col-lg-4" )
+            //div(class="col-sm-3 col-md-4 col-lg-4" )
