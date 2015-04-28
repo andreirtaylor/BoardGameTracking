@@ -135,7 +135,8 @@ module.exports = function(app) {
                         {'_id': { $in: objectIds }},
                         findGames
                         )
-                        .skip(pageNumber > 1 ? ((pageNumber-1)*nPerPage) : 1)
+                        .sort({$natural:-1})
+                        .skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0)
                         .limit(nPerPage)
                         .toArray(function(err, games){
                             userFromDB.inProgress = games;
