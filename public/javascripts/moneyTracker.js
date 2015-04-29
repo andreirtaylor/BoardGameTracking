@@ -1,11 +1,8 @@
 var app = angular.module("App", ["xeditable"]);
 
-app.run(function() {
-        FastClick.attach(document.body);
-});
-
 app.run(function(editableOptions) {
     editableOptions.theme = 'bs3';
+    FastClick.attach(document.body);
 });
 
 // this is the place to store the angular controllers.
