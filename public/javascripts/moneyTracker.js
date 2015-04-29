@@ -154,6 +154,7 @@ app.run(function(editableOptions) {
                 templateName:'Monopoly',
                 ready:false
             };
+
             $scope.newPlayerName = '';
             $scope.addPlayer = function(){
                 if($scope.newPlayerName){
@@ -175,10 +176,7 @@ app.run(function(editableOptions) {
                       $scope.playerList.splice(i,1);
                     }
                 }
-                
             };
-
-            socket.emit('testTemplate', { templateName: $scope.template.templateName });
             
             $scope.$watch('template.templateName', function(){
                 $scope.template.ready = false;
@@ -213,7 +211,16 @@ app.run(function(editableOptions) {
             socket.on('startGame', function(game){
                 window.location= game.room;
             });
+
+            socket.on("userLoggedIn", function(player){
+                $scope.playerList.push(player);
+            });
+
+            // test the template and see if logged in
+            socket.emit('testTemplate', { templateName: $scope.template.templateName });
+            socket.emit('newGameLoggedIn');
         }]);
+
 
         app.controller('Emit', ['$scope', 'socket', function ($scope , socket) {
                 $scope.update = function(){
