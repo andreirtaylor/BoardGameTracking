@@ -52,6 +52,14 @@ module.exports = function(app) {
     };
 
     io.on('connection', function (socket) {
+        socket.on('newGameLoggedIn', function(){
+            var username = socket.request.session.passport.user &&
+                socket.request.session.passport.user.username;
+            var player = { name:username };
+            if(username){
+                socket.emit('userLoggedIn', player);
+            }
+        }); 
         socket.on('startGame', function(game){
             var query = parseGameTemplate(game);
             // get the query from the game Templates collection
