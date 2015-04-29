@@ -132,9 +132,9 @@ app.run(function(editableOptions) {
             var solve = function(){
                 $scope.savedVal += $scope.output;
                 $scope.output = $scope.savedVal;
-                if(eval($scope.output <= 9999999999)) $scope.output = eval($scope.output);
-                else $scope.output = 'error'
-                $scope.savedVal = ""
+                if(eval($scope.output) <= 9999999999) $scope.output = eval($scope.output);
+                else $scope.output = 'error';
+                $scope.savedVal = "";
                 $scope.subtracttoken = false;
                 $scope.subtracttoken = false;
                 $scope.eqtoken = true;
