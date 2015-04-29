@@ -1,11 +1,8 @@
 var app = angular.module("App", ["xeditable"]);
 
-app.run(function() {
-        FastClick.attach(document.body);
-});
-
 app.run(function(editableOptions) {
     editableOptions.theme = 'bs3';
+    FastClick.attach(document.body);
 });
 
 // this is the place to store the angular controllers.
@@ -68,7 +65,7 @@ app.run(function(editableOptions) {
                     $scope.addtoken=false;
                     $scope.subtracttoken=false;
                     $scope.eqtoken = false;
-                }else{
+                }else if($scope.output.length<10){
                     if(!(num == 0 && $scope.output == "-")){
                         $scope.output += String(num);
                     }
@@ -135,8 +132,9 @@ app.run(function(editableOptions) {
             var solve = function(){
                 $scope.savedVal += $scope.output;
                 $scope.output = $scope.savedVal;
-                $scope.output = eval($scope.output);
-                $scope.savedVal = ""
+                if(eval($scope.output) <= 9999999999) $scope.output = eval($scope.output);
+                else $scope.output = 'error';
+                $scope.savedVal = "";
                 $scope.subtracttoken = false;
                 $scope.subtracttoken = false;
                 $scope.eqtoken = true;
