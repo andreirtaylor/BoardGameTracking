@@ -243,11 +243,10 @@ app.run(function(editableOptions) {
             $scope.username = '';
             $scope.pageNum = 1;
             $scope.inc_page = function(num){
-                $scope.pageNum = $scope.pageNum == 1 && num < 0 ? 1 : $scope.pageNum + num;
                 socket.emit("initProfile", {
                     username:'andrei',
                     nPerPage: 5,
-                    pageNumber: $scope.pageNum
+                    pageNumber: $scope.pageNum + num
                 });
             }
 
@@ -265,6 +264,7 @@ app.run(function(editableOptions) {
             socket.on('initProfile', function(profile){
                 $scope.username = profile.username;       
                 $scope.inProgress = profile.inProgress;
+                $scope.pageNum = profile.pageNum;
             });
         }]);
 })()
