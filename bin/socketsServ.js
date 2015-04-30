@@ -26,9 +26,8 @@ module.exports = function(app) {
     userDB = db.collection('userInfo');
 
     var parseGameTemplate = function(object){
-        if (!object.templateName) return;
         return {
-            search: object.templateName.toUpperCase()
+            search: object.templateName && object.templateName.toUpperCase()
         };
     };
 
@@ -104,6 +103,7 @@ module.exports = function(app) {
             var query = parseGameTemplate(search)
             templateDB.findOne(query, findTemplates,  function(err, template){
                 _error(err);
+                // template will be undefined if it is not in the database
                 socket.emit('validTemplate', template)
             })
         });
