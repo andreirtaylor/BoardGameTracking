@@ -161,7 +161,6 @@ app.use(function(req,res,next){
     req.passwordHash = app.passwordHash;
     req.userDB = userDB;
     req.db = app.db;
-    console.log(req.session.cookie)
     next();
 });
 

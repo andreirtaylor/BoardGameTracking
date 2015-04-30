@@ -150,7 +150,6 @@ app.run(function(editableOptions) {
         app.controller('newgame', ['$scope', 'socket', function ($scope , socket) {
             $scope.playerList = [];
             $scope.template = { 
-                display:'test', 
                 templateName:'Monopoly',
                 ready:false
             };
@@ -177,20 +176,17 @@ app.run(function(editableOptions) {
                 }
                 
             };
-
-            socket.emit('testTemplate', { templateName: $scope.template.templateName });
             
-            $scope.$watch('template.templateName', function(){
+            $scope.$watch('template.templateName', function(newVal){
                 $scope.template.ready = false;
-                $scope.template.display = $scope.template.templateName;
-                console.log($scope.template);
-                socket.emit('testTemplate', $scope.template );
+                if(newVal){
+                    socket.emit('testTemplate', $scope.template);
+                }
             });
 
             socket.on('validTemplate', function(template){
-                console.log(template)
+		// if something comes back then the template is ok
                 if(template){
-                    $scope.template.display = template.templateName;
                     $scope.template.ready = true;
                 }
             })
@@ -200,7 +196,6 @@ app.run(function(editableOptions) {
             });
 
             $scope.startGame = function(){
-                console.log($scope.playerList, $scope.template);
                 for(var i = 0; i < $scope.playerList.length; i++){
                     delete $scope.playerList[i].$$hashKey;
                 }
@@ -217,8 +212,6 @@ app.run(function(editableOptions) {
                  $scope.playerList.push(player);
             });
 
-            // test the template and see if logged in
-            socket.emit('testTemplate', { templateName: $scope.template.templateName });
             socket.emit('newGameLoggedIn');
         }]);
 
