@@ -1,6 +1,6 @@
-var router = require('express').Router();
-//authentication dependencies
-var passport = require('passport');
+var router = require('express').Router(),
+    //authentication dependencies
+    passport = require('passport');
 
 // generate the jade parameters
 function parameterGen(req, message){
@@ -10,8 +10,8 @@ function parameterGen(req, message){
             loggedIn: true,
             username: user.username,
             message: message
-        }
-}
+        };
+    }
 }
 
 // render pages with the correct dropdown menu if the
@@ -79,14 +79,16 @@ router.get(
 router.post('/register', function(req, res, next) {
     //make a new user
     // defined in the main app
-    var userDB = req.userDB;
-    var db = req.db;
-    var passwordHash = req.passwordHash;
-    // get the username, password, password confirm, and email
-    var username = req.body.username.trim();
-    var password = req.body.password.trim();
-    var passConf = req.body.passwordConf.trim();
-    var email = req.body.email.trim();
+    var userDB = req.userDB,
+        db = req.db,
+        passwordHash = req.passwordHash,
+        // get the username, password, password confirm, and email
+        username = req.body.username.trim(),
+        password = req.body.password.trim(),
+        passConf = req.body.passwordConf.trim(),
+        email = req.body.email.trim(),
+        emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
     // make sure that all fields are filled
     if(!req.body.username || !req.body.password || !req.body.passwordConf || !req.body.email){
         return res.render('register', {
@@ -94,14 +96,13 @@ router.post('/register', function(req, res, next) {
             type: "danger"});
     }
     //make sure the passwords match
-    if(!(password === passConf)){
+    if(password !== passConf){
         return res.render('register', {
             message:"Passwords do not match",
             type: "danger"});
     }
     //check for valid email
-    var re = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i 
-    if(!re.test(email)){
+    if(!emailRegex.test(email)){
         return res.render('register',{
             message:"Email not valid",
             type: "danger"});
@@ -119,19 +120,19 @@ router.post('/register', function(req, res, next) {
         }
         else{
             password = passwordHash(password);
-            db.collection(userDB).insert({ 
-                    "username": username,
-                    "hash": password,
-                    "email": email,
-                    "search": username.toUpperCase()
-                }, function(err){
-                    if(err){
-                        res.send("Error processing request");
-                    }else{
-                        res.redirect('/login');
-                    }
+            var user = { 
+                "username": username,
+                "hash": password,
+                "email": email,
+                "search": username.toUpperCase()
+            };
+            db.collection(userDB).insert(user, function(err){
+                if(err){
+                    res.send("Error processing request");
+                }else{
+                    res.redirect('/login');
                 }
-            );
+            });
         }
     });
 });

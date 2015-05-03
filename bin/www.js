@@ -1,30 +1,17 @@
 #!/usr/bin/env node
-/**
- * Module dependencies.
- */
 
-var app = require('../app');
-var server = app.server;
-var debug = require('debug')('MoneyTracker:server');
-var http = require('http');
-var keepAlive = require('./keepAlive');
+// Module dependencies.
 
-/**
- * Get port from environment and store in Express.
- */
+var app = require('../app'),
+    server = app.server,
+    debug = require('debug')('MoneyTracker:server'),
+    http = require('http'),
+    keepAlive = require('./keepAlive'),
+    // Get port from environment and store in Express.
+    port = normalizePort(process.env.PORT || '3000');
 
-var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
-//var server = http.createServer(app);
-
-/**
- * Listen on provided port, on all network interfaces.
- */
 // make the MongoClient
 // connect to the database
 app.MongoClient.connect(app.dbUrl, function(err, db) {
@@ -39,21 +26,16 @@ app.MongoClient.connect(app.dbUrl, function(err, db) {
     // hide the username an password
     console.log(app.dbUrl.replace(/^.*@/,''));
 
-    // now that we are connected, connect the socket and the server
-    // all of the socket logic is in the socketsServ file
+    // now that we are connected, connect sockets and the server
     app.db = db;
-    (require("./socketsServ.js"))(app);
+    (require("./socketLogic.js"))(app);
     server.listen(port);
     server.on('error', onError);
     server.on('listening', onListening);
     keepAlive();
 });
 
-
-
-/**
- * Normalize a port into a number, string, or false.
- */
+// Normalize a port into a number, string, or false.
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
@@ -71,9 +53,7 @@ function normalizePort(val) {
   return false;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
+// Event listener for HTTP server "error" event.
 
 function onError(error) {
   if (error.syscall !== 'listen') {
@@ -99,9 +79,7 @@ function onError(error) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+// Event listener for HTTP server "listening" event.
 
 function onListening() {
   var addr = server.address();

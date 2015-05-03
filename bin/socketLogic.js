@@ -1,16 +1,19 @@
 module.exports = function(app) {
-    var io = app.io;
-    var db = app.db;
-    var crypto = app.crypto;
-    var chance = app.chance;
-    var ObjectId = app.ObjectId();
-    // the option for querying games from the database
-    var findGames = { '_id': 0, 'hash':0 },
+    var io = app.io,
+        db = app.db,
+        crypto = app.crypto,
+        chance = app.chance,
+        url = require('url'),
+        // the option for querying games from the database
+        findGames = { '_id': 0, 'hash':0 },
         findUsers = { '_id': 0, 'hash':0 },
         findTemplates = {'_id': 0 }
-
-
-    var url = require('url');
+        // GT = game template collection
+        templateDB = db.collection('gameTemplates'),
+        // GR = game repository
+        gamesDB = db.collection('games'),
+        // UR user repository
+        userDB = db.collection('userInfo');
 
     function _error(err) {
         if(err){
@@ -18,24 +21,16 @@ module.exports = function(app) {
         }
     }
 
-    // GT = game template collection
-    templateDB = db.collection('gameTemplates');
-    // GR = game repository
-    gamesDB = db.collection('games');
-    // UR user repository
-    userDB = db.collection('userInfo');
-
-    var parseGameTemplate = function(object){
+    function parseGameTemplate(object) {
         return {
             search: object.templateName && object.templateName.toUpperCase()
         };
-    };
+    }
 
     // inserts a new game in the database
     db.insertNewGame = function (game, callback) {
         game.room = chance.integer({min:1000, max:10000}) + '-' + chance.province() + '-' + chance.state();
-        var room = game.room;
-        gamesDB.findOne({ 'room': room }, findGames, function (err, doc) {
+        gamesDB.findOne({ 'room': game.room }, findGames, function (err, doc) {
             _error(err);
             if (!doc) {
                 gamesDB.insert(game, function (err, result) {
@@ -59,6 +54,7 @@ module.exports = function(app) {
                 socket.emit('userLoggedIn', player);
             }
         }); 
+
         socket.on('startGame', function(game){
             var query = parseGameTemplate(game);
             // get the query from the game Templates collection
@@ -109,13 +105,10 @@ module.exports = function(app) {
         });
 
         socket.on( 'updateGame' , function (game) {
-            var room = game.room;
-            var query = { 'room':room };
-            var update = {
-                $set:{
-                    'gamePlayers':game.gamePlayers
-                }
-            };
+            var room = game.room,
+                query = { 'room':room },
+                update = { $set:{ 'gamePlayers':game.gamePlayers } };
+
             gamesDB.update( query, update );
             io.to(socket.room).emit('incomingGame', game);
         });
@@ -123,39 +116,32 @@ module.exports = function(app) {
         // initilizes the profile of a signed in player
         socket.on( 'initProfile' , function (data) {
             var pageNumber = data.pageNumber,
-                nPerPage = data.nPerPage;
+                nPerPage = data.nPerPage,
+                // find the player in the database
+                username = socket.request.session.passport.user &&
+                socket.request.session.passport.user.username,
+                ret = []
 
-            // find the player in the database
-            username = socket.request.session.passport.user &&
-                socket.request.session.passport.user.username;
-            ret = []
             if (!username) return;
-            userDB.findOne(
-                {'username': username },
-                findUsers,
-                function(err, userFromDB){
-                    _error(err);
-                    //games in progress
-                    gamesIP = userFromDB.inProgress;
-                    objectIds = gamesIP ? gamesIP : [];
-                    // go find the games
-                    gamesDB.find(
-                        {'_id': { $in: objectIds }},
-                        findGames
-                        )
-                        .sort({$natural:-1})
-                        .skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0)
-                        .limit(nPerPage)
-                        .toArray(function(err, games){
-                            userFromDB.inProgress = games;
-                            if(games.length > 0){
-                                userFromDB.pageNum = pageNumber < 1 ? 1: pageNumber;
-                                socket.emit('initProfile', userFromDB);
-                            }
-                        }
-                    );
-                }
-            );
+
+            userDB.findOne({ 'username': username }, findUsers, function(err, userFromDB){
+                _error(err);
+                //games in progress
+                gamesIP = userFromDB.inProgress;
+                objectIds = gamesIP ? gamesIP : [];
+                // go find the games
+                gamesDB.find({'_id': { $in: objectIds } }, findGames)
+                .sort({ $natural: -1 })
+                .skip(pageNumber > 0 ? ((pageNumber-1)*nPerPage) : 0)
+                .limit(nPerPage)
+                .toArray(function(err, games) {
+                    userFromDB.inProgress = games;
+                    if(games.length > 0){
+                        userFromDB.pageNum = pageNumber < 1 ? 1: pageNumber;
+                        socket.emit('initProfile', userFromDB);
+                    }
+                });
+            });
         });
     });
 };
