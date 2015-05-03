@@ -68,6 +68,12 @@ router.post('/login', function(req, res, next){
     })(req, res, next)
 });
 
+router.get('/registrationSuccess', function(req, res, next){
+    res.render('login', {
+        message:"Successfully registered",
+        type: "success"});
+});
+
 router.get(
     '/register', 
     testAuthenticated,
@@ -98,7 +104,7 @@ router.post('/register', function(req, res, next) {
     //make sure the passwords match
     if(password !== passConf){
         return res.render('register', {
-            message:"Passwords do not match",
+            message:"passwords do not match",
             type: "danger"});
     }
     //check for valid email
@@ -130,7 +136,7 @@ router.post('/register', function(req, res, next) {
                 if(err){
                     res.send("Error processing request");
                 }else{
-                    res.redirect('/login');
+                    res.redirect('/users/registrationSuccess');
                 }
             });
         }
