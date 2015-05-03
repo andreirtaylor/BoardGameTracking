@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var gameREGEX = /([0-9]{4})-?([\w]{2})-?([\w]{2})/;
+var express = require('express'),
+    router = express.Router(),
+    gameREGEX = /([0-9]{4})-?([\w]{2})-?([\w]{2})/;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

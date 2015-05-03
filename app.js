@@ -1,5 +1,5 @@
-// ==============Express===============
-// express dependencies
+    // ==============Express===============
+    // express dependencies
 var express = require('express'),
     path = require('path'),
     favicon = require('serve-favicon'),
@@ -7,32 +7,29 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     session = require('express-session'),
-// route forwarding
+    // ============ROUTES=============
     routes = require('./routes/index'),
     users = require('./routes/users'),
     app = express(),
     compression = require('compression'),
 
-// ============DATABASE==================
-// mongo dependencies
+    // ============DATABASE==================
+    // mongo dependencies
     MongoClient = require('mongodb').MongoClient,
     server = require('http').Server(app),
     io = require('socket.io')(server),
-// this is a litte confusing it is used to parse mogo id's
-    ObjectId = function(){
-        return require('mongodb').ObjectID;
-    },
-    ObjectID = ObjectId(),
+    // this is a litte confusing it is used to parse mogo id's
+    ObjectId = require('mongodb').ObjectID,
     Chance = require('chance'),
     chance = new Chance(),
     userDB = "userInfo",
     templateDB = "gameTemplates",
-// variables for database
-// specify where you can connect to the database
-    dbUrl = process.env.DATABASE ? process.env.DATABASE.trim() : 'mongodb://localhost:55556/gameDB';
+    // variables for database
+    // specify where you can connect to the database
+    dbUrl = process.env.DATABASE && process.env.DATABASE.trim()
 
-//============Authentication==============
-//authentication dependencie
+    //============Authentication==============
+    //authentication dependencies
     passport = require('passport'),
     crypto = require('crypto'),
     LocalStrategy = require('passport-local').Strategy,
@@ -43,12 +40,12 @@ var express = require('express'),
         hash.update(password);
         return hash.digest('hex') ;
     },
-// session settings
+    // session settings
     sess = {
         secret: process.env.COOKIE ? process.env.COOKIE.trim() : 'Money Money',
         cookie: {
             maxAge: 24 * 3600000 // 24 hours
-       },
+        },
         resave: true,
         saveUninitialized: false,
         store: new MongoStore({
@@ -65,7 +62,6 @@ app.passwordHash = passwordHash;
 app.MongoClient = MongoClient;
 app.crypto = crypto;
 app.io = io;
-// because ObjectID is a constructor you have to run it in the file you want
 app.ObjectId = ObjectId;
 app.server = server;
 app.templateDB = templateDB;
@@ -90,7 +86,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 //  sess.cookie.secure = true // serve secure cookies
 //}
 
-
 io.use(function (socket, next) {
     sessionMiddleware(socket.request, socket.request.res, next);
 });
@@ -109,7 +104,7 @@ function unpackUser(user){
 
 // when we find users with passport dont return the
 // games list
-var findUsers = {inProgress: 0}
+var findUsers = { inProgress: 0 };
 
 // http://en.wikipedia.org/wiki/Serialization
 passport.serializeUser(function(user, done) {
@@ -118,12 +113,12 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(user, done) {
     app.db.collection(userDB).findOne(
-        { "_id": new ObjectID(user._id) },
+        { "_id": new ObjectId(user._id) },
         findUsers,
         function(err) {
             done(err, unpackUser(user));
         }
-    );
+        );
 });
 
 // Authenticator
@@ -143,13 +138,13 @@ passport.use(new LocalStrategy(function(username, password, done) {
 
                 result = passwordHash(password)
 
-                if (result == user.hash){
-                    return done(null, unpackUser(user));
-                }
-                else
-                {
-                    done(null, false);
-                }
+            if (result == user.hash){
+                return done(null, unpackUser(user));
+            }
+            else
+        {
+            done(null, false);
+        }
             }
         );
     });
