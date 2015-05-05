@@ -50,7 +50,7 @@ This is a summary of the rules found [here](http://docs.mongolab.com/connecting/
    *if you want to save this variable permanently stored google how to set environment variables.*
 
    In Unixland:
-   ```export DATABASE= "mongodb://<dbuser>:<dbpassword>@<randomnumber>.mongolab.com:port/<Databasename>"```
+   ```export DATABASE= "mongodb://<dbus...."```
 
    In Windows CMD:
    ```set DATABASE="mongodb://<dbus....```
