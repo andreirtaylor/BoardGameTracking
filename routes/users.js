@@ -68,6 +68,12 @@ router.post('/login', function(req, res, next){
     })(req, res, next)
 });
 
+router.get('/registrationSuccess', function(req, res, next){
+    res.render('login', {
+        message:"Successfully registered",
+        type: "success"});
+});
+
 router.get(
     '/register', 
     testAuthenticated,
@@ -130,7 +136,7 @@ router.post('/register', function(req, res, next) {
                 if(err){
                     res.send("Error processing request");
                 }else{
-                    res.redirect('/login');
+                    res.redirect('/users/registrationSuccess');
                 }
             });
         }
