@@ -104,7 +104,7 @@ router.post('/register', function(req, res, next) {
     //make sure the passwords match
     if(password !== passConf){
         return res.render('register', {
-            message:"passwords do not match",
+            message:"Passwords do not match",
             type: "danger"});
     }
     //check for valid email
