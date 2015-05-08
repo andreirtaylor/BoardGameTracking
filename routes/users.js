@@ -20,10 +20,6 @@ router.get('/', function(req, res, next) {
 	res.render('newgame', parameterGen(req));
 });
 
-router.get('/newgame', function(req, res, next){
-    res.render('newgame', parameterGen(req));
-});
-
 router.get('/samplegame', function(req, res, next){
     res.render('samplegame', parameterGen(req));
 });
