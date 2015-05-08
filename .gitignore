@@ -5,6 +5,7 @@
 *.swp
 #no files within sampleDB
 sampleDB/
+node_modules/
 
 #no log files
 *.log

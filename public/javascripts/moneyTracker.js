@@ -150,7 +150,6 @@ app.run(function(editableOptions) {
         app.controller('newgame', ['$scope', 'socket', function ($scope , socket) {
             $scope.playerList = [];
             $scope.template = { 
-                display:'test', 
                 templateName:'Monopoly',
                 ready:false
             };
@@ -177,20 +176,17 @@ app.run(function(editableOptions) {
                 }
                 
             };
-
-            socket.emit('testTemplate', { templateName: $scope.template.templateName });
             
-            $scope.$watch('template.templateName', function(){
+            $scope.$watch('template.templateName', function(newVal){
                 $scope.template.ready = false;
-                $scope.template.display = $scope.template.templateName;
-                console.log($scope.template);
-                socket.emit('testTemplate', $scope.template );
+                if(newVal){
+                    socket.emit('testTemplate', $scope.template);
+                }
             });
 
             socket.on('validTemplate', function(template){
-                console.log(template)
+		// if something comes back then the template is ok
                 if(template){
-                    $scope.template.display = template.templateName;
                     $scope.template.ready = true;
                 }
             })
@@ -200,7 +196,6 @@ app.run(function(editableOptions) {
             });
 
             $scope.startGame = function(){
-                console.log($scope.playerList, $scope.template);
                 for(var i = 0; i < $scope.playerList.length; i++){
                     delete $scope.playerList[i].$$hashKey;
                 }
@@ -213,6 +208,11 @@ app.run(function(editableOptions) {
             socket.on('startGame', function(game){
                 window.location= game.room;
             });
+            socket.on("userLoggedIn", function(player){
+                 $scope.playerList.push(player);
+            });
+
+            socket.emit('newGameLoggedIn');
         }]);
 
         app.controller('Emit', ['$scope', 'socket', function ($scope , socket) {
@@ -236,11 +236,10 @@ app.run(function(editableOptions) {
             $scope.username = '';
             $scope.pageNum = 1;
             $scope.inc_page = function(num){
-                $scope.pageNum = $scope.pageNum == 1 && num < 0 ? 1 : $scope.pageNum + num;
                 socket.emit("initProfile", {
                     username:'andrei',
                     nPerPage: 5,
-                    pageNumber: $scope.pageNum
+                    pageNumber: $scope.pageNum + num
                 });
             }
 
@@ -258,6 +257,7 @@ app.run(function(editableOptions) {
             socket.on('initProfile', function(profile){
                 $scope.username = profile.username;       
                 $scope.inProgress = profile.inProgress;
+                $scope.pageNum = profile.pageNum;
             });
         }]);
 })()

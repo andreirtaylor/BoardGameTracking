@@ -15,7 +15,7 @@ block content
                     span(class="glyphicon glyphicon-remove" ng-hide="template.ready" style="font-size:30px;")
                     span &nbsp 
                     span(editable-text="template.templateName" e-form="textBtnForm")
-                        |{{ template.display|| "No Game Selected" }} &nbsp
+                        |{{ template.templateName || "Invalid" }} &nbsp
                         span
                             h3(class="glyphicon glyphicon-pencil" href="javascript: void(0)" ng-click="textBtnForm.$show()" ng-hide="textBtnForm.$visible" style="cursor:pointer;")
                 div(class="input-group")

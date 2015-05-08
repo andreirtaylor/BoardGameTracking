@@ -1,6 +1,6 @@
-var router = require('express').Router();
-//authentication dependencies
-var passport = require('passport');
+var router = require('express').Router(),
+    //authentication dependencies
+    passport = require('passport');
 
 // generate the jade parameters
 function parameterGen(req, message){
@@ -10,7 +10,7 @@ function parameterGen(req, message){
             loggedIn: true,
             username: user.username,
             message: message
-        }
+        };
     }
 }
 
@@ -68,6 +68,12 @@ router.post('/login', function(req, res, next){
     })(req, res, next)
 });
 
+router.get('/registrationSuccess', function(req, res, next){
+    res.render('login', {
+        message:"Successfully registered",
+        type: "success"});
+});
+
 router.get(
     '/register', 
     testAuthenticated,
@@ -79,26 +85,36 @@ router.get(
 router.post('/register', function(req, res, next) {
     //make a new user
     // defined in the main app
-    var userDB = req.userDB;
-    var db = req.db;
-    var passwordHash = req.passwordHash;
-    // get the username, password, password confirm, and email
-    var username = req.body.username;
-    var password = req.body.password;
-    var passConf = req.body.passwordConf;
-    var email = req.body.email;
+    var userDB = req.userDB,
+        db = req.db,
+        passwordHash = req.passwordHash,
+        // get the username, password, password confirm, and email
+        username = req.body.username.trim(),
+        password = req.body.password.trim(),
+        passConf = req.body.passwordConf.trim(),
+        email = req.body.email.trim(),
+        emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
     // make sure that all fields are filled
     if(!req.body.username || !req.body.password || !req.body.passwordConf || !req.body.email){
-        res.send("All boxes must contain something");
-        return;
+        return res.render('register', {
+            message:"Please fill all fields",
+            type: "danger"});
     }
     //make sure the passwords match
-    if(!(password === passConf)){
-        res.send("Passwords do not match");
-        return;
+    if(password !== passConf){
+        return res.render('register', {
+            message:"Passwords do not match",
+            type: "danger"});
+    }
+    //check for valid email
+    if(!emailRegex.test(email)){
+        return res.render('register',{
+            message:"Email not valid",
+            type: "danger"});
     }
     //check for duplicates in the database
-    db.collection(userDB).findOne({ 'username': username }, function (err, user){
+    db.collection(userDB).findOne({ 'search': username.toUpperCase() }, function (err, user){
         if(err){
             res.send('Error processing request');
         }
@@ -110,23 +126,21 @@ router.post('/register', function(req, res, next) {
         }
         else{
             password = passwordHash(password);
-            db.collection(userDB).insert({ 
-                    "username": username,
-                    "hash": password,
-                    "email": email
-                }, function(err){
-                    if(err){
-                        res.send("Error processing request");
-                    }else{
-                        return res.render('register', {
-                            message:"Go to login to sign in",
-                            type: "success"
-                        }); 
-                    }
+            var user = { 
+                "username": username,
+                "hash": password,
+                "email": email,
+                "search": username.toUpperCase()
+            };
+            db.collection(userDB).insert(user, function(err){
+                if(err){
+                    res.send("Error processing request");
+                }else{
+                    res.redirect('/users/registrationSuccess');
                 }
-            );
+            });
         }
-    })
+    });
 });
 
 router.get('/logout', function(req, res, next) {
@@ -140,7 +154,7 @@ function ensureAuthenticated(req, res, next) {
         req.user.loggedIn = true;
         return next(); 
     }
-    res.redirect('/login')
+    res.redirect('/login');
 }
 
 router.use(ensureAuthenticated);
@@ -149,14 +163,5 @@ router.use(ensureAuthenticated);
 router.get('/profile',  function(req, res, next) {
 	res.render('profile', parameterGen(req));
 });
-
-//little secret for the ladies ;)
-router.get(
-    '/lounge',
-    ensureAuthenticated, 
-    function(req,res,next){
-        res.send("you found it baby.") 
-    }
-);
 
 module.exports = router;

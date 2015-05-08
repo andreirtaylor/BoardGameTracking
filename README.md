@@ -1,20 +1,36 @@
 # BoardGameTracking
   *Paper is lame, track your games in real-time online!*
 
-This, will be, a web based application that allows players to track their money while playing board games.
+This is a web based application that allows players to track their money while playing board games.
 
-This project is still under considerable development. Right now it is completely unusuable.
+Just click on new game then enter in the names of the players in the game.
 
-For now the instructions below are for Jonah and Adam (and sometimes Jason) so I am only outlining installation on Ubuntu and OSX
+Tell the other players what room to go to i.e. ```boardgametracking.com\9938-SK-FL```
+
+Clicking on a player will bring up a calcultor, simply enter in the money that they are gaining or losing and press update.
+
+Any changes made are immediately sent to everyone in the room.
 
 Money Tracker is built on node 0.12.*
 
 ## How to Install and run
 
+BoardGameTracking is hosted at [boardgametracking.com](www.boardgametracking.com ). These instructions are for the intrepid user who wants to install their own copy on a local machine.
+
 There are basically 3 steps
 1. Install MongoDB
 2. Install node
 3. Clone and run the tracker
+
+### Install Node
+1. Install nodejs from [nodejs.org](http://nodejs.org/download/)
+
+### Clone the repo
+1. Clone the repository into a safe place ```git https://github.com/andreirtaylor/boardgametracking.git```
+
+2. Go to the repo directory using the command line ``` cd boardgametracking ```
+
+3. type this ```sudo npm install``` or ```npm install``` if on windows
 
 ### Install MongoDB (That Database Thing) 
 Mongo is cumpulsory. The server will not run without it.
@@ -34,26 +50,19 @@ This is a summary of the rules found [here](http://docs.mongolab.com/connecting/
    *if you want to save this variable permanently stored google how to set environment variables.*
 
    In Unixland:
-   ```export DATABASE= "mongodb://<dbuser>:<dbpassword>@<randomnumber>.mongolab.com:port/<Databasename>"```
+   ```export DATABASE= "mongodb://<dbus...."```
 
    In Windows CMD:
-   ```set PORT=1234```
+   ```set DATABASE="mongodb://<dbus....```
   
    In Windows PowerShell:
-   ```$env:PORT = 1234```
+   ```$env:DATABASE = "mongodb://<dbus....```
 
 4. Run this command (you will only need to do this once per database)
    ``` node test/setupSampleDB ``` this will give you the available game templates
 
-### Install Node
-1. Install nodejs from [nodejs.org](http://nodejs.org/download/)
-
-### Clone and run the tracker
-1. Clone the repository into a safe place ```git https://github.com/andreirtaylor/MoneyTracker.git```
-
-2. Go to the repo directory using the command line ``` cd MoneyTracker ```
-
-3. type this ```npm start``` if that doesnt work try ```nodejs bin/www.js```
+### Run the program
+3. type this ```npm start```
   
    you should see something along the lines of
    ``` 
@@ -61,7 +70,8 @@ This is a summary of the rules found [here](http://docs.mongolab.com/connecting/
    ds12345.mongolab.com:578910/sample-db
    Listening on port 3000
    ```
-   
+4. Go to ```localhost:3000``` in your browser and enjoy
+
 ##Testing
 
 ### Mocha
