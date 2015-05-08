@@ -17,7 +17,7 @@ function parameterGen(req, message){
 // render pages with the correct dropdown menu if the
 // user is logged in
 router.get('/', function(req, res, next) {
-	res.render('index', parameterGen(req));
+	res.render('newgame', parameterGen(req));
 });
 
 router.get('/newgame', function(req, res, next){
