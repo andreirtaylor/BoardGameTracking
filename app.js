@@ -8,8 +8,7 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     session = require('express-session'),
     // ============ROUTES=============
-    routes = require('./routes/index'),
-    users = require('./routes/users'),
+    routes = require('./routes/index.js'),
     app = express(),
     compression = require('compression'),
 
@@ -161,9 +160,6 @@ app.use(function(req,res,next){
 
 // routing middleware
 app.use('/', routes);
-// make sure that users is last at there is routing to bump anyone who
-// is not logged in
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
