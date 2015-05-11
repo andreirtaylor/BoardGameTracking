@@ -48,11 +48,8 @@ function testAuthenticated(req, res, next) {
     }
 }
 
-router.get(
-    '/login', 
-    testAuthenticated,
-    function(req, res, next) {
-	    res.render('login');
+router.get( '/login', testAuthenticated, function(req, res, next) {
+    res.render('login');
 });
 
 router.post('/login', function(req, res, next){
