@@ -18,8 +18,10 @@ block content
                     a(href="" class="list-group-item", ng-repeat="player in gamePlayers", ng-click="click(player)")
                         p(style"text-align:left")
                             | {{ player.name }}
-                            span(style="float:right").
-                                {{ player.cash | currency }}
+                            span(ng-if="gameType == 'cash'" style="float:right")
+                                | {{ player.cash | currency }}
+                            span(ng-if="!(gameType == 'cash')" style="float:right")
+                                | {{ player.cash }}
                 div(ng-controller="Emit")
             div(class="col-sm-3 col-md-4 col-lg-4" )
 
@@ -28,7 +30,8 @@ block content
             div(class="col-sm-6 col-md-4 col-lg-4" )
                 a(href="", class="list-group-item")
                     p(style="text-align:left")= "{{ player.name }}"
-                        span(style="float:right")= "{{ player.cash | currency }}" 
+                        span(ng-if="!(gameType == 'cash')" style="float:right" )= "{{ player.cash | currency }}" 
+                        span(ng-if="gameType == 'cash'" style="float:right" )= "{{ player.cash }}" 
                 h1(style="text-align:right")= "{{output}}"
 
                 - var calculator = [[1,2,3],[4,5,6],[7,8,9],['-','0','+']];

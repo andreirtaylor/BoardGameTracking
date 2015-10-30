@@ -11,19 +11,21 @@ app.run(function(editableOptions) {
         // update this later
         app.controller('MT', ['$scope', 'socket', function ($scope , socket) {
             // these socket functions are all possible because of the socket factory
-            socket.emit('connectme', { url: window.location.toString()}); 
-            
-            socket.on('incomingGame', function(data){ 
+            socket.emit('connectme', { url: window.location.toString()});
+
+            socket.on('incomingGame', function(data){
                 $scope.game = data;
                 scopegame = $scope.game;
                 $scope.gamePlayers = data.gamePlayers;
                 $scope.templateName = data.templateName;
+                $scope.gameType = data.gameType;
             });
 
             $scope.player = $scope.player ? $scope.player : {};
 
             $scope.clicked = false;
-            
+
+
             $scope.click = function(player){
                 $scope.player = player;
                 if($scope.clicked == true){
@@ -139,7 +141,7 @@ app.run(function(editableOptions) {
                 $scope.subtracttoken = false;
                 $scope.eqtoken = true;
             };
-                
+
             $scope.eqtoken = false;
             $scope.addtoken = false;
             $scope.subtracttoken = false;
@@ -149,7 +151,7 @@ app.run(function(editableOptions) {
 
         app.controller('newgame', ['$scope', 'socket', function ($scope , socket) {
             $scope.playerList = [];
-            $scope.template = { 
+            $scope.template = {
                 templateName:'Monopoly',
                 ready:false
             };
@@ -174,9 +176,9 @@ app.run(function(editableOptions) {
                       $scope.playerList.splice(i,1);
                     }
                 }
-                
+
             };
-            
+
             $scope.$watch('template.templateName', function(newVal){
                 $scope.template.ready = false;
                 if(newVal){
@@ -221,7 +223,7 @@ app.run(function(editableOptions) {
                     $scope.player.cash += parseInt($scope.output);
                     $scope.clear();
                     $scope.click();
-                    // angular is adding this hashkey into the array 
+                    // angular is adding this hashkey into the array
                     // we have to remove it before it goes into the datbase
                     for(var i = 0; i < $scope.game.gamePlayers.length; i++){
                         delete $scope.game.gamePlayers[i].$$hashKey;
@@ -247,7 +249,7 @@ app.run(function(editableOptions) {
                 window.location = room;
             };
 
-            socket.emit('initProfile', { 
+            socket.emit('initProfile', {
                 username:'andrei',
                 nPerPage: 5,
                 pageNumber: $scope.pageNum
@@ -255,7 +257,7 @@ app.run(function(editableOptions) {
 
 
             socket.on('initProfile', function(profile){
-                $scope.username = profile.username;       
+                $scope.username = profile.username;
                 $scope.inProgress = profile.inProgress;
                 $scope.pageNum = profile.pageNum;
             });
